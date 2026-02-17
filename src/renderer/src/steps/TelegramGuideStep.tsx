@@ -2,24 +2,24 @@ import Button from '../components/Button'
 
 const steps = [
   {
-    emoji: '\ud83d\udd0d',
+    emoji: '🔍',
     title: 'BotFather 검색',
-    desc: '\ud154\ub808\uadf8\ub7a8 \uc571\uc5d0\uc11c @BotFather\ub97c \uac80\uc0c9\ud558\uc138\uc694. \ud30c\ub780 \uccb4\ud06c \ud45c\uc2dc\uac00 \uc788\ub294 \uacf5\uc2dd \ubd07\uc744 \uc120\ud0dd\ud569\ub2c8\ub2e4.'
+    desc: '텔레그램 앱에서 @BotFather를 검색하세요. 파란 체크 표시가 있는 공식 봇을 선택합니다.'
   },
   {
-    emoji: '\u2328\ufe0f',
-    title: '/newbot \uba85\ub839 \uc785\ub825',
-    desc: 'BotFather \ub300\ud654\uc5d0\uc11c /newbot \uc744 \uc785\ub825\ud558\uba74 \ubd07 \uc774\ub984\uc744 \ubb3c\uc5b4\ubd05\ub2c8\ub2e4.'
+    emoji: '⌨️',
+    title: '/newbot 명령 입력',
+    desc: 'BotFather 대화에서 /newbot 을 입력하면 봇 이름을 물어봅니다.'
   },
   {
-    emoji: '\ud83d\ude80',
-    title: '\ubd07 \uc774\ub984 \uc815\ud558\uae30',
-    desc: '\uc6d0\ud558\ub294 \uc774\ub984\uc744 \uc785\ub825 \u2192 _bot\uc73c\ub85c \ub05d\ub098\ub294 \uace0\uc720 ID\ub97c \uc785\ub825\ud558\uc138\uc694. \uc608: my_ai_bot'
+    emoji: '🚀',
+    title: '봇 이름 정하기',
+    desc: '원하는 이름을 입력 → _bot으로 끝나는 고유 ID를 입력하세요. 예: my_ai_bot'
   },
   {
-    emoji: '\ud83d\udccb',
-    title: '\ubd07 \ud1a0\ud070 \ubcf5\uc0ac',
-    desc: '\uc0dd\uc131 \uc644\ub8cc! 123456:ABCDEF... \ud615\ud0dc\uc758 \ud1a0\ud070\uc744 \uaf2d \ubcf5\uc0ac\ud574 \ub450\uc138\uc694.'
+    emoji: '📋',
+    title: '봇 토큰 복사',
+    desc: '생성 완료! 123456:ABCDEF... 형태의 토큰을 꼭 복사해 두세요.'
   }
 ]
 
@@ -27,8 +27,8 @@ export default function TelegramGuideStep({ onNext }: { onNext: () => void }): R
   return (
     <div className="flex-1 flex flex-col px-8 gap-4 justify-center">
       <div className="text-center space-y-1">
-        <h2 className="text-lg font-extrabold">\ud154\ub808\uadf8\ub7a8 \ubd07 \ub9cc\ub4e4\uae30</h2>
-        <p className="text-text-muted text-xs">AI \ube44\uc11c\uc640 \ub300\ud654\ud560 \ud154\ub808\uadf8\ub7a8 \ubd07\uc744 \ub9cc\ub4e4\uc5b4 \ubd05\uc2dc\ub2e4</p>
+        <h2 className="text-lg font-extrabold">텔레그램 봇 만들기</h2>
+        <p className="text-text-muted text-xs">AI 비서와 대화할 텔레그램 봇을 만들어 봅시다</p>
       </div>
 
       <div className="space-y-2.5 mt-1">
@@ -47,7 +47,7 @@ export default function TelegramGuideStep({ onNext }: { onNext: () => void }): R
 
       <div className="flex justify-end mt-2">
         <Button variant="primary" size="lg" onClick={onNext}>
-          \ud1a0\ud070 \uc900\ube44 \uc644\ub8cc!
+          토큰 준비 완료!
         </Button>
       </div>
     </div>

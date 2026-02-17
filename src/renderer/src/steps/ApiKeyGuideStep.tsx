@@ -2,24 +2,24 @@ import Button from '../components/Button'
 
 const steps = [
   {
-    emoji: '\ud83c\udf10',
+    emoji: '🌐',
     title: 'Anthropic 콘솔 접속',
     desc: 'console.anthropic.com 에 접속하세요. 이메일로 간단히 가입할 수 있습니다.'
   },
   {
-    emoji: '\ud83d\udcb3',
+    emoji: '💳',
     title: '결제 수단 등록',
-    desc: 'Settings \u2192 Billing 에서 신용카드를 등록하고 크레딧을 충전하세요. 최소 $5부터 시작!'
+    desc: 'Settings → Billing 에서 신용카드를 등록하고 크레딧을 충전하세요. 최소 $5부터 시작!'
   },
   {
-    emoji: '\ud83d\udd11',
+    emoji: '🔑',
     title: 'API Keys 메뉴 이동',
-    desc: 'Settings \u2192 API Keys 페이지로 이동하세요. 사이드바에서 열쇠 아이콘을 찾으면 됩니다.'
+    desc: 'Settings → API Keys 페이지로 이동하세요. 사이드바에서 열쇠 아이콘을 찾으면 됩니다.'
   },
   {
-    emoji: '\ud83d\udccb',
+    emoji: '📋',
     title: '새 키 생성 및 복사',
-    desc: 'Create Key 버튼 \u2192 이름 입력 \u2192 sk-ant-... 로 시작하는 키를 복사하세요. 이 화면을 벗어나면 다시 볼 수 없어요!'
+    desc: 'Create Key 버튼 → 이름 입력 → sk-ant-... 로 시작하는 키를 복사하세요. 이 화면을 벗어나면 다시 볼 수 없어요!'
   }
 ]
 
