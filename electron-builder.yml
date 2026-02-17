@@ -26,6 +26,18 @@ mac:
   notarize: false
 dmg:
   artifactName: ${name}-${version}.${ext}
+  background: build/background.png
+  iconSize: 80
+  window:
+    width: 540
+    height: 380
+  contents:
+    - x: 144
+      y: 178
+    - x: 396
+      y: 178
+      type: link
+      path: /Applications
 publish:
   provider: github
 npmRebuild: false
