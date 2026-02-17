@@ -23,7 +23,7 @@
 
 ## 소개
 
-EasyClaw은 [OpenClaw](https://github.com/openclaw/openclaw) AI 에이전트를 **복잡한 터미널 작업 없이** 설치할 수 있는 데스크톱 인스톨러입니다.
+EasyClaw는 [OpenClaw](https://github.com/openclaw/openclaw) AI 에이전트를 **복잡한 터미널 작업 없이** 설치할 수 있는 데스크톱 인스톨러입니다.
 
 다운로드 → 실행 → API 키 입력, 3단계면 끝.
 
