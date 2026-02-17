@@ -92,7 +92,7 @@ npm run build:mac   # macOS
 ## 크레딧
 
 이 프로젝트는 [OpenClaw](https://github.com/openclaw/openclaw) (MIT License)를 기반으로 합니다.
-OpenClaw은 [openclaw](https://github.com/openclaw) 팀이 개발한 오픈소스 AI 에이전트입니다.
+OpenClaw는 [openclaw](https://github.com/openclaw) 팀이 개발한 오픈소스 AI 에이전트입니다.
 
 ## 라이선스
 
