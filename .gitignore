@@ -10,3 +10,6 @@ out/
 Thumbs.db
 .eslintcache
 .vercel
+*.key
+*.csr
+mascot-preview.html
