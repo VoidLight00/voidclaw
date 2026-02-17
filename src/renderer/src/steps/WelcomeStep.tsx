@@ -1,0 +1,35 @@
+import LobsterLogo from '../components/LobsterLogo'
+import Button from '../components/Button'
+
+export default function WelcomeStep({ onNext }: { onNext: () => void }): React.JSX.Element {
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center px-10 gap-7">
+      <div className="relative">
+        <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl scale-150" />
+        <LobsterLogo state="idle" size={150} />
+      </div>
+
+      <div className="text-center space-y-2">
+        <h1 className="text-3xl font-black tracking-tight">
+          Easy<span className="bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">Claw</span>
+        </h1>
+        <p className="text-text-muted text-[15px] font-semibold">
+          나만의 AI 비서, 클릭 한 번으로
+        </p>
+      </div>
+
+      <p className="text-text-muted/60 text-xs text-center leading-relaxed max-w-[260px]">
+        OpenClaw를 쉽고 빠르게 설치하고<br />
+        텔레그램으로 AI와 대화하세요
+      </p>
+
+      <Button variant="primary" size="lg" onClick={onNext}>
+        시작하기
+      </Button>
+
+      <span className="text-text-muted/30 text-[10px] tracking-widest uppercase font-semibold">
+        v0.1.0
+      </span>
+    </div>
+  )
+}
