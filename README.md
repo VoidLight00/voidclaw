@@ -64,7 +64,7 @@ EasyClaw는 [OpenClaw](https://github.com/openclaw/openclaw) AI 에이전트를 
 <details>
 <summary><b>macOS — "Apple이 악성 소프트웨어가 없는지 확인할 수 없습니다" 경고</b></summary>
 
-1. **"확인"** 을 눌러 창을 닫기
+1. **"확인"**을 눌러 창을 닫기
 2. **시스템 설정 → 개인정보 보호 및 보안** 이동
 3. 하단 **"확인 없이 열기"** 클릭
 
