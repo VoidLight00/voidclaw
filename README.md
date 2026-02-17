@@ -1,34 +1,39 @@
-# easy-claw-init
+# EasyClaw
 
-An Electron application with React and TypeScript
+[OpenClaw](https://github.com/openclaw/openclaw) AI 비서를 원클릭으로 설치할 수 있는 데스크톱 앱입니다.
 
-## Recommended IDE Setup
+> **Note:** 이 프로젝트는 [OpenClaw](https://github.com/openclaw/openclaw) (MIT License)를 기반으로 합니다. OpenClaw은 openclaw 팀이 개발한 오픈소스 AI 비서입니다.
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+## 주요 기능
 
-## Project Setup
+- WSL, Node.js, OpenClaw 등 필요한 환경 자동 감지 및 설치
+- 텔레그램 봇 연동 지원
+- macOS / Windows 지원
 
-### Install
+## 개발 환경
 
-```bash
-$ npm install
-```
-
-### Development
+### 설치
 
 ```bash
-$ npm run dev
+npm install
 ```
 
-### Build
+### 개발 모드
 
 ```bash
-# For windows
-$ npm run build:win
-
-# For macOS
-$ npm run build:mac
-
-# For Linux
-$ npm run build:linux
+npm run dev
 ```
+
+### 빌드
+
+```bash
+# Windows
+npm run build:win
+
+# macOS
+npm run build:mac
+```
+
+## 라이선스
+
+이 프로젝트는 OpenClaw (MIT License)를 활용합니다. 원본 라이선스는 [여기](https://github.com/openclaw/openclaw/blob/main/LICENSE)에서 확인할 수 있습니다.
