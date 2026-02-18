@@ -124,19 +124,30 @@ export const runOnboard = async (
   await runCmd(npm, onboardArgs, log)
   log('기본 설정 완료!')
 
-  // Node.js 22 autoSelectFamily(IPv6 우선 시도)로 인한 네트워크 오류 방지
+  // Node.js 22 autoSelectFamily + IPv6 미지원 환경에서 Telegram API 타임아웃 방지
+  // DNS lookup을 IPv4 전용으로 monkey-patch하여 ETIMEDOUT 해결
   if (platform() === 'darwin') {
     const ocDir = join(homedir(), '.openclaw')
     const fixPath = join(ocDir, 'ipv4-fix.js')
-    writeFileSync(fixPath, "require('net').setDefaultAutoSelectFamily(false)\n")
+    const fixContent = [
+      "const dns = require('dns')",
+      'const origLookup = dns.lookup',
+      'dns.lookup = function (hostname, options, callback) {',
+      "  if (typeof options === 'function') { callback = options; options = { family: 4 } }",
+      "  else if (typeof options === 'number') { options = { family: 4 } }",
+      '  else { options = Object.assign({}, options, { family: 4 }) }',
+      '  return origLookup.call(this, hostname, options, callback)',
+      '}'
+    ].join('\n')
+    writeFileSync(fixPath, fixContent + '\n')
 
     const plistAfter = join(homedir(), 'Library', 'LaunchAgents', 'ai.openclaw.gateway.plist')
     if (existsSync(plistAfter)) {
       let xml = readFileSync(plistAfter, 'utf-8')
-      if (!xml.includes('NODE_OPTIONS')) {
+      if (!xml.includes('ipv4-fix')) {
         xml = xml.replace(
-          '</dict>\n  </dict>',
-          `<key>NODE_OPTIONS</key>\n    <string>--require=${fixPath}</string>\n    </dict>\n  </dict>`
+          '<string>/usr/local/bin/node</string>',
+          `<string>/usr/local/bin/node</string>\n      <string>--require=${fixPath}</string>`
         )
         writeFileSync(plistAfter, xml)
       }
