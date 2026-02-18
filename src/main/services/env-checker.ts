@@ -67,7 +67,26 @@ const semverGte = (version: string, min: string): boolean => {
 
 const checkWsl = async (): Promise<boolean> => {
   try {
-    const output = await runCommand('wsl', ['--list', '--verbose'])
+    const output = await new Promise<string>((resolve, reject) => {
+      const child = spawn('wsl', ['--list', '--verbose'], {
+        env: process.env,
+        shell: true
+      })
+
+      const chunks: Buffer[] = []
+      child.stdout.on('data', (d) => chunks.push(d))
+      child.on('close', (code) => {
+        if (code === 0) {
+          const buf = Buffer.concat(chunks)
+          // wsl --list 출력은 UTF-16 LE 인코딩 — null 바이트 제거 후 비교
+          const text = buf.toString('utf16le').replace(/\0/g, '')
+          resolve(text.trim())
+        } else {
+          reject(new Error(`exit code ${code}`))
+        }
+      })
+      child.on('error', reject)
+    })
     return output.toLowerCase().includes('ubuntu')
   } catch {
     return false
