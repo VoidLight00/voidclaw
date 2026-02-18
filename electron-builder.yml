@@ -23,7 +23,6 @@ nsis:
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
-generateBlockmap: false
 mac:
   icon: build/icon.icns
   hardenedRuntime: true

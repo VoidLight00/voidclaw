@@ -40,3 +40,17 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+
+      - name: Clean up unnecessary release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag="${{ github.event.release.tag_name }}"
+          for suffix in .blockmap latest.yml latest-mac.yml; do
+            for asset in $(gh release view "$tag" --json assets -q ".assets[].name | select(endswith(\"$suffix\"))"); do
+              gh release delete-asset "$tag" "$asset" --yes || true
+            done
+          done
+          for asset in $(gh release view "$tag" --json assets -q '.assets[].name | select(endswith(".zip"))'); do
+            gh release delete-asset "$tag" "$asset" --yes || true
+          done
