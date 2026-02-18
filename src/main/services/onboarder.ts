@@ -90,10 +90,12 @@ export const runOnboard = async (
 
   const npm = findBin('npm')
 
-  // 기존 gateway 프로세스 중지 (토큰 충돌 방지)
-  try {
-    await runCmd(npm, ['exec', '--', 'openclaw', 'gateway', 'stop'], log)
-  } catch { /* 실행 중이 아니면 무시 */ }
+  // 기존 openclaw 프로세스 강제 종료 (토큰 충돌 방지)
+  await new Promise<void>((resolve) => {
+    const child = spawn('pkill', ['-f', 'openclaw'])
+    child.on('close', () => resolve())
+    child.on('error', () => resolve())
+  })
 
   const onboardArgs = [
     'exec', '--', 'openclaw',
