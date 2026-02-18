@@ -48,7 +48,7 @@ const Bubbles = (): React.JSX.Element => {
 }
 
 function App(): React.JSX.Element {
-  const { currentStep, stepIndex, next, goTo } = useWizard()
+  const { currentStep, stepIndex, next, prev, canGoBack, goTo } = useWizard()
   const [installNeeds, setInstallNeeds] = useState<InstallNeeds>({
     needWsl: false,
     needNode: false,
@@ -94,6 +94,18 @@ function App(): React.JSX.Element {
           {currentStep === 'config' && <ConfigStep onDone={() => goTo('done')} />}
           {currentStep === 'done' && <DoneStep />}
         </div>
+
+        {canGoBack && (
+          <button
+            onClick={prev}
+            className="absolute bottom-6 left-6 z-20 flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-text-muted hover:text-text bg-white/5 hover:bg-white/10 rounded-xl border border-glass-border transition-all duration-200"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+            이전
+          </button>
+        )}
       </div>
     </>
   )

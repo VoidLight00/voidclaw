@@ -13,3 +13,4 @@ Thumbs.db
 *.key
 *.csr
 mascot-preview.html
+.env*.local

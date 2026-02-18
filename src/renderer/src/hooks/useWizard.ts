@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 
 export type StepName = 'welcome' | 'envCheck' | 'install' | 'apiKeyGuide' | 'telegramGuide' | 'config' | 'done'
 
@@ -6,21 +6,29 @@ const STEPS: StepName[] = ['welcome', 'envCheck', 'install', 'apiKeyGuide', 'tel
 
 export const useWizard = () => {
   const [currentStep, setCurrentStep] = useState<StepName>('welcome')
+  const history = useRef<StepName[]>([])
   const stepIndex = STEPS.indexOf(currentStep)
+
+  const navigateTo = useCallback((step: StepName) => {
+    setCurrentStep((prev) => {
+      history.current.push(prev)
+      return step
+    })
+  }, [])
 
   const next = useCallback(() => {
     const idx = STEPS.indexOf(currentStep)
-    if (idx < STEPS.length - 1) setCurrentStep(STEPS[idx + 1])
-  }, [currentStep])
+    if (idx < STEPS.length - 1) navigateTo(STEPS[idx + 1])
+  }, [currentStep, navigateTo])
 
   const prev = useCallback(() => {
-    const idx = STEPS.indexOf(currentStep)
-    if (idx > 0) setCurrentStep(STEPS[idx - 1])
-  }, [currentStep])
-
-  const goTo = useCallback((step: StepName) => {
-    setCurrentStep(step)
+    const target = history.current.pop()
+    if (target) setCurrentStep(target)
   }, [])
 
-  return { currentStep, stepIndex, totalSteps: STEPS.length, next, prev, goTo }
+  const canGoBack = currentStep !== 'welcome' && currentStep !== 'done'
+
+  const goTo = navigateTo
+
+  return { currentStep, stepIndex, totalSteps: STEPS.length, next, prev, canGoBack, goTo }
 }
