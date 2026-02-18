@@ -43,7 +43,7 @@ export default async function handler(req, res) {
   const token = process.env.BLOB_READ_WRITE_TOKEN
   if (!token) {
     console.log('WAITLIST_EMAIL:', email)
-    return res.status(200).json({ success: true })
+    return res.status(200).json({ success: true, storage: 'log' })
   }
 
   try {
