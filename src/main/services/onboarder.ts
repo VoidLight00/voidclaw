@@ -1,5 +1,5 @@
 import { spawn } from 'child_process'
-import { existsSync, readFileSync, writeFileSync } from 'fs'
+import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'fs'
 import { platform, homedir } from 'os'
 import { join } from 'path'
 import https from 'https'
@@ -90,7 +90,16 @@ export const runOnboard = async (
 
   const npm = findBin('npm')
 
-  // 기존 openclaw 프로세스 강제 종료 (토큰 충돌 방지)
+  // 기존 launchd daemon 제거 + 프로세스 종료 (경로/토큰 충돌 방지)
+  const plist = join(homedir(), 'Library', 'LaunchAgents', 'ai.openclaw.gateway.plist')
+  if (platform() === 'darwin' && existsSync(plist)) {
+    await new Promise<void>((resolve) => {
+      const child = spawn('launchctl', ['unload', plist])
+      child.on('close', () => resolve())
+      child.on('error', () => resolve())
+    })
+    try { unlinkSync(plist) } catch { /* ignore */ }
+  }
   await new Promise<void>((resolve) => {
     const child = spawn('pkill', ['-f', 'openclaw'])
     child.on('close', () => resolve())
