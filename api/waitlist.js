@@ -1,30 +1,21 @@
+import { list, put } from '@vercel/blob'
+
 const BLOB_FILENAME = 'waitlist-emails.json'
 
-async function getEmails(token) {
-  const listRes = await fetch(
-    `https://blob.vercel-storage.com?prefix=${BLOB_FILENAME}`,
-    { headers: { authorization: `Bearer ${token}` } }
-  )
-  const { blobs } = await listRes.json()
-  if (!blobs || blobs.length === 0) return []
-
-  const dataRes = await fetch(blobs[0].url)
-  return dataRes.json()
+async function getEmails() {
+  const { blobs } = await list({ prefix: BLOB_FILENAME })
+  if (blobs.length === 0) return []
+  const res = await fetch(blobs[0].url)
+  return res.json()
 }
 
-async function putEmails(token, emails) {
-  await fetch(
-    `https://blob.vercel-storage.com/${BLOB_FILENAME}`,
-    {
-      method: 'PUT',
-      headers: {
-        authorization: `Bearer ${token}`,
-        'x-content-type': 'application/json',
-        'x-cache-control-max-age': '0'
-      },
-      body: JSON.stringify(emails)
-    }
-  )
+async function putEmails(emails) {
+  await put(BLOB_FILENAME, JSON.stringify(emails), {
+    contentType: 'application/json',
+    access: 'public',
+    addRandomSuffix: false,
+    cacheControlMaxAge: 0
+  })
 }
 
 export default async function handler(req, res) {
@@ -40,22 +31,18 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: '올바른 이메일을 입력해주세요.' })
   }
 
-  const token = process.env.BLOB_READ_WRITE_TOKEN
-  if (!token) {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
     console.log('WAITLIST_EMAIL:', email)
-    return res.status(200).json({ success: true, storage: 'log' })
+    return res.status(200).json({ success: true })
   }
 
   try {
-    const emails = await getEmails(token)
-    const entry = { email, registeredAt: new Date().toISOString() }
-
+    const emails = await getEmails()
     if (emails.some((e) => e.email === email)) {
       return res.status(200).json({ success: true })
     }
-
-    emails.push(entry)
-    await putEmails(token, emails)
+    emails.push({ email, registeredAt: new Date().toISOString() })
+    await putEmails(emails)
     return res.status(200).json({ success: true })
   } catch (e) {
     console.error('Blob error:', e)
