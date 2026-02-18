@@ -130,6 +130,7 @@ export const runOnboard = async (
           enabled: true,
           botToken: config.telegramBotToken,
           dmPolicy: 'open',
+          allowFrom: ['*'],
           groups: { '*': { requireMention: true } }
         }
       }
