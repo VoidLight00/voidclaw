@@ -88,9 +88,12 @@ export const runOnboard = async (
 
   log('OpenClaw 초기 설정 시작...')
 
-  // npm exec로 실행 — npm이 글로벌 패키지 경로를 알아서 해결
   const npm = findBin('npm')
-  log(`npm 경로: ${npm}`)
+
+  // 기존 gateway 프로세스 중지 (토큰 충돌 방지)
+  try {
+    await runCmd(npm, ['exec', '--', 'openclaw', 'gateway', 'stop'], log)
+  } catch { /* 실행 중이 아니면 무시 */ }
 
   const onboardArgs = [
     'exec', '--', 'openclaw',
