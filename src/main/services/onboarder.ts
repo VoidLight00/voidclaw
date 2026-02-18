@@ -1,6 +1,6 @@
 import { spawn } from 'child_process'
-import { existsSync } from 'fs'
-import { platform } from 'os'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
+import { platform, homedir } from 'os'
 import { join } from 'path'
 import { BrowserWindow } from 'electron'
 
@@ -91,12 +91,24 @@ export const runOnboard = async (
 
   if (config.telegramBotToken) {
     log('텔레그램 채널 추가 중...')
-    await runCmd(npm, [
-      'exec', '--', 'openclaw',
-      'channels', 'add',
-      '--channel', 'telegram',
-      '--token', config.telegramBotToken
-    ], log)
-    log('텔레그램 채널 추가 완료!')
+    const configDir = platform() === 'win32' ? '' : join(homedir(), '.openclaw')
+    const configPath = join(configDir, 'openclaw.json')
+
+    if (existsSync(configPath)) {
+      const ocConfig = JSON.parse(readFileSync(configPath, 'utf-8'))
+      ocConfig.channels = {
+        ...ocConfig.channels,
+        telegram: {
+          enabled: true,
+          botToken: config.telegramBotToken,
+          dmPolicy: 'pairing',
+          groups: { '*': { requireMention: true } }
+        }
+      }
+      writeFileSync(configPath, JSON.stringify(ocConfig, null, 2))
+      log('텔레그램 채널 추가 완료!')
+    } else {
+      log('OpenClaw 설정 파일을 찾을 수 없습니다')
+    }
   }
 }
