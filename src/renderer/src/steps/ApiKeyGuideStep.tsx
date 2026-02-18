@@ -48,6 +48,8 @@ export default function ApiKeyGuideStep({ onNext }: { onNext: () => void }): Rea
       <div className="flex justify-between items-center mt-2">
         <a
           href="https://console.anthropic.com/settings/keys"
+          target="_blank"
+          rel="noreferrer"
           className="text-primary text-xs font-semibold hover:text-primary-light transition-colors"
         >
           콘솔 바로가기 &rarr;
