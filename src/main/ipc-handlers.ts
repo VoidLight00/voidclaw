@@ -1,4 +1,5 @@
 import { ipcMain, BrowserWindow } from 'electron'
+import { spawn } from 'child_process'
 import { platform } from 'os'
 import { checkEnvironment } from './services/env-checker'
 import { installNodeMac, installNodeWin, installWsl, installOpenClaw } from './services/installer'
@@ -22,7 +23,7 @@ export const registerIpcHandlers = (win: BrowserWindow): void => {
   ipcMain.handle('install:wsl', async () => {
     try {
       await installWsl(win)
-      return { success: true }
+      return { success: true, needsReboot: true }
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e)
       win.webContents.send('install:error', msg)
@@ -71,4 +72,8 @@ export const registerIpcHandlers = (win: BrowserWindow): void => {
   })
 
   ipcMain.handle('gateway:status', () => getGatewayStatus())
+
+  ipcMain.on('system:reboot', () => {
+    spawn('shutdown', ['/r', '/t', '0'], { shell: true, detached: true })
+  })
 }

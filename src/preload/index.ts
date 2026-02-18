@@ -7,7 +7,7 @@ const electronAPI = {
   install: {
     node: (): Promise<{ success: boolean; error?: string }> =>
       ipcRenderer.invoke('install:node'),
-    wsl: (): Promise<{ success: boolean; error?: string }> =>
+    wsl: (): Promise<{ success: boolean; needsReboot?: boolean; error?: string }> =>
       ipcRenderer.invoke('install:wsl'),
     openclaw: (): Promise<{ success: boolean; error?: string }> =>
       ipcRenderer.invoke('install:openclaw'),
@@ -26,6 +26,7 @@ const electronAPI = {
     run: (config: { anthropicApiKey: string; telegramBotToken?: string }): Promise<{ success: boolean; error?: string }> =>
       ipcRenderer.invoke('onboard:run', config)
   },
+  reboot: (): void => ipcRenderer.send('system:reboot'),
   gateway: {
     start: (): Promise<{ success: boolean; error?: string }> =>
       ipcRenderer.invoke('gateway:start'),
