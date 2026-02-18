@@ -1,6 +1,6 @@
 {
   "name": "easy-claw",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "OpenClaw 원클릭 설치 프로그램",
   "main": "./out/main/index.js",
   "author": "EasyClaw",

@@ -1,4 +1,4 @@
-import { spawn, execSync } from 'child_process'
+import { spawn } from 'child_process'
 import { existsSync } from 'fs'
 import { platform } from 'os'
 import { join } from 'path'
@@ -12,7 +12,6 @@ interface OnboardConfig {
 const PATH_DIRS = [
   '/usr/local/bin',
   '/opt/homebrew/bin',
-  `${process.env.HOME}/.nvm/versions/node`,
   `${process.env.HOME}/.volta/bin`
 ]
 
@@ -21,30 +20,13 @@ const getPathEnv = (): NodeJS.ProcessEnv => ({
   PATH: [...PATH_DIRS, process.env.PATH ?? ''].join(':')
 })
 
-const findOpenclawBin = (log: (msg: string) => void): string => {
-  if (platform() === 'win32') return 'openclaw'
-
-  // 1) 알려진 경로에서 직접 탐색
+const findBin = (name: string): string => {
+  if (platform() === 'win32') return name
   for (const dir of PATH_DIRS) {
-    const p = join(dir, 'openclaw')
-    if (existsSync(p)) {
-      log(`openclaw 경로: ${p}`)
-      return p
-    }
+    const p = join(dir, name)
+    if (existsSync(p)) return p
   }
-
-  // 2) npm prefix -g 로 동적 탐색
-  try {
-    const prefix = execSync('npm prefix -g', { env: getPathEnv() }).toString().trim()
-    const p = join(prefix, 'bin', 'openclaw')
-    if (existsSync(p)) {
-      log(`openclaw 경로 (npm): ${p}`)
-      return p
-    }
-  } catch { /* ignore */ }
-
-  log('openclaw을 찾지 못해 PATH에서 탐색합니다')
-  return 'openclaw'
+  return name
 }
 
 const runCmd = (
@@ -56,8 +38,6 @@ const runCmd = (
     const isWindows = platform() === 'win32'
     const fullCmd = isWindows ? 'wsl' : cmd
     const fullArgs = isWindows ? ['--', cmd, ...args] : args
-
-    onLog(`실행: ${fullCmd} ${fullArgs[0]} ...`)
 
     const child = spawn(fullCmd, fullArgs, {
       shell: isWindows,
@@ -87,9 +67,12 @@ export const runOnboard = async (
 
   log('OpenClaw 초기 설정 시작...')
 
-  const openclaw = findOpenclawBin(log)
+  // npm exec로 실행 — npm이 글로벌 패키지 경로를 알아서 해결
+  const npm = findBin('npm')
+  log(`npm 경로: ${npm}`)
 
   const onboardArgs = [
+    'exec', '--', 'openclaw',
     'onboard',
     '--non-interactive',
     '--accept-risk',
@@ -103,12 +86,13 @@ export const runOnboard = async (
     '--skip-skills'
   ]
 
-  await runCmd(openclaw, onboardArgs, log)
+  await runCmd(npm, onboardArgs, log)
   log('기본 설정 완료!')
 
   if (config.telegramBotToken) {
     log('텔레그램 채널 추가 중...')
-    await runCmd(openclaw, [
+    await runCmd(npm, [
+      'exec', '--', 'openclaw',
       'channels', 'add',
       '--channel', 'telegram',
       '--token', config.telegramBotToken

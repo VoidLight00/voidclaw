@@ -1,4 +1,4 @@
-import { spawn, execSync } from 'child_process'
+import { spawn } from 'child_process'
 import { existsSync } from 'fs'
 import { platform } from 'os'
 import { join } from 'path'
@@ -6,7 +6,6 @@ import { join } from 'path'
 const PATH_DIRS = [
   '/usr/local/bin',
   '/opt/homebrew/bin',
-  `${process.env.HOME}/.nvm/versions/node`,
   `${process.env.HOME}/.volta/bin`
 ]
 
@@ -15,30 +14,22 @@ const getPathEnv = (): NodeJS.ProcessEnv => ({
   PATH: [...PATH_DIRS, process.env.PATH ?? ''].join(':')
 })
 
-const findOpenclawBin = (): string => {
-  if (platform() === 'win32') return 'openclaw'
-
+const findBin = (name: string): string => {
+  if (platform() === 'win32') return name
   for (const dir of PATH_DIRS) {
-    const p = join(dir, 'openclaw')
+    const p = join(dir, name)
     if (existsSync(p)) return p
   }
-
-  try {
-    const prefix = execSync('npm prefix -g', { env: getPathEnv() }).toString().trim()
-    const p = join(prefix, 'bin', 'openclaw')
-    if (existsSync(p)) return p
-  } catch { /* ignore */ }
-
-  return 'openclaw'
+  return name
 }
 
 const runGateway = (args: string[]): Promise<string> => {
   const isWindows = platform() === 'win32'
-  const openclaw = findOpenclawBin()
-  const cmd = isWindows ? 'wsl' : openclaw
+  const npm = findBin('npm')
+  const cmd = isWindows ? 'wsl' : npm
   const fullArgs = isWindows
     ? ['--', 'openclaw', 'gateway', ...args]
-    : ['gateway', ...args]
+    : ['exec', '--', 'openclaw', 'gateway', ...args]
 
   return new Promise((resolve, reject) => {
     const child = spawn(cmd, fullArgs, {
