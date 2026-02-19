@@ -99,21 +99,41 @@ export const installNodeWin = async (win: BrowserWindow): Promise<void> => {
   log('Node.js 설치 완료!')
 }
 
-export const installWsl = async (win: BrowserWindow): Promise<void> => {
+const isWslUsable = (): Promise<boolean> =>
+  new Promise((resolve) => {
+    const child = spawn('wsl', ['-d', 'Ubuntu', '-u', 'root', '--', 'true'], { shell: true })
+    child.on('close', (code) => resolve(code === 0))
+    child.on('error', () => resolve(false))
+  })
+
+export const installWsl = async (
+  win: BrowserWindow
+): Promise<{ needsReboot: boolean }> => {
   const log = (msg: string): void => sendProgress(win, msg)
   log('WSL2 설치 시작... (관리자 권한 필요)')
+
   try {
     await runWithLog('wsl', ['--install', '-d', 'Ubuntu', '--no-launch'], log, { shell: true })
   } catch {
-    log('Ubuntu가 이미 설치되어 있습니다.')
+    log('WSL 설치 명령 완료 (이미 설치된 경우 무시)')
   }
+
+  // WSL이 실제로 사용 가능한지 확인 — 재부팅 전이면 여기서 false
+  if (!(await isWslUsable())) {
+    log('WSL2 기능 활성화를 위해 PC 재부팅이 필요합니다.')
+    return { needsReboot: true }
+  }
+
   log('Ubuntu 기본 사용자 설정 중...')
   try {
     await runWithLog('ubuntu', ['config', '--default-user', 'root'], log, { shell: true })
   } catch {
-    await runWithLog('wsl', ['-d', 'Ubuntu', '-u', 'root', '--', 'true'], log, { shell: true })
+    // ubuntu 명령이 없으면 wsl로 직접 확인 (이미 위에서 usable 검증됨)
+    log('Ubuntu 기본 사용자 설정을 건너뜁니다.')
   }
-  log('WSL2 설치 완료! 재부팅이 필요할 수 있습니다.')
+
+  log('WSL2 설치 완료!')
+  return { needsReboot: false }
 }
 
 const getPathEnv = (): NodeJS.ProcessEnv => ({
