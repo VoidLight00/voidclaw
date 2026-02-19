@@ -243,13 +243,13 @@ export const runOnboard = async (
   }
 
   // 모든 패치 완료 후 데몬 완전 재시작
-  log('Gateway 재시작 중...')
+  // Windows: DoneStep에서 포그라운드 프로세스로 시작하므로 여기서는 기존 프로세스만 정리
   if (platform() === 'win32') {
-    // WSL 안의 openclaw gateway 재시작
-    await wslExec('pkill -f openclaw || true').catch(() => {})
+    log('기존 Gateway 정리 중...')
+    await wslExec('pkill -9 -f openclaw || true').catch(() => {})
     await new Promise((resolve) => setTimeout(resolve, 2000))
-    await wslExec('nohup openclaw gateway start > /dev/null 2>&1 &').catch(() => {})
   } else if (isMac) {
+    log('Gateway 재시작 중...')
     const plistPath = join(homedir(), 'Library', 'LaunchAgents', 'ai.openclaw.gateway.plist')
     const uid = process.getuid?.() ?? ''
     await new Promise<void>((resolve) => {
