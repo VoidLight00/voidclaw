@@ -96,8 +96,8 @@ function App(): React.JSX.Element {
           {currentStep === 'install' && (
             <InstallStep needs={installNeeds} onDone={() => goTo('apiKeyGuide')} />
           )}
-          {currentStep === 'apiKeyGuide' && <ApiKeyGuideStep provider={provider} onSelectProvider={setProvider} onNext={next} onPrev={prev} />}
-          {currentStep === 'telegramGuide' && <TelegramGuideStep onNext={next} onPrev={prev} />}
+          {currentStep === 'apiKeyGuide' && <ApiKeyGuideStep provider={provider} onSelectProvider={setProvider} onNext={next} />}
+          {currentStep === 'telegramGuide' && <TelegramGuideStep onNext={next} />}
           {currentStep === 'config' && <ConfigStep provider={provider} onDone={(username) => { setBotUsername(username); goTo('done') }} />}
           {currentStep === 'done' && <DoneStep botUsername={botUsername} />}
         </div>
@@ -108,10 +108,10 @@ function App(): React.JSX.Element {
           </span>
         )}
 
-        {canGoBack && currentStep !== 'apiKeyGuide' && currentStep !== 'telegramGuide' && (
+        {canGoBack && (
           <button
             onClick={prev}
-            className="absolute bottom-11 left-6 z-20 flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-text-muted hover:text-text bg-white/5 hover:bg-white/10 rounded-xl border border-glass-border transition-all duration-200"
+            className="absolute bottom-16 left-6 z-20 flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-text-muted hover:text-text bg-white/5 hover:bg-white/10 rounded-xl border border-glass-border transition-all duration-200"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="15 18 9 12 15 6" />
