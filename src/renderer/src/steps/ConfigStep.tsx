@@ -49,7 +49,7 @@ export default function ConfigStep({ provider, onDone }: Props): React.JSX.Eleme
   }
 
   return (
-    <div className="flex-1 flex flex-col px-8 gap-4 justify-center">
+    <div className="flex-1 relative px-8 pt-16 space-y-4">
       <div className="flex items-center gap-3">
         <LobsterLogo state={saving ? 'loading' : 'idle'} size={48} />
         <div>
@@ -94,7 +94,7 @@ export default function ConfigStep({ provider, onDone }: Props): React.JSX.Eleme
       {logs.length > 0 && <LogViewer lines={logs} />}
       {error && <p className="text-error text-xs font-medium">{error}</p>}
 
-      <div className="flex justify-end mt-1">
+      <div className="absolute bottom-16 right-6">
         <Button variant="primary" size="lg" onClick={handleSave} disabled={!canSave} loading={saving}>
           {saving ? '설정 중...' : '설정 저장'}
         </Button>

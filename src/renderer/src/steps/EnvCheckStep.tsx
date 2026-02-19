@@ -69,7 +69,7 @@ export default function EnvCheckStep({
   }
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-8 gap-5">
+    <div className="flex-1 flex flex-col items-center pt-16 px-8 gap-5">
       <LobsterLogo state={checking ? 'loading' : allReady ? 'success' : 'idle'} size={72} />
 
       <h2 className="text-lg font-extrabold">환경 검사</h2>
