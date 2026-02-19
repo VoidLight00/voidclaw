@@ -146,9 +146,10 @@ export const runOnboard = async (
     })
   }
 
-  // 기존 daemon 제거 + 프로세스 종료 (경로/토큰 충돌 방지)
+  // 기존 daemon 제거 + 프로세스 종료 + 깨진 설정 정리
   if (platform() === 'win32') {
     await wslExec('pkill -f openclaw || true').catch(() => {})
+    await wslExec('rm -f $HOME/.openclaw/openclaw.json').catch(() => {})
   } else {
     const plist = join(homedir(), 'Library', 'LaunchAgents', 'ai.openclaw.gateway.plist')
     if (existsSync(plist)) {
