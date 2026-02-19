@@ -6,19 +6,18 @@ export default function DoneStep({ botUsername }: { botUsername?: string }): Rea
   const [status, setStatus] = useState<'starting' | 'running' | 'stopped'>('starting')
 
   useEffect(() => {
-    const init = async (): Promise<void> => {
-      // onboarder가 이미 데몬을 재시작하므로 먼저 상태 확인
-      const s = await window.electronAPI.gateway.status()
-      if (s === 'running') { setStatus('running'); return }
-      // 데몬이 아직 올라오는 중일 수 있으므로 잠시 대기 후 재확인
-      await new Promise((r) => setTimeout(r, 3000))
-      const s2 = await window.electronAPI.gateway.status()
-      if (s2 === 'running') { setStatus('running'); return }
-      // 여전히 중지 상태면 직접 시작 시도
+    const poll = async (): Promise<void> => {
+      // 최대 30초간 2초 간격으로 gateway 상태 확인
+      for (let i = 0; i < 15; i++) {
+        const s = await window.electronAPI.gateway.status()
+        if (s === 'running') { setStatus('running'); return }
+        await new Promise((r) => setTimeout(r, 2000))
+      }
+      // 타임아웃 시 직접 시작 시도
       const r = await window.electronAPI.gateway.start()
       setStatus(r.success ? 'running' : 'stopped')
     }
-    init()
+    poll()
   }, [])
 
   const handleStop = async (): Promise<void> => {

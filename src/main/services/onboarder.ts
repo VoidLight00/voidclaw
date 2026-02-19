@@ -298,17 +298,21 @@ export const runOnboard = async (
     log('Gateway 재시작 중...')
     const plistPath = join(homedir(), 'Library', 'LaunchAgents', 'ai.openclaw.gateway.plist')
     const uid = process.getuid?.() ?? ''
+    // 1. 데몬 언로드
     await new Promise<void>((resolve) => {
       const child = spawn('launchctl', ['bootout', `gui/${uid}/ai.openclaw.gateway`])
       child.on('close', () => resolve())
       child.on('error', () => resolve())
     })
+    // 2. SIGKILL로 확실히 종료
     await new Promise<void>((resolve) => {
-      const child = spawn('pkill', ['-f', 'openclaw'])
+      const child = spawn('pkill', ['-9', '-f', 'openclaw'])
       child.on('close', () => resolve())
       child.on('error', () => resolve())
     })
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    // 3. 포트 해제 + Telegram 서버 측 폴링 연결 정리 대기
+    await new Promise((resolve) => setTimeout(resolve, 5000))
+    // 4. 데몬 재등록
     if (existsSync(plistPath)) {
       await new Promise<void>((resolve) => {
         const child = spawn('launchctl', ['bootstrap', `gui/${uid}`, plistPath])
