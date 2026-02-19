@@ -71,6 +71,15 @@ export default function DoneStep({ botUsername }: { botUsername?: string }): Rea
           <Button variant="secondary" size="sm" onClick={handleStart}>다시 시작</Button>
         ) : null}
       </div>
+
+      {status === 'running' && (
+        <button
+          onClick={() => window.open('https://open.kakao.com/o/gbBkPehi', '_blank')}
+          className="text-xs text-text-muted/60 hover:text-text-muted transition-colors cursor-pointer"
+        >
+          사용법이 궁금하다면? 오픈채팅방 참여하기 →
+        </button>
+      )}
     </div>
   )
 }

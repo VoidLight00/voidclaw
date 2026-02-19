@@ -241,6 +241,46 @@ section{padding:5rem 1.5rem}
 .cta-card h2{font-size:1.8rem;font-weight:900;margin-bottom:0.5rem}
 .cta-card p{color:var(--text-muted);margin-bottom:2rem}
 
+/* ── Community ── */
+.community{text-align:center;padding:2rem 1.5rem 4rem}
+.community-card{
+  position:relative;overflow:hidden;
+  padding:3rem 2rem;border-radius:24px;
+  background:
+    linear-gradient(135deg,rgba(254,229,0,0.06),rgba(249,115,22,0.04)),
+    var(--bg-card);
+  border:1px solid rgba(254,229,0,0.12);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+.community-card::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle,rgba(254,229,0,0.08),transparent 70%);
+  pointer-events:none;
+}
+.community-emoji{font-size:2.4rem;margin-bottom:1rem;display:block}
+.community-card h2{font-size:1.5rem;font-weight:900;margin-bottom:0.4rem}
+.community-card p{color:var(--text-muted);margin-bottom:1.8rem;font-size:0.95rem}
+.btn-kakao{
+  display:inline-flex;align-items:center;gap:0.7rem;
+  padding:0.85rem 2rem;border-radius:12px;
+  font-family:inherit;font-size:1rem;font-weight:800;
+  cursor:pointer;border:none;
+  background:#FEE500;color:#1A1A1A;
+  box-shadow:0 0 24px rgba(254,229,0,0.2),0 4px 16px rgba(0,0,0,0.3);
+  transition:all 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+.btn-kakao:hover{
+  transform:translateY(-2px);
+  box-shadow:0 0 36px rgba(254,229,0,0.3),0 8px 24px rgba(0,0,0,0.35);
+  background:#FFE812;
+}
+.btn-kakao:active{transform:translateY(0)}
+.btn-kakao svg{width:22px;height:22px;flex-shrink:0}
+.community-note{
+  margin-top:1rem;font-size:0.8rem;color:var(--text-muted);opacity:0.7;
+}
+
 /* ── Contact ── */
 .contact-links{
   display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;
@@ -419,6 +459,22 @@ footer{
     </div>
   </section>
 
+  <!-- Community -->
+  <section class="community">
+    <div class="container">
+      <div class="community-card reveal">
+        <span class="community-emoji">💬</span>
+        <h2>사용법이 궁금하다면?</h2>
+        <p>설치부터 활용까지, 오픈채팅방에서 편하게 물어보세요.</p>
+        <a href="https://open.kakao.com/o/gbBkPehi" target="_blank" rel="noopener" class="btn-kakao">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.48 3 2 6.58 2 10.94c0 2.8 1.86 5.27 4.66 6.67-.15.53-.96 3.4-.99 3.62 0 0-.02.17.09.24.11.06.24.01.24.01.32-.04 3.7-2.44 4.28-2.85.55.08 1.13.12 1.72.12 5.52 0 10-3.58 10-7.81C22 6.58 17.52 3 12 3z"/></svg>
+          오픈채팅방 참여하기
+        </a>
+        <p class="community-note">누구나 참여 가능 · 실시간 답변</p>
+      </div>
+    </div>
+  </section>
+
   <!-- Contact -->
   <p style="text-align:center;font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;padding:0 1.5rem">문의 사항이 있으시면 편하게 연락해 주세요</p>
   <div class="contact-links">
@@ -426,9 +482,13 @@ footer{
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
       ybgwon96@gmail.com
     </a>
-    <a href="https://www.threads.net/@ybgwon_96" target="_blank" rel="noopener" class="contact-pill">
+    <a href="https://www.threads.net/@needsbuilder" target="_blank" rel="noopener" class="contact-pill">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.59 12c.025 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.96-.065-1.17.408-2.268 1.332-3.084.856-.755 2.037-1.182 3.397-1.24l.084-.003c1.11-.02 2.09.168 2.947.494.022-.94-.072-1.79-.278-2.502l2.016-.506c.28 1.026.392 2.2.316 3.545a7.2 7.2 0 0 1 2.49 2.134c.868 1.152 1.567 2.86 1.146 5.087-.484 2.563-1.884 4.39-4.044 5.282-1.56.644-3.454.938-5.428.938l-.131-.002Zm.287-7.97.078.003c1.478-.083 2.39-1.02 2.476-2.55a4.2 4.2 0 0 0-1.39-.639c-.574-.17-1.236-.248-1.977-.215-.896.04-1.62.276-2.098.685-.42.36-.624.835-.592 1.378.04.706.404 1.204.992 1.585.647.42 1.527.621 2.51.753Z"/></svg>
-      @ybgwon_96
+      @needsbuilder
+    </a>
+    <a href="https://open.kakao.com/o/gbBkPehi" target="_blank" rel="noopener" class="contact-pill">
+      <svg viewBox="0 0 24 24" fill="currentColor" style="color:#FEE500"><path d="M12 3C6.48 3 2 6.58 2 10.94c0 2.8 1.86 5.27 4.66 6.67-.15.53-.96 3.4-.99 3.62 0 0-.02.17.09.24.11.06.24.01.24.01.32-.04 3.7-2.44 4.28-2.85.55.08 1.13.12 1.72.12 5.52 0 10-3.58 10-7.81C22 6.58 17.52 3 12 3z"/></svg>
+      오픈채팅방
     </a>
   </div>
 
@@ -473,7 +533,7 @@ footer{
       .then(function(r){return r.json()})
       .then(function(data){
         if(data.success){
-          msgEl.textContent='등록 완료! 출시되면 가장 먼저 알려드릴게요.';
+          msgEl.innerHTML='등록 완료! 출시되면 가장 먼저 알려드릴게요.<br><a href="https://open.kakao.com/o/gbBkPehi" target="_blank" rel="noopener" style="color:#FEE500;font-weight:800;text-decoration:underline;text-underline-offset:3px">💬 오픈채팅방도 참여하기 →</a>';
           msgEl.className='waitlist-msg success';
           input.value='';
         } else {
