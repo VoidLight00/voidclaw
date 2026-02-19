@@ -51,6 +51,20 @@ const findBin = (name: string): string => {
   return name
 }
 
+const wslExec = (command: string): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const child = spawn('wsl', ['--', 'bash', '-c', command])
+    let stdout = ''
+    let stderr = ''
+    child.stdout.on('data', (d) => (stdout += d.toString()))
+    child.stderr.on('data', (d) => (stderr += d.toString()))
+    child.on('close', (code) => {
+      if (code === 0) resolve(stdout)
+      else reject(new Error(stderr || `wsl exit ${code}`))
+    })
+    child.on('error', reject)
+  })
+
 const runCmd = (
   cmd: string,
   args: string[],
@@ -173,32 +187,51 @@ export const runOnboard = async (
 
   if (config.telegramBotToken) {
     log('텔레그램 채널 추가 중...')
-    const configPath = join(ocDir, 'openclaw.json')
+    const isWindows = platform() === 'win32'
+    const telegramChannel = {
+      enabled: true,
+      botToken: config.telegramBotToken,
+      dmPolicy: 'open',
+      allowFrom: ['*'],
+      groups: { '*': { requireMention: true } }
+    }
 
-    if (existsSync(configPath)) {
-      const ocConfig = JSON.parse(readFileSync(configPath, 'utf-8'))
-      ocConfig.channels = {
-        ...ocConfig.channels,
-        telegram: {
-          enabled: true,
-          botToken: config.telegramBotToken,
-          dmPolicy: 'open',
-          allowFrom: ['*'],
-          groups: { '*': { requireMention: true } }
-        }
+    if (isWindows) {
+      // WSL 안의 openclaw.json을 읽고 수정
+      const wslConfigPath = '$HOME/.openclaw/openclaw.json'
+      try {
+        const raw = await wslExec(`cat ${wslConfigPath}`)
+        const ocConfig = JSON.parse(raw)
+        ocConfig.channels = { ...ocConfig.channels, telegram: telegramChannel }
+        const escaped = JSON.stringify(JSON.stringify(ocConfig, null, 2))
+        await wslExec(`echo ${escaped} > ${wslConfigPath}`)
+        log('텔레그램 채널 추가 완료!')
+      } catch {
+        log('OpenClaw 설정 파일을 찾을 수 없습니다')
       }
-      writeFileSync(configPath, JSON.stringify(ocConfig, null, 2))
-      log('텔레그램 채널 추가 완료!')
     } else {
-      log('OpenClaw 설정 파일을 찾을 수 없습니다')
+      const configPath = join(ocDir, 'openclaw.json')
+      if (existsSync(configPath)) {
+        const ocConfig = JSON.parse(readFileSync(configPath, 'utf-8'))
+        ocConfig.channels = { ...ocConfig.channels, telegram: telegramChannel }
+        writeFileSync(configPath, JSON.stringify(ocConfig, null, 2))
+        log('텔레그램 채널 추가 완료!')
+      } else {
+        log('OpenClaw 설정 파일을 찾을 수 없습니다')
+      }
     }
 
     botUsername = await fetchBotUsername(config.telegramBotToken)
   }
 
   // 모든 패치 완료 후 데몬 완전 재시작
-  if (isMac) {
-    log('Gateway 재시작 중...')
+  log('Gateway 재시작 중...')
+  if (platform() === 'win32') {
+    // WSL 안의 openclaw gateway 재시작
+    await wslExec('pkill -f openclaw || true').catch(() => {})
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await wslExec('nohup openclaw gateway start > /dev/null 2>&1 &').catch(() => {})
+  } else if (isMac) {
     const plistPath = join(homedir(), 'Library', 'LaunchAgents', 'ai.openclaw.gateway.plist')
     const uid = process.getuid?.() ?? ''
     await new Promise<void>((resolve) => {

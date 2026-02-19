@@ -33,7 +33,6 @@ const runGateway = (args: string[]): Promise<string> => {
 
   return new Promise((resolve, reject) => {
     const child = spawn(cmd, fullArgs, {
-      shell: isWindows,
       env: getPathEnv()
     })
 
