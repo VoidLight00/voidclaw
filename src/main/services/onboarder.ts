@@ -146,21 +146,25 @@ export const runOnboard = async (
     })
   }
 
-  // 기존 launchd daemon 제거 + 프로세스 종료 (경로/토큰 충돌 방지)
-  const plist = join(homedir(), 'Library', 'LaunchAgents', 'ai.openclaw.gateway.plist')
-  if (isMac && existsSync(plist)) {
+  // 기존 daemon 제거 + 프로세스 종료 (경로/토큰 충돌 방지)
+  if (platform() === 'win32') {
+    await wslExec('pkill -f openclaw || true').catch(() => {})
+  } else {
+    const plist = join(homedir(), 'Library', 'LaunchAgents', 'ai.openclaw.gateway.plist')
+    if (existsSync(plist)) {
+      await new Promise<void>((resolve) => {
+        const child = spawn('launchctl', ['unload', plist])
+        child.on('close', () => resolve())
+        child.on('error', () => resolve())
+      })
+      try { unlinkSync(plist) } catch { /* ignore */ }
+    }
     await new Promise<void>((resolve) => {
-      const child = spawn('launchctl', ['unload', plist])
+      const child = spawn('pkill', ['-f', 'openclaw'])
       child.on('close', () => resolve())
       child.on('error', () => resolve())
     })
-    try { unlinkSync(plist) } catch { /* ignore */ }
   }
-  await new Promise<void>((resolve) => {
-    const child = spawn('pkill', ['-f', 'openclaw'])
-    child.on('close', () => resolve())
-    child.on('error', () => resolve())
-  })
 
   const onboardArgs = [
     'exec', '--', 'openclaw',
