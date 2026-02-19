@@ -61,55 +61,55 @@ export default function ApiKeyGuideStep({ provider, onSelectProvider, onNext, on
   const info = providers[provider]
 
   return (
-    <div className="flex-1 flex flex-col px-8 gap-4 justify-center">
-      <div className="text-center space-y-1">
+    <div className="flex-1 relative px-8">
+      <div className="text-center space-y-0.5 pt-2 pb-1.5">
         <h2 className="text-lg font-extrabold">AI 제공사 선택</h2>
         <p className="text-text-muted text-xs">사용할 AI 제공사를 선택하고 API 키를 발급받으세요</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
-        {providerOrder.map((p) => (
+      <div className="flex rounded-xl border border-glass-border overflow-hidden bg-bg-card">
+        {providerOrder.map((p, i) => (
           <button
             key={p}
             onClick={() => onSelectProvider(p)}
-            className={`glass-card p-3 text-center transition-all duration-200 cursor-pointer ${
+            className={`flex-1 py-2 text-center transition-colors duration-200 cursor-pointer ${
+              i > 0 ? 'border-l border-glass-border' : ''
+            } ${
               provider === p
-                ? 'border-primary ring-2 ring-primary/30'
-                : 'hover:border-white/20'
+                ? 'bg-primary/15 text-text'
+                : 'hover:bg-white/5 text-text-muted'
             }`}
           >
-            <p className="text-sm font-bold">{providers[p].name}</p>
-            <p className="text-text-muted text-[10px] mt-0.5">{providers[p].model}</p>
+            <p className={`text-sm font-bold ${provider === p ? 'text-primary' : ''}`}>{providers[p].name}</p>
+            <p className="text-[10px] mt-0.5 opacity-60">{providers[p].model}</p>
           </button>
         ))}
       </div>
 
-      <div className="flex items-center justify-center">
-        <a
-          href={info.consoleUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-block text-primary text-xs font-semibold hover:text-primary-light transition-colors"
-        >
-          {info.consoleLabel} &rarr;
-        </a>
-      </div>
+      <a
+        href={info.consoleUrl}
+        target="_blank"
+        rel="noreferrer"
+        className="block text-center text-primary text-xs font-semibold hover:text-primary-light transition-colors py-2"
+      >
+        {info.consoleLabel} &rarr;
+      </a>
 
-      <div className="space-y-2.5">
+      <div className="space-y-1.5">
         {info.steps.map((s, i) => (
-          <div key={i} className="glass-card p-4 flex gap-3 items-start">
-            <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-base">
+          <div key={i} className="glass-card p-2.5 flex gap-2.5 items-start">
+            <div className="shrink-0 w-6 h-6 rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-xs">
               {s.emoji}
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-bold">{s.title}</p>
-              <p className="text-text-muted text-[11px] mt-0.5 leading-relaxed">{s.desc}</p>
+              <p className="text-[11px] font-bold">{s.title}</p>
+              <p className="text-text-muted text-[10px] mt-0.5 leading-snug">{s.desc}</p>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="flex justify-between items-center mt-2">
+      <div className="absolute bottom-11 left-6 right-6 flex justify-between items-center">
         <button
           onClick={onPrev}
           className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-text-muted hover:text-text bg-white/5 hover:bg-white/10 rounded-xl border border-glass-border transition-all duration-200"
