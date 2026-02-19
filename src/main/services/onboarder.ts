@@ -1,4 +1,5 @@
 import { spawn } from 'child_process'
+import { StringDecoder } from 'string_decoder'
 import { existsSync, mkdirSync, readFileSync, writeFileSync, unlinkSync } from 'fs'
 import { platform, homedir } from 'os'
 import { join } from 'path'
@@ -61,15 +62,16 @@ const runCmd = (
     const fullArgs = isWindows ? ['--', cmd, ...args] : args
 
     const child = spawn(fullCmd, fullArgs, {
-      shell: isWindows,
       env: getPathEnv()
     })
 
+    const outDecoder = new StringDecoder('utf8')
+    const errDecoder = new StringDecoder('utf8')
     child.stdout.on('data', (d) =>
-      d.toString().split('\n').filter(Boolean).forEach(onLog)
+      outDecoder.write(d).split('\n').filter(Boolean).forEach(onLog)
     )
     child.stderr.on('data', (d) =>
-      d.toString().split('\n').filter(Boolean).forEach(onLog)
+      errDecoder.write(d).split('\n').filter(Boolean).forEach(onLog)
     )
     child.on('close', (code) => {
       if (code === 0) resolve()
