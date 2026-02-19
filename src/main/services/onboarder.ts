@@ -148,7 +148,7 @@ export const runOnboard = async (
 
   // 기존 daemon 제거 + 프로세스 종료 + 깨진 설정 정리
   if (platform() === 'win32') {
-    await wslExec('pkill -f openclaw || true').catch(() => {})
+    await wslExec('pkill -9 -f openclaw || true').catch(() => {})
     await wslExec('rm -f $HOME/.openclaw/openclaw.json').catch(() => {})
   } else {
     const plist = join(homedir(), 'Library', 'LaunchAgents', 'ai.openclaw.gateway.plist')
@@ -166,6 +166,8 @@ export const runOnboard = async (
       child.on('error', () => resolve())
     })
   }
+  // 포트 해제 대기
+  await new Promise((resolve) => setTimeout(resolve, 3000))
 
   const onboardArgs = [
     'exec', '--', 'openclaw',
