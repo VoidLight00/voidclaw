@@ -1,9 +1,19 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import LobsterLogo from '../components/LobsterLogo'
 import Button from '../components/Button'
+import LogViewer from '../components/LogViewer'
 
 export default function DoneStep({ botUsername }: { botUsername?: string }): React.JSX.Element {
   const [status, setStatus] = useState<'starting' | 'running' | 'stopped'>('starting')
+  const [logs, setLogs] = useState<string[]>([])
+  const [showLogs, setShowLogs] = useState(false)
+
+  useEffect(() => {
+    const unsub = window.electronAPI.gateway.onLog((msg) => {
+      setLogs((prev) => [...prev, msg])
+    })
+    return unsub
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -37,16 +47,18 @@ export default function DoneStep({ botUsername }: { botUsername?: string }): Rea
 
   const handleStart = async (): Promise<void> => {
     setStatus('starting')
+    setLogs([])
     const r = await window.electronAPI.gateway.start()
     setStatus(r.success ? 'running' : 'stopped')
   }
 
-  const handleRestart = async (): Promise<void> => {
+  const handleRestart = useCallback(async (): Promise<void> => {
     setStatus('starting')
+    setLogs([])
     await window.electronAPI.gateway.stop()
     const r = await window.electronAPI.gateway.start()
     setStatus(r.success ? 'running' : 'stopped')
-  }
+  }, [])
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center px-10 gap-6">
@@ -135,6 +147,22 @@ export default function DoneStep({ botUsername }: { botUsername?: string }): Rea
           </Button>
         ) : null}
       </div>
+
+      {/* Gateway 로그 */}
+      {logs.length > 0 && (
+        <div className="w-full max-w-sm">
+          <button
+            onClick={() => setShowLogs((v) => !v)}
+            className="text-[11px] text-text-muted/60 hover:text-text-muted transition-colors mb-1"
+          >
+            {showLogs ? '▼ 로그 숨기기' : '▶ 로그 보기'}
+            {logs.some((l) => l.includes('[error]')) && (
+              <span className="ml-1.5 text-error">● 오류 감지</span>
+            )}
+          </button>
+          {showLogs && <LogViewer lines={logs} />}
+        </div>
+      )}
 
       {status === 'running' && (
         <button

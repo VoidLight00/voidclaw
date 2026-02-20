@@ -4,7 +4,12 @@ import { platform } from 'os'
 import { checkEnvironment } from './services/env-checker'
 import { installNodeMac, installNodeWin, installWsl, installOpenClaw } from './services/installer'
 import { runOnboard } from './services/onboarder'
-import { startGateway, stopGateway, getGatewayStatus } from './services/gateway'
+import {
+  startGateway,
+  stopGateway,
+  getGatewayStatus,
+  setGatewayLogCallback
+} from './services/gateway'
 
 export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void => {
   const win = (): BrowserWindow => {
@@ -86,6 +91,15 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
       }
     }
   )
+
+  // Gateway 로그를 renderer에 전달
+  setGatewayLogCallback((msg) => {
+    try {
+      win().webContents.send('gateway:log', msg)
+    } catch {
+      /* window destroyed */
+    }
+  })
 
   ipcMain.handle('gateway:start', async () => {
     try {

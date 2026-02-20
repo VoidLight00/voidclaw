@@ -5,6 +5,17 @@ import { getPathEnv, findBin } from './path-utils'
 // Windows: gateway를 포그라운드 프로세스로 유지
 let wslGatewayProcess: ChildProcess | null = null
 
+// Gateway 로그 콜백 (ipc-handlers에서 설정)
+let logCallback: ((msg: string) => void) | null = null
+
+export const setGatewayLogCallback = (cb: ((msg: string) => void) | null): void => {
+  logCallback = cb
+}
+
+const emitLog = (msg: string): void => {
+  logCallback?.(msg)
+}
+
 const runGateway = (args: string[]): Promise<string> => {
   const isWindows = platform() === 'win32'
   const npm = findBin('npm')
@@ -48,31 +59,36 @@ const startGatewayWin = (): Promise<string> => {
 
     let resolved = false
 
-    child.stdout.on('data', () => {
-      // 첫 출력이 오면 gateway가 시작된 것
+    child.stdout.on('data', (d) => {
+      const msg = d.toString().trim()
+      if (msg) emitLog(msg)
       if (!resolved) {
         resolved = true
         resolve('started')
       }
     })
 
-    child.stderr.on('data', () => {
+    child.stderr.on('data', (d) => {
+      const msg = d.toString().trim()
+      if (msg) emitLog(`[error] ${msg}`)
       if (!resolved) {
         resolved = true
         resolve('started')
       }
     })
 
-    child.on('close', () => {
+    child.on('close', (code) => {
       wslGatewayProcess = null
+      emitLog(`[gateway] 프로세스 종료 (code: ${code})`)
       if (!resolved) {
         resolved = true
         resolve('stopped')
       }
     })
 
-    child.on('error', () => {
+    child.on('error', (err) => {
       wslGatewayProcess = null
+      emitLog(`[gateway] 오류: ${err.message}`)
       if (!resolved) {
         resolved = true
         resolve('error')

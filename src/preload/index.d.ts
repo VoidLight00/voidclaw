@@ -31,6 +31,7 @@ interface ElectronAPI {
     start: () => Promise<{ success: boolean; error?: string }>
     stop: () => Promise<{ success: boolean; error?: string }>
     status: () => Promise<'running' | 'stopped'>
+    onLog: (cb: (msg: string) => void) => () => void
   }
   newsletter: {
     subscribe: (email: string) => Promise<{ success: boolean }>

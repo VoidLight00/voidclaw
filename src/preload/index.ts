@@ -43,7 +43,12 @@ const electronAPI = {
   gateway: {
     start: (): Promise<{ success: boolean; error?: string }> => ipcRenderer.invoke('gateway:start'),
     stop: (): Promise<{ success: boolean; error?: string }> => ipcRenderer.invoke('gateway:stop'),
-    status: (): Promise<'running' | 'stopped'> => ipcRenderer.invoke('gateway:status')
+    status: (): Promise<'running' | 'stopped'> => ipcRenderer.invoke('gateway:status'),
+    onLog: (cb: (msg: string) => void): (() => void) => {
+      const handler = (_: unknown, msg: string): void => cb(msg)
+      ipcRenderer.on('gateway:log', handler)
+      return () => ipcRenderer.removeListener('gateway:log', handler)
+    }
   },
   newsletter: {
     subscribe: (email: string): Promise<{ success: boolean }> =>
