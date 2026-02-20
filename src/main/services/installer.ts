@@ -1,7 +1,7 @@
 import { spawn } from 'child_process'
 import { StringDecoder } from 'string_decoder'
-import { createWriteStream } from 'fs'
-import { tmpdir, platform } from 'os'
+import { createWriteStream, existsSync, mkdirSync } from 'fs'
+import { tmpdir, platform, homedir } from 'os'
 import { join } from 'path'
 import https from 'https'
 import { BrowserWindow } from 'electron'
@@ -159,6 +159,7 @@ const getPathEnv = (): NodeJS.ProcessEnv => ({
     '/opt/homebrew/bin',
     process.env.NVM_BIN ?? '',
     `${process.env.HOME}/.volta/bin`,
+    `${process.env.HOME}/.npm-global/bin`,
     process.env.PATH ?? ''
   ]
     .filter(Boolean)
@@ -169,12 +170,26 @@ export const installOpenClaw = async (win: BrowserWindow): Promise<void> => {
   const log = (msg: string): void => sendProgress(win, msg)
   log('OpenClaw 설치 중...')
 
-  const cmd = platform() === 'win32' ? 'wsl' : 'npm'
-  const args =
-    platform() === 'win32'
-      ? ['-u', 'root', '--', 'npm', 'install', '-g', 'openclaw@latest']
-      : ['install', '-g', 'openclaw@latest']
+  if (platform() === 'win32') {
+    await runWithLog(
+      'wsl',
+      ['-u', 'root', '--', 'npm', 'install', '-g', 'openclaw@latest'],
+      log,
+      { shell: true, env: getPathEnv() }
+    )
+  } else {
+    // macOS: /usr/local 권한 문제 방지 — npm prefix를 사용자 홈으로 변경
+    const npmGlobalDir = join(homedir(), '.npm-global')
+    if (!existsSync(npmGlobalDir)) mkdirSync(npmGlobalDir, { recursive: true })
+    await runWithLog('npm', ['config', 'set', 'prefix', npmGlobalDir], log, {
+      shell: true,
+      env: getPathEnv()
+    })
+    await runWithLog('npm', ['install', '-g', 'openclaw@latest'], log, {
+      shell: true,
+      env: getPathEnv()
+    })
+  }
 
-  await runWithLog(cmd, args, log, { shell: true, env: getPathEnv() })
   log('OpenClaw 설치 완료!')
 }

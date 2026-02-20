@@ -1,6 +1,6 @@
 {
   "name": "easy-claw",
-  "version": "0.2.36",
+  "version": "0.2.37",
   "description": "OpenClaw 원클릭 설치 프로그램",
   "license": "MIT",
   "main": "./out/main/index.js",

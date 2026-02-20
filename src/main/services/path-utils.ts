@@ -6,7 +6,8 @@ export const PATH_DIRS = [
   '/usr/local/bin',
   '/opt/homebrew/bin',
   process.env.NVM_BIN ?? '',
-  `${process.env.HOME}/.volta/bin`
+  `${process.env.HOME}/.volta/bin`,
+  `${process.env.HOME}/.npm-global/bin`
 ].filter(Boolean)
 
 export const getPathEnv = (): NodeJS.ProcessEnv => ({

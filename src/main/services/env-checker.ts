@@ -18,6 +18,7 @@ const PATH_EXTENSIONS = [
   '/opt/homebrew/bin',
   process.env.NVM_BIN ?? '',
   `${process.env.HOME}/.volta/bin`,
+  `${process.env.HOME}/.npm-global/bin`,
   '/usr/bin',
   '/bin'
 ]
