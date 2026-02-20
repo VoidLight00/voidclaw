@@ -187,6 +187,32 @@ const getPathEnv = (): NodeJS.ProcessEnv => ({
     .join(':')
 })
 
+const isXcodeCliInstalled = (): Promise<boolean> =>
+  new Promise((resolve) => {
+    const child = spawn('xcode-select', ['-p'])
+    child.on('close', (code) => resolve(code === 0))
+    child.on('error', () => resolve(false))
+  })
+
+const ensureXcodeCli = async (log: ProgressCallback): Promise<void> => {
+  if (await isXcodeCliInstalled()) return
+
+  log('Xcode Command Line Tools 설치 창을 열고 있습니다...')
+  spawn('xcode-select', ['--install'])
+
+  log('설치 팝업에서 "설치"를 눌러 주세요. 완료될 때까지 기다립니다...')
+  for (let i = 0; i < 120; i++) {
+    await new Promise((r) => setTimeout(r, 5000))
+    if (await isXcodeCliInstalled()) {
+      log('Xcode Command Line Tools 설치 완료!')
+      return
+    }
+  }
+  throw new Error(
+    'Xcode Command Line Tools 설치 시간 초과. 터미널에서 xcode-select --install을 실행해 주세요.'
+  )
+}
+
 export const installOpenClaw = async (win: BrowserWindow): Promise<void> => {
   const log = (msg: string): void => sendProgress(win, msg)
   log('OpenClaw 설치 중...')
@@ -199,6 +225,8 @@ export const installOpenClaw = async (win: BrowserWindow): Promise<void> => {
       { shell: true, env: getPathEnv() }
     )
   } else {
+    // macOS: Xcode Command Line Tools 필요 — 없으면 설치 팝업 띄움
+    await ensureXcodeCli(log)
     // macOS: /usr/local 권한 문제 방지 — npm prefix를 사용자 홈으로 변경
     const npmGlobalDir = join(homedir(), '.npm-global')
     if (!existsSync(npmGlobalDir)) mkdirSync(npmGlobalDir, { recursive: true })
