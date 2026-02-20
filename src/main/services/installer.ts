@@ -134,22 +134,43 @@ export const installWsl = async (
     log('WSL 설치 명령 완료 (이미 설치된 경우 무시)')
   }
 
-  // WSL이 실제로 사용 가능한지 확인 — 재부팅 전이면 여기서 false
-  if (!(await isWslUsable())) {
-    log('WSL2 기능 활성화를 위해 PC 재부팅이 필요합니다.')
-    return { needsReboot: true }
+  // 1차 확인 — 바로 사용 가능한 경우
+  if (await isWslUsable()) {
+    log('Ubuntu 기본 사용자 설정 중...')
+    try {
+      await runWithLog('ubuntu', ['config', '--default-user', 'root'], log, { shell: true })
+    } catch {
+      log('Ubuntu 기본 사용자 설정을 건너뜁니다.')
+    }
+    log('WSL2 설치 완료!')
+    return { needsReboot: false }
   }
 
-  log('Ubuntu 기본 사용자 설정 중...')
+  // 재부팅 후 Ubuntu가 다운로드만 된 상태일 수 있음 — 초기화 시도
+  log('Ubuntu 초기화 중...')
   try {
-    await runWithLog('ubuntu', ['config', '--default-user', 'root'], log, { shell: true })
+    await runWithLog('wsl', ['-d', 'Ubuntu', '-u', 'root', '--', 'echo', 'ok'], log, {
+      shell: true
+    })
   } catch {
-    // ubuntu 명령이 없으면 wsl로 직접 확인 (이미 위에서 usable 검증됨)
-    log('Ubuntu 기본 사용자 설정을 건너뜁니다.')
+    /* 초기화 실패 — 아래에서 재확인 */
   }
 
-  log('WSL2 설치 완료!')
-  return { needsReboot: false }
+  // 2차 확인
+  if (await isWslUsable()) {
+    log('Ubuntu 기본 사용자 설정 중...')
+    try {
+      await runWithLog('ubuntu', ['config', '--default-user', 'root'], log, { shell: true })
+    } catch {
+      log('Ubuntu 기본 사용자 설정을 건너뜁니다.')
+    }
+    log('WSL2 설치 완료!')
+    return { needsReboot: false }
+  }
+
+  // 그래도 안 되면 재부팅 필요
+  log('WSL2 기능 활성화를 위해 PC 재부팅이 필요합니다.')
+  return { needsReboot: true }
 }
 
 const getPathEnv = (): NodeJS.ProcessEnv => ({
