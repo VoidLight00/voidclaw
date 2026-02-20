@@ -37,7 +37,7 @@ mac:
   target:
     - target: dmg
       arch:
-        - arm64
+        - universal
 dmg:
   artifactName: ${name}-${version}.${ext}
   title: ${productName}
