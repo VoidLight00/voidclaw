@@ -122,50 +122,100 @@ const isWslUsable = (): Promise<boolean> =>
     child.on('error', () => resolve(false))
   })
 
-export const installWsl = async (
-  win: BrowserWindow
-): Promise<{ needsReboot: boolean }> => {
-  const log = (msg: string): void => sendProgress(win, msg)
-  log('WSL2 설치 시작... (관리자 권한 필요)')
+const isUbuntuRegistered = (): Promise<boolean> =>
+  new Promise((resolve) => {
+    const child = spawn('wsl', ['--list'], { shell: true })
+    const chunks: Buffer[] = []
+    child.stdout.on('data', (d) => chunks.push(d))
+    child.on('close', (code) => {
+      if (code !== 0) {
+        resolve(false)
+        return
+      }
+      const text = Buffer.concat(chunks).toString('utf16le').replace(/\0/g, '')
+      resolve(text.toLowerCase().includes('ubuntu'))
+    })
+    child.on('error', () => resolve(false))
+  })
 
+const finalizeUbuntu = async (log: ProgressCallback): Promise<boolean> => {
+  // ubuntu install --root: 비대화식으로 root 사용자로 초기화
+  log('Ubuntu 초기화 중 (install --root)...')
   try {
-    await runWithLog('wsl', ['--install', '-d', 'Ubuntu', '--no-launch'], log, { shell: true })
+    await runWithLog('ubuntu', ['install', '--root'], log, { shell: true })
   } catch {
-    log('WSL 설치 명령 완료 (이미 설치된 경우 무시)')
+    log('ubuntu install --root 실패, 다른 방법 시도...')
   }
+  if (await isWslUsable()) return true
 
-  // 1차 확인 — 바로 사용 가능한 경우
-  if (await isWslUsable()) {
-    log('Ubuntu 기본 사용자 설정 중...')
-    try {
-      await runWithLog('ubuntu', ['config', '--default-user', 'root'], log, { shell: true })
-    } catch {
-      log('Ubuntu 기본 사용자 설정을 건너뜁니다.')
-    }
-    log('WSL2 설치 완료!')
-    return { needsReboot: false }
-  }
-
-  // 재부팅 후 Ubuntu가 다운로드만 된 상태일 수 있음 — 초기화 시도
-  log('Ubuntu 초기화 중...')
+  // wsl -d Ubuntu로 직접 시도
+  log('Ubuntu 직접 초기화 시도 중...')
   try {
     await runWithLog('wsl', ['-d', 'Ubuntu', '-u', 'root', '--', 'echo', 'ok'], log, {
       shell: true
     })
   } catch {
-    /* 초기화 실패 — 아래에서 재확인 */
+    /* ignore */
+  }
+  if (await isWslUsable()) return true
+
+  // wsl --update 후 재시도
+  log('WSL 업데이트 후 재시도...')
+  try {
+    await runWithLog('wsl', ['--update'], log, { shell: true })
+  } catch {
+    /* ignore */
+  }
+  try {
+    await runWithLog('ubuntu', ['install', '--root'], log, { shell: true })
+  } catch {
+    /* ignore */
+  }
+  return await isWslUsable()
+}
+
+const setUbuntuDefaultRoot = async (log: ProgressCallback): Promise<void> => {
+  log('Ubuntu 기본 사용자 설정 중...')
+  try {
+    await runWithLog('ubuntu', ['config', '--default-user', 'root'], log, { shell: true })
+  } catch {
+    log('Ubuntu 기본 사용자 설정을 건너뜁니다.')
+  }
+}
+
+export const installWsl = async (
+  win: BrowserWindow
+): Promise<{ needsReboot: boolean }> => {
+  const log = (msg: string): void => sendProgress(win, msg)
+
+  // Ubuntu가 이미 등록되어 있으면 wsl --install 건너뛰기 (재부팅 루프 방지)
+  const alreadyRegistered = await isUbuntuRegistered()
+
+  if (alreadyRegistered) {
+    log('Ubuntu가 이미 등록되어 있습니다. 초기화 확인 중...')
+  } else {
+    log('WSL2 설치 시작... (관리자 권한 필요)')
+    try {
+      await runWithLog('wsl', ['--install', '-d', 'Ubuntu', '--no-launch'], log, { shell: true })
+    } catch {
+      log('WSL 설치 명령 완료 (이미 설치된 경우 무시)')
+    }
   }
 
-  // 2차 확인
+  // 1차 확인 — 바로 사용 가능한 경우
   if (await isWslUsable()) {
-    log('Ubuntu 기본 사용자 설정 중...')
-    try {
-      await runWithLog('ubuntu', ['config', '--default-user', 'root'], log, { shell: true })
-    } catch {
-      log('Ubuntu 기본 사용자 설정을 건너뜁니다.')
-    }
+    await setUbuntuDefaultRoot(log)
     log('WSL2 설치 완료!')
     return { needsReboot: false }
+  }
+
+  // Ubuntu가 등록되어 있지만 실행 불가 → 여러 초기화 방법 시도
+  if (alreadyRegistered || (await isUbuntuRegistered())) {
+    if (await finalizeUbuntu(log)) {
+      await setUbuntuDefaultRoot(log)
+      log('WSL2 설치 완료!')
+      return { needsReboot: false }
+    }
   }
 
   // 그래도 안 되면 재부팅 필요
