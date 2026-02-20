@@ -53,10 +53,12 @@ const startGatewayWin = async (): Promise<string> => {
   await new Promise((r) => setTimeout(r, 1000))
 
   return new Promise((resolve) => {
-    const child = spawn('wsl', ['--', 'openclaw', 'gateway', 'run'], {
-      env: getPathEnv(),
-      stdio: ['ignore', 'pipe', 'pipe']
-    })
+    // Node.js 22 autoSelectFamily IPv6 문제 방지: IPv4 우선
+    const child = spawn(
+      'wsl',
+      ['--', 'bash', '-c', 'NODE_OPTIONS="--dns-result-order=ipv4first" openclaw gateway run'],
+      { env: getPathEnv(), stdio: ['ignore', 'pipe', 'pipe'] }
+    )
 
     wslGatewayProcess = child
 
