@@ -1,6 +1,7 @@
 import { spawn } from 'child_process'
 import { platform } from 'os'
 import https from 'https'
+import { decodeWslOutput } from './path-utils'
 
 export interface EnvCheckResult {
   os: 'macos' | 'windows' | 'linux'
@@ -125,9 +126,8 @@ const checkWsl = async (): Promise<boolean> => {
         clearTimeout(timer)
         if (code === 0) {
           const buf = Buffer.concat(chunks)
-          // wsl --list 출력은 UTF-16 LE 인코딩 — null 바이트 제거 후 비교
-          const text = buf.toString('utf16le').replace(/\0/g, '')
-          resolve(text.trim())
+          const text = decodeWslOutput(buf)
+          resolve(text)
         } else {
           reject(new Error(`exit code ${code}`))
         }

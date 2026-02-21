@@ -15,6 +15,15 @@ export const getPathEnv = (): NodeJS.ProcessEnv => ({
   PATH: [...PATH_DIRS, process.env.PATH ?? ''].join(':')
 })
 
+export const decodeWslOutput = (buf: Buffer): string => {
+  // UTF-16 LE: ASCII 문자 뒤에 null 바이트(0x00)가 존재
+  if (buf.length >= 2 && buf.includes(0)) {
+    return buf.toString('utf16le').replace(/\0/g, '').trim()
+  }
+  // UTF-8 또는 시스템 코드페이지
+  return buf.toString('utf8').trim()
+}
+
 export const findBin = (name: string): string => {
   if (platform() === 'win32') return name
   for (const dir of PATH_DIRS) {

@@ -5,6 +5,7 @@ import { tmpdir, platform, homedir } from 'os'
 import { join } from 'path'
 import https from 'https'
 import { BrowserWindow } from 'electron'
+import { decodeWslOutput } from './path-utils'
 
 type ProgressCallback = (msg: string) => void
 
@@ -124,8 +125,18 @@ export const installNodeWin = async (win: BrowserWindow): Promise<void> => {
 const isWslUsableOnce = (): Promise<boolean> =>
   new Promise((resolve) => {
     const child = spawn('wsl', ['-d', 'Ubuntu', '-u', 'root', '--', 'true'], { shell: true })
-    child.on('close', (code) => resolve(code === 0))
-    child.on('error', () => resolve(false))
+    const timer = setTimeout(() => {
+      child.kill()
+      resolve(false)
+    }, 15000)
+    child.on('close', (code) => {
+      clearTimeout(timer)
+      resolve(code === 0)
+    })
+    child.on('error', () => {
+      clearTimeout(timer)
+      resolve(false)
+    })
   })
 
 const delay = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms))
@@ -141,17 +152,25 @@ const isWslUsable = async (retries = 1, interval = 0): Promise<boolean> => {
 const isUbuntuRegistered = (): Promise<boolean> =>
   new Promise((resolve) => {
     const child = spawn('wsl', ['--list'], { shell: true })
+    const timer = setTimeout(() => {
+      child.kill()
+      resolve(false)
+    }, 15000)
     const chunks: Buffer[] = []
     child.stdout.on('data', (d) => chunks.push(d))
     child.on('close', (code) => {
+      clearTimeout(timer)
       if (code !== 0) {
         resolve(false)
         return
       }
-      const text = Buffer.concat(chunks).toString('utf16le').replace(/\0/g, '')
+      const text = decodeWslOutput(Buffer.concat(chunks))
       resolve(text.toLowerCase().includes('ubuntu'))
     })
-    child.on('error', () => resolve(false))
+    child.on('error', () => {
+      clearTimeout(timer)
+      resolve(false)
+    })
   })
 
 const finalizeUbuntu = async (log: ProgressCallback): Promise<boolean> => {
@@ -321,6 +340,14 @@ export const installWsl = async (win: BrowserWindow): Promise<{ needsReboot: boo
     throw new Error(
       'WSL 기능은 활성화되었지만 Ubuntu를 자동으로 설치할 수 없습니다. ' +
         'Microsoft Store에서 "Ubuntu"를 검색하여 설치한 후 앱을 다시 실행해 주세요.'
+    )
+  }
+
+  // 이전에 재부팅을 요청했는데도 여기까지 도달 → 재부팅 루프 방지
+  if (previousRebootRequested) {
+    throw new Error(
+      'PC를 재부팅했지만 WSL이 정상 작동하지 않습니다. ' +
+        'Windows Terminal에서 "wsl --install -d Ubuntu"를 직접 실행해 주세요.'
     )
   }
 
