@@ -133,20 +133,22 @@ export const installOpenClawNative = async (win: BrowserWindow): Promise<void> =
   for (const dir of [npmGlobalDir, join(npmGlobalDir, 'node_modules')]) {
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
   }
-  // getNativeEnv()로 Node.js + npm global bin PATH 포함
-  const env = getNativeEnv()
-  // cwd를 홈 디렉토리로 설정 (Electron ASAR 내부 경로 참조 방지)
+  // getNativeEnv()로 Node.js + npm global bin PATH 포함, npm_config_prefix로 prefix 강제
+  const env = getNativeEnv({ npm_config_prefix: npmGlobalDir })
   const cwd = homedir()
-  await runWithLog('npm', ['config', 'set', 'prefix', npmGlobalDir], log, { shell: true, env, cwd })
   if (!process.env.PATH?.includes(npmGlobalDir)) {
     process.env.PATH = `${npmGlobalDir};${process.env.PATH}`
   }
-  const installArgs = ['install', '-g', 'openclaw@latest']
+  // --ignore-scripts: openclaw 의존성의 postinstall 스크립트가 Windows에서 ENOENT 유발 방지
+  const installArgs = ['install', '-g', '--ignore-scripts', 'openclaw@latest']
   try {
     await runWithLog('npm', installArgs, log, { shell: true, env, cwd })
   } catch {
-    log('OpenClaw 설치 재시도 중...')
-    await new Promise((r) => setTimeout(r, 2000))
+    // 실패 시 캐시 정리 후 재시도
+    log('캐시 정리 후 재시도 중...')
+    await runWithLog('npm', ['cache', 'clean', '--force'], log, { shell: true, env, cwd }).catch(
+      () => {}
+    )
     await runWithLog('npm', installArgs, log, { shell: true, env, cwd })
   }
   log('OpenClaw 설치 완료!')
