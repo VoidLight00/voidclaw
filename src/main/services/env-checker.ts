@@ -67,7 +67,7 @@ const semverGte = (version: string, min: string): boolean => {
   return a3 >= b3
 }
 
-const checkWslRunning = (): Promise<boolean> =>
+const checkWslRunningOnce = (): Promise<boolean> =>
   new Promise((resolve) => {
     const child = spawn('wsl', ['-d', 'Ubuntu', '--', 'echo', 'ok'], { shell: true })
     let out = ''
@@ -75,6 +75,17 @@ const checkWslRunning = (): Promise<boolean> =>
     child.on('close', (code) => resolve(code === 0 && out.trim().includes('ok')))
     child.on('error', () => resolve(false))
   })
+
+const delay = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms))
+
+const checkWslRunning = async (): Promise<boolean> => {
+  // 재부팅 직후 Ubuntu 초기화에 시간이 걸릴 수 있으므로 최대 3회 재시도
+  for (let i = 0; i < 3; i++) {
+    if (await checkWslRunningOnce()) return true
+    if (i < 2) await delay(3000)
+  }
+  return false
+}
 
 const checkWsl = async (): Promise<boolean> => {
   try {

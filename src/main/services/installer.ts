@@ -89,7 +89,7 @@ export const installNodeMac = async (win: BrowserWindow): Promise<void> => {
   log('Node.js 설치 완료!')
 }
 
-const ensureWslUsable = (): Promise<boolean> =>
+const ensureWslUsableOnce = (): Promise<boolean> =>
   new Promise((resolve) => {
     const child = spawn('wsl', ['-d', 'Ubuntu', '--', 'echo', 'ok'], { shell: true })
     let out = ''
@@ -97,6 +97,14 @@ const ensureWslUsable = (): Promise<boolean> =>
     child.on('close', (code) => resolve(code === 0 && out.trim().includes('ok')))
     child.on('error', () => resolve(false))
   })
+
+const ensureWslUsable = async (): Promise<boolean> => {
+  for (let i = 0; i < 3; i++) {
+    if (await ensureWslUsableOnce()) return true
+    if (i < 2) await delay(3000)
+  }
+  return false
+}
 
 export const installNodeWin = async (win: BrowserWindow): Promise<void> => {
   const log = (msg: string): void => sendProgress(win, msg)
@@ -115,12 +123,22 @@ export const installNodeWin = async (win: BrowserWindow): Promise<void> => {
   log('Node.js 설치 완료!')
 }
 
-const isWslUsable = (): Promise<boolean> =>
+const isWslUsableOnce = (): Promise<boolean> =>
   new Promise((resolve) => {
     const child = spawn('wsl', ['-d', 'Ubuntu', '-u', 'root', '--', 'true'], { shell: true })
     child.on('close', (code) => resolve(code === 0))
     child.on('error', () => resolve(false))
   })
+
+const delay = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms))
+
+const isWslUsable = async (retries = 1, interval = 0): Promise<boolean> => {
+  for (let i = 0; i < retries; i++) {
+    if (await isWslUsableOnce()) return true
+    if (i < retries - 1 && interval > 0) await delay(interval)
+  }
+  return false
+}
 
 const isUbuntuRegistered = (): Promise<boolean> =>
   new Promise((resolve) => {
@@ -171,7 +189,13 @@ const finalizeUbuntu = async (log: ProgressCallback): Promise<boolean> => {
   } catch {
     /* ignore */
   }
-  return await isWslUsable()
+  if (await isWslUsable()) return true
+
+  // 재부팅 직후 Ubuntu 초기화에 시간이 걸릴 수 있으므로 대기 후 재시도
+  log('Ubuntu 초기화 대기 중... (최대 30초)')
+  if (await isWslUsable(6, 5000)) return true
+
+  return false
 }
 
 const setUbuntuDefaultRoot = async (log: ProgressCallback): Promise<void> => {
