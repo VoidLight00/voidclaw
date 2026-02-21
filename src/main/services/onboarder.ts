@@ -217,13 +217,17 @@ export const runOnboard = async (
   try {
     await runCmd(npm, onboardArgs, log)
   } catch (e) {
-    // Windows WSL에서 onboard가 gateway 연결 테스트(1006)로 실패해도
+    // onboard가 gateway 연결 테스트(1006)로 실패해도
     // config 파일이 생성되었으면 계속 진행 (DoneStep에서 gateway를 별도 시작)
     if (isWindows) {
       const configExists = await wslExec(
         'test -f $HOME/.openclaw/openclaw.json && echo yes || echo no'
       ).catch(() => 'no')
       if (configExists.trim() !== 'yes') throw e
+      log('설정 파일 생성 완료 (gateway 검증 건너뜀)')
+    } else if (isMac) {
+      const configPath = join(ocDir, 'openclaw.json')
+      if (!existsSync(configPath)) throw e
       log('설정 파일 생성 완료 (gateway 검증 건너뜀)')
     } else {
       throw e
