@@ -125,10 +125,15 @@ export const installNodeNative = async (win: BrowserWindow): Promise<void> => {
 export const installOpenClawNative = async (win: BrowserWindow): Promise<void> => {
   const log = (msg: string): void => sendProgress(win, msg)
   log('OpenClaw 설치 중...')
-  // npm 글로벌 bin 경로가 PATH에 있어야 openclaw 명령 사용 가능
-  const npmGlobalBin = join(process.env.APPDATA ?? '', 'npm')
-  if (npmGlobalBin && !process.env.PATH?.includes(npmGlobalBin)) {
-    process.env.PATH = `${npmGlobalBin};${process.env.PATH}`
+  // MSI 기본 npm prefix는 C:\Program Files\nodejs → 관리자 권한 필요
+  // %APPDATA%\npm 으로 변경하면 일반 유저 권한으로 글로벌 설치 가능
+  const npmGlobalDir = join(process.env.APPDATA ?? '', 'npm')
+  if (npmGlobalDir) {
+    if (!existsSync(npmGlobalDir)) mkdirSync(npmGlobalDir, { recursive: true })
+    await runWithLog('npm', ['config', 'set', 'prefix', npmGlobalDir], log, { shell: true })
+    if (!process.env.PATH?.includes(npmGlobalDir)) {
+      process.env.PATH = `${npmGlobalDir};${process.env.PATH}`
+    }
   }
   await runWithLog('npm', ['install', '-g', 'openclaw@latest'], log, { shell: true })
   log('OpenClaw 설치 완료!')
