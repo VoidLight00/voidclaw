@@ -10,6 +10,7 @@ interface ElectronAPI {
       openclawVersion: string | null
       openclawLatestVersion: string | null
       wslInstalled: boolean | null
+      wslRegistered: boolean | null
     }>
   }
   install: {

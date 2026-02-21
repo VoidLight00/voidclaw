@@ -11,6 +11,7 @@ interface EnvResult {
   openclawVersion: string | null
   openclawLatestVersion: string | null
   wslInstalled: boolean | null
+  wslRegistered: boolean | null
 }
 
 const CheckRow = ({
@@ -107,7 +108,7 @@ export default function EnvCheckStep({
             <CheckRow
               label="WSL2"
               ok={env.wslInstalled === true}
-              detail={env.wslInstalled ? '설치됨' : '미설치'}
+              detail={env.wslInstalled ? '설치됨' : env.wslRegistered ? '초기화 중...' : '미설치'}
             />
           )}
           <CheckRow

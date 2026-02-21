@@ -12,6 +12,7 @@ export interface EnvCheckResult {
   openclawVersion: string | null
   openclawLatestVersion: string | null
   wslInstalled: boolean | null
+  wslRegistered: boolean | null
 }
 
 const PATH_EXTENSIONS = [
@@ -99,15 +100,15 @@ const checkWslRunningOnce = (): Promise<boolean> =>
 const delay = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms))
 
 const checkWslRunning = async (): Promise<boolean> => {
-  // 재부팅 직후 Ubuntu 초기화에 시간이 걸릴 수 있으므로 최대 3회 재시도
-  for (let i = 0; i < 3; i++) {
+  // 재부팅 직후 Ubuntu 초기화에 45-60초 소요 가능 → 5회×(15초 타임아웃+5초 대기)
+  for (let i = 0; i < 5; i++) {
     if (await checkWslRunningOnce()) return true
-    if (i < 2) await delay(3000)
+    if (i < 4) await delay(5000)
   }
   return false
 }
 
-const checkWsl = async (): Promise<boolean> => {
+const checkWslStatus = async (): Promise<{ registered: boolean; running: boolean }> => {
   try {
     const output = await new Promise<string>((resolve, reject) => {
       const child = spawn('wsl', ['--list', '--verbose'], {
@@ -137,12 +138,14 @@ const checkWsl = async (): Promise<boolean> => {
         reject(err)
       })
     })
-    if (!output.toLowerCase().includes('ubuntu')) return false
+    const registered = output.toLowerCase().includes('ubuntu')
+    if (!registered) return { registered: false, running: false }
 
     // Ubuntu가 목록에 있어도 실제로 실행 가능한지 확인
-    return await checkWslRunning()
+    const running = await checkWslRunning()
+    return { registered, running }
   } catch {
-    return false
+    return { registered: false, running: false }
   }
 }
 
@@ -182,7 +185,9 @@ export const checkEnvironment = async (): Promise<EnvCheckResult> => {
   const os = platform() === 'darwin' ? 'macos' : platform() === 'win32' ? 'windows' : 'linux'
 
   // Windows: WSL 먼저 체크 — WSL 없으면 node/npm 체크를 건너뛰어 불필요한 대기 방지
-  const wslInstalled = os === 'windows' ? await checkWsl() : null
+  const wslStatus = os === 'windows' ? await checkWslStatus() : null
+  const wslInstalled = wslStatus?.running ?? null
+  const wslRegistered = wslStatus?.registered ?? null
 
   let nodeVersion: string | null = null
   let nodeInstalled = false
@@ -229,6 +234,7 @@ export const checkEnvironment = async (): Promise<EnvCheckResult> => {
     openclawInstalled,
     openclawVersion,
     openclawLatestVersion,
-    wslInstalled
+    wslInstalled,
+    wslRegistered
   }
 }

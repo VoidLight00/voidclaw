@@ -12,6 +12,7 @@ const electronAPI = {
       openclawVersion: string | null
       openclawLatestVersion: string | null
       wslInstalled: boolean | null
+      wslRegistered: boolean | null
     }> => ipcRenderer.invoke('env:check')
   },
   install: {

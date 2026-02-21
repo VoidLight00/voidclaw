@@ -9,6 +9,10 @@ import { decodeWslOutput } from './path-utils'
 
 type ProgressCallback = (msg: string) => void
 
+interface RunError extends Error {
+  lines?: string[]
+}
+
 const sendProgress = (win: BrowserWindow, msg: string): void => {
   win.webContents.send('install:progress', msg)
 }
@@ -56,24 +60,43 @@ const runWithLog = (
   args: string[],
   onLog: ProgressCallback,
   options?: { shell?: boolean; env?: NodeJS.ProcessEnv }
-): Promise<void> =>
+): Promise<string[]> =>
   new Promise((resolve, reject) => {
     const child = spawn(cmd, args, {
       shell: options?.shell ?? false,
       env: { ...process.env, ...options?.env }
     })
 
+    const lines: string[] = []
     const outDecoder = new StringDecoder('utf8')
     const errDecoder = new StringDecoder('utf8')
     child.stdout.on('data', (d) => {
-      outDecoder.write(d).split('\n').filter(Boolean).forEach(onLog)
+      outDecoder
+        .write(d)
+        .split('\n')
+        .filter(Boolean)
+        .forEach((l) => {
+          onLog(l)
+          lines.push(l)
+        })
     })
     child.stderr.on('data', (d) => {
-      errDecoder.write(d).split('\n').filter(Boolean).forEach(onLog)
+      errDecoder
+        .write(d)
+        .split('\n')
+        .filter(Boolean)
+        .forEach((l) => {
+          onLog(l)
+          lines.push(l)
+        })
     })
     child.on('close', (code) => {
-      if (code === 0) resolve()
-      else reject(new Error(`Command failed: ${cmd} ${args.join(' ')} (exit ${code})`))
+      if (code === 0) resolve(lines)
+      else {
+        const err: RunError = new Error(`Command failed: ${cmd} ${args.join(' ')} (exit ${code})`)
+        err.lines = lines
+        reject(err)
+      }
     })
     child.on('error', reject)
   })
@@ -174,7 +197,11 @@ const isUbuntuRegistered = (): Promise<boolean> =>
   })
 
 const finalizeUbuntu = async (log: ProgressCallback): Promise<boolean> => {
-  // ubuntu install --root: 비대화식으로 root 사용자로 초기화
+  // 1) 먼저 Ubuntu가 자체 초기화될 시간을 줌 (최대 60초)
+  log('Ubuntu 초기화 대기 중... (최대 60초)')
+  if (await isWslUsable(10, 6000)) return true
+
+  // 2) ubuntu install --root: 비대화식으로 root 사용자로 초기화
   log('Ubuntu 초기화 중 (install --root)...')
   try {
     await runWithLog('ubuntu', ['install', '--root'], log, { shell: true })
@@ -183,7 +210,7 @@ const finalizeUbuntu = async (log: ProgressCallback): Promise<boolean> => {
   }
   if (await isWslUsable()) return true
 
-  // wsl -d Ubuntu로 직접 시도
+  // 3) wsl -d Ubuntu로 직접 시도
   log('Ubuntu 직접 초기화 시도 중...')
   try {
     await runWithLog('wsl', ['-d', 'Ubuntu', '-u', 'root', '--', 'echo', 'ok'], log, {
@@ -192,26 +219,9 @@ const finalizeUbuntu = async (log: ProgressCallback): Promise<boolean> => {
   } catch {
     /* ignore */
   }
-  if (await isWslUsable()) return true
+  if (await isWslUsable(3, 3000)) return true
 
-  // wsl --update 후 재시도
-  log('WSL 업데이트 후 재시도...')
-  try {
-    await runWithLog('wsl', ['--update'], log, { shell: true })
-  } catch {
-    /* ignore */
-  }
-  try {
-    await runWithLog('ubuntu', ['install', '--root'], log, { shell: true })
-  } catch {
-    /* ignore */
-  }
-  if (await isWslUsable()) return true
-
-  // 재부팅 직후 Ubuntu 초기화에 시간이 걸릴 수 있으므로 대기 후 재시도
-  log('Ubuntu 초기화 대기 중... (최대 30초)')
-  if (await isWslUsable(6, 5000)) return true
-
+  // wsl --update 삭제 — 콘솔 창 열림 방지
   return false
 }
 
@@ -224,16 +234,25 @@ const setUbuntuDefaultRoot = async (log: ProgressCallback): Promise<void> => {
   }
 }
 
+type WslInstallResult = 'ok' | 'registered' | 'needsReboot' | 'failed'
+
+const REBOOT_PATTERNS = ['HCS_E_HYPERV', '다시 시작', 'restart your machine', 'reboot']
+
+const hasRebootSignal = (lines: string[]): boolean =>
+  lines.some((l) => REBOOT_PATTERNS.some((p) => l.toLowerCase().includes(p.toLowerCase())))
+
 // wsl --install 시도 후 Ubuntu 등록 여부까지 확인하는 헬퍼
-const tryWslInstall = async (args: string[], log: ProgressCallback): Promise<boolean> => {
+const tryWslInstall = async (args: string[], log: ProgressCallback): Promise<WslInstallResult> => {
   try {
-    await runWithLog('wsl', args, log, { shell: true })
-    return true
-  } catch {
+    const lines = await runWithLog('wsl', args, log, { shell: true })
+    if (hasRebootSignal(lines)) return 'needsReboot'
+    return 'ok'
+  } catch (e) {
     log(`wsl ${args.join(' ')} 실패`)
-    // 종료 코드가 0이 아니어도 Ubuntu가 등록되었을 수 있음 (재부팅 필요 시 exit 1)
-    if (await isUbuntuRegistered()) return true
-    return false
+    const lines: string[] = (e as RunError).lines ?? []
+    if (hasRebootSignal(lines)) return 'needsReboot'
+    if (await isUbuntuRegistered()) return 'registered'
+    return 'failed'
   }
 }
 
@@ -259,23 +278,29 @@ export const installWsl = async (win: BrowserWindow): Promise<{ needsReboot: boo
   } else {
     log('WSL2 설치 시작... (관리자 권한 필요)')
 
+    // needsReboot가 감지되면 나머지 fallback을 건너뛰기 위한 플래그
+    let needsRebootDetected = false
+
     // 1) wsl --install -d Ubuntu (--no-launch 없이 — 구버전 Windows 호환)
-    let installed = await tryWslInstall(['--install', '-d', 'Ubuntu'], log)
+    let result = await tryWslInstall(['--install', '-d', 'Ubuntu'], log)
+    if (result === 'needsReboot') needsRebootDetected = true
 
     // 2) 폴백: wsl --install (기본 배포판 Ubuntu 자동 설치)
-    if (!installed) {
-      installed = await tryWslInstall(['--install'], log)
+    if (!needsRebootDetected && result === 'failed') {
+      result = await tryWslInstall(['--install'], log)
+      if (result === 'needsReboot') needsRebootDetected = true
     }
 
     // 3) 폴백: --web-download (Microsoft Store 대신 인터넷에서 직접 다운로드)
-    if (!installed) {
-      installed = await tryWslInstall(['--install', '-d', 'Ubuntu', '--web-download'], log)
+    if (!needsRebootDetected && result === 'failed') {
+      result = await tryWslInstall(['--install', '-d', 'Ubuntu', '--web-download'], log)
+      if (result === 'needsReboot') needsRebootDetected = true
     }
 
     // 4) 폴백: dism으로 WSL/VM 기능 직접 활성화 (구형 Windows 10)
-    if (!installed) {
+    if (!needsRebootDetected && result === 'failed') {
       try {
-        await runWithLog(
+        const dismLines1 = await runWithLog(
           'dism.exe',
           [
             '/online',
@@ -287,7 +312,7 @@ export const installWsl = async (win: BrowserWindow): Promise<{ needsReboot: boo
           log,
           { shell: true }
         )
-        await runWithLog(
+        const dismLines2 = await runWithLog(
           'dism.exe',
           [
             '/online',
@@ -299,16 +324,34 @@ export const installWsl = async (win: BrowserWindow): Promise<{ needsReboot: boo
           log,
           { shell: true }
         )
-        log('WSL 기능 활성화 완료.')
-
-        // 기능 활성화 직후 wsl --install 재시도 (같은 세션에서 작동할 수 있음)
-        installed = await tryWslInstall(['--install', '-d', 'Ubuntu'], log)
-        if (!installed) {
-          installed = await tryWslInstall(['--install', '-d', 'Ubuntu', '--web-download'], log)
+        if (hasRebootSignal([...dismLines1, ...dismLines2])) {
+          needsRebootDetected = true
+        } else {
+          log('WSL 기능 활성화 완료.')
+          // 기능 활성화 직후 wsl --install 재시도 (같은 세션에서 작동할 수 있음)
+          result = await tryWslInstall(['--install', '-d', 'Ubuntu'], log)
+          if (result === 'needsReboot') needsRebootDetected = true
+          if (!needsRebootDetected && result === 'failed') {
+            result = await tryWslInstall(['--install', '-d', 'Ubuntu', '--web-download'], log)
+            if (result === 'needsReboot') needsRebootDetected = true
+          }
         }
-      } catch {
-        log('Windows 기능 활성화 실패')
+      } catch (e) {
+        const lines: string[] = (e as RunError).lines ?? []
+        if (hasRebootSignal(lines)) needsRebootDetected = true
+        else log('Windows 기능 활성화 실패')
       }
+    }
+
+    // HCS_E_HYPERV 등 재부팅 필요 감지 시 → fallback 없이 즉시 재부팅 요청
+    if (needsRebootDetected) {
+      try {
+        writeFileSync(WSL_REBOOT_FLAG, String(Date.now()))
+      } catch {
+        /* ignore */
+      }
+      log('WSL2 기능 활성화를 위해 PC 재부팅이 필요합니다.')
+      return { needsReboot: true }
     }
   }
 
