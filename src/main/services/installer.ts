@@ -70,9 +70,11 @@ const runWithLog = (
     const lines: string[] = []
     const outDecoder = new StringDecoder('utf8')
     const errDecoder = new StringDecoder('utf8')
+    // Windows의 wsl 명령은 UTF-16 LE로 출력 → UTF-8 디코딩 시 null 바이트 혼입
+    // null 바이트를 제거해야 패턴 매칭(HCS_E_HYPERV 등)이 정상 작동
+    const clean = (s: string): string => s.replace(/\0/g, '')
     child.stdout.on('data', (d) => {
-      outDecoder
-        .write(d)
+      clean(outDecoder.write(d))
         .split('\n')
         .filter(Boolean)
         .forEach((l) => {
@@ -81,8 +83,7 @@ const runWithLog = (
         })
     })
     child.stderr.on('data', (d) => {
-      errDecoder
-        .write(d)
+      clean(errDecoder.write(d))
         .split('\n')
         .filter(Boolean)
         .forEach((l) => {
