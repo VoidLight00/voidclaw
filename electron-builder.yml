@@ -20,7 +20,7 @@ win:
       arch:
         - x64
 nsis:
-  artifactName: ${name}-${version}-setup.${ext}
+  artifactName: ${name}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
@@ -39,7 +39,7 @@ mac:
       arch:
         - universal
 dmg:
-  artifactName: ${name}-${version}.${ext}
+  artifactName: ${name}.${ext}
   title: ${productName}
   background: build/background.png
   iconSize: 80
