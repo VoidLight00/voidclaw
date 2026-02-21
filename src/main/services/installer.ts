@@ -344,8 +344,16 @@ export const installWsl = async (win: BrowserWindow): Promise<{ needsReboot: boo
       }
     }
 
-    // HCS_E_HYPERV 등 재부팅 필요 감지 시 → fallback 없이 즉시 재부팅 요청
+    // HCS_E_HYPERV 등 재부팅 필요 감지 시
     if (needsRebootDetected) {
+      // 이전에 이미 재부팅했는데도 동일 에러 → BIOS 가상화 미활성
+      if (previousRebootRequested) {
+        throw new Error(
+          'PC를 재부팅했지만 가상화 기능이 여전히 비활성 상태입니다.\n' +
+            'BIOS 설정에서 Intel VT-x 또는 AMD-V (가상화)를 활성화해 주세요.\n' +
+            '참고: https://aka.ms/enablevirtualization'
+        )
+      }
       try {
         writeFileSync(WSL_REBOOT_FLAG, String(Date.now()))
       } catch {
