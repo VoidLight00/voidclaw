@@ -50,7 +50,7 @@ const waitTelegramClear = async (token: string): Promise<void> => {
   }
 }
 
-import { getPathEnv, getNativeEnv, findBin } from './path-utils'
+import { getPathEnv, getNativeEnv, findBin, findNodeExe, findNpmCli } from './path-utils'
 import type { WinInstallMode } from './env-checker'
 
 const wslExec = (command: string, timeoutMs = 30000): Promise<string> =>
@@ -97,12 +97,24 @@ const createRunCmd = (
 
   return (cmd, args, onLog) =>
     new Promise((resolve, reject) => {
-      const fullCmd = isWsl ? 'wsl' : cmd
-      const fullArgs = isWsl ? ['--', cmd, ...args] : args
+      let fullCmd = isWsl ? 'wsl' : cmd
+      let fullArgs = isWsl ? ['--', cmd, ...args] : args
+      let useShell: boolean = isNative
+
+      // 네이티브 모드에서 npm 명령은 node.exe로 npm-cli.js 직접 실행
+      if (isNative && cmd === 'npm') {
+        const nodeExe = findNodeExe()
+        const npmCli = findNpmCli()
+        if (nodeExe && npmCli) {
+          fullCmd = nodeExe
+          fullArgs = [npmCli, ...args]
+          useShell = false
+        }
+      }
 
       const child = spawn(fullCmd, fullArgs, {
         env: isNative ? getNativeEnv() : getPathEnv(),
-        shell: isNative
+        shell: useShell
       })
 
       const outDecoder = new StringDecoder('utf8')

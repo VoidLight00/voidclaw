@@ -1,7 +1,7 @@
 import { spawn } from 'child_process'
 import { platform } from 'os'
 import https from 'https'
-import { decodeWslOutput, getNativeEnv } from './path-utils'
+import { decodeWslOutput, getNativeEnv, findNodeExe, findNpmCli } from './path-utils'
 
 export type WinInstallMode = 'wsl' | 'native' | null
 
@@ -39,7 +39,20 @@ const isWindows = platform() === 'win32'
 
 const runNativeCommand = (cmd: string, args: string[]): Promise<string> =>
   new Promise((resolve, reject) => {
-    const child = spawn(cmd, args, { shell: true, env: getNativeEnv() })
+    let actualCmd = cmd
+    let actualArgs = args
+    let useShell = true
+    // npm 명령은 node.exe로 npm-cli.js 직접 실행 (cmd.exe 체인 ENOENT 방지)
+    if (cmd === 'npm') {
+      const nodeExe = findNodeExe()
+      const npmCli = findNpmCli()
+      if (nodeExe && npmCli) {
+        actualCmd = nodeExe
+        actualArgs = [npmCli, ...args]
+        useShell = false
+      }
+    }
+    const child = spawn(actualCmd, actualArgs, { shell: useShell, env: getNativeEnv() })
     const timer = setTimeout(() => {
       child.kill()
       reject(new Error('timeout'))

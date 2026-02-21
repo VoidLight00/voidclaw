@@ -24,13 +24,36 @@ export const decodeWslOutput = (buf: Buffer): string => {
   return buf.toString('utf8').trim()
 }
 
-/** Windows 네이티브 모드용 PATH 확장 (로컬 cli bin + npm 글로벌 bin + Node.js 포함) */
+/** Windows 네이티브 모드용 node.exe 절대 경로 탐색 */
+export const findNodeExe = (): string | null => {
+  const candidates = [
+    join('C:\\Program Files\\nodejs', 'node.exe'),
+    join('C:\\Program Files (x86)\\nodejs', 'node.exe')
+  ]
+  return candidates.find(existsSync) ?? null
+}
+
+/** Windows 네이티브 모드용 npm-cli.js 절대 경로 탐색 */
+export const findNpmCli = (): string | null => {
+  const candidates = [
+    join('C:\\Program Files\\nodejs', 'node_modules', 'npm', 'bin', 'npm-cli.js'),
+    join(process.env.APPDATA ?? '', 'npm', 'node_modules', 'npm', 'bin', 'npm-cli.js')
+  ]
+  return candidates.find(existsSync) ?? null
+}
+
+/** Windows 네이티브 모드용 PATH 확장 (PATH/Path 중복 제거) */
 export const getNativeEnv = (extra?: Record<string, string>): NodeJS.ProcessEnv => {
+  const cleaned: Record<string, string> = {}
+  for (const [key, val] of Object.entries(process.env)) {
+    if (key.toLowerCase() !== 'path' && val !== undefined) cleaned[key] = val
+  }
+  const existingPath = process.env.PATH ?? process.env.Path ?? ''
   const localCliBin = join(homedir(), '.openclaw', 'cli', 'node_modules', '.bin')
   const npmGlobalBin = join(process.env.APPDATA ?? '', 'npm')
   const nodePath = 'C:\\Program Files\\nodejs'
-  const dirs = [localCliBin, npmGlobalBin, nodePath, process.env.PATH ?? ''].filter(Boolean)
-  return { ...process.env, PATH: dirs.join(';'), ...extra }
+  cleaned.PATH = [localCliBin, npmGlobalBin, nodePath, existingPath].filter(Boolean).join(';')
+  return extra ? { ...cleaned, ...extra } : cleaned
 }
 
 export const findBin = (name: string): string => {

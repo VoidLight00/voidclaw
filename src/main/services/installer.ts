@@ -13,7 +13,7 @@ import { tmpdir, platform, homedir } from 'os'
 import { join } from 'path'
 import https from 'https'
 import { BrowserWindow } from 'electron'
-import { decodeWslOutput, getNativeEnv } from './path-utils'
+import { decodeWslOutput, getNativeEnv, findNodeExe, findNpmCli } from './path-utils'
 
 type ProgressCallback = (msg: string) => void
 
@@ -72,7 +72,7 @@ const runWithLog = (
   new Promise((resolve, reject) => {
     const child = spawn(cmd, args, {
       shell: options?.shell ?? false,
-      env: { ...process.env, ...options?.env },
+      env: options?.env ?? process.env,
       cwd: options?.cwd
     })
 
@@ -139,9 +139,7 @@ const logNpmDebug = (log: ProgressCallback): void => {
     const latest = files.find((f) => f.endsWith('-debug-0.log'))
     if (!latest) return
     const content = readFileSync(join(logsDir, latest), 'utf-8')
-    const lines = content
-      .split('\n')
-      .filter((l) => /enoent|error|ERR!/i.test(l))
+    const lines = content.split('\n').filter((l) => /enoent|error|ERR!/i.test(l))
     lines.slice(-15).forEach((l) => log(`[npm] ${l.trim()}`))
   } catch {
     /* ignore */
@@ -152,23 +150,34 @@ export const installOpenClawNative = async (win: BrowserWindow): Promise<void> =
   const log = (msg: string): void => sendProgress(win, msg)
   log('OpenClaw 설치 중...')
 
+  const nodeExe = findNodeExe()
+  const npmCli = findNpmCli()
+  log(`[진단] node.exe: ${nodeExe ?? 'not found'}`)
+  log(`[진단] npm-cli.js: ${npmCli ?? 'not found'}`)
+
+  if (!nodeExe || !npmCli) {
+    throw new Error(
+      'Node.js 설치를 찾을 수 없습니다. Node.js가 올바르게 설치되었는지 확인해 주세요.'
+    )
+  }
+
   const npmGlobalDir = join(process.env.APPDATA ?? '', 'npm')
   for (const dir of [npmGlobalDir, join(npmGlobalDir, 'node_modules')]) {
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
   }
   const env = getNativeEnv({ npm_config_prefix: npmGlobalDir })
-  const cwd = homedir()
   if (!process.env.PATH?.includes(npmGlobalDir)) {
     process.env.PATH = `${npmGlobalDir};${process.env.PATH}`
   }
 
-  // 1차: 글로벌 설치 시도
+  // 1차: 글로벌 설치 (node.exe로 npm-cli.js 직접 실행, shell: false)
   try {
-    await runWithLog('npm', ['install', '-g', '--ignore-scripts', 'openclaw@latest'], log, {
-      shell: true,
-      env,
-      cwd
-    })
+    await runWithLog(
+      nodeExe,
+      [npmCli, 'install', '-g', '--ignore-scripts', 'openclaw@latest'],
+      log,
+      { shell: false, env, cwd: homedir() }
+    )
     log('OpenClaw 설치 완료!')
     return
   } catch {
@@ -177,17 +186,30 @@ export const installOpenClawNative = async (win: BrowserWindow): Promise<void> =
   }
 
   // 2차: 로컬 설치 fallback (~/.openclaw/cli/)
-  // npm install -g의 bin-linking이 Windows에서 ENOENT를 유발하는 경우를 우회
   const cliDir = join(homedir(), '.openclaw', 'cli')
   if (!existsSync(cliDir)) mkdirSync(cliDir, { recursive: true })
   const pkgJson = join(cliDir, 'package.json')
   if (!existsSync(pkgJson)) writeFileSync(pkgJson, '{"private":true}')
+  // 이전 실패 잔여물 제거
+  const lockFile = join(cliDir, 'package-lock.json')
+  if (existsSync(lockFile)) {
+    try {
+      unlinkSync(lockFile)
+    } catch {
+      /* ignore */
+    }
+  }
 
-  await runWithLog('npm', ['install', '--ignore-scripts', 'openclaw@latest'], log, {
-    shell: true,
-    env,
-    cwd: cliDir
-  })
+  try {
+    await runWithLog(nodeExe, [npmCli, 'install', '--ignore-scripts', 'openclaw@latest'], log, {
+      shell: false,
+      env,
+      cwd: cliDir
+    })
+  } catch {
+    logNpmDebug(log)
+    throw new Error('OpenClaw 설치에 실패했습니다. npm 로그를 확인해 주세요.')
+  }
 
   // 로컬 bin을 PATH에 추가 (openclaw.cmd가 여기에 생성됨)
   const binDir = join(cliDir, 'node_modules', '.bin')
