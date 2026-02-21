@@ -70,6 +70,29 @@ IPC 채널 추가 시: `ipc-handlers.ts` 핸들러 → `preload/index.ts` electr
 
 Windows에서는 WSL을 통해 Node.js/OpenClaw를 실행. `env-checker`, `installer`, `onboarder`, `gateway` 모두 `platform() === 'win32'`일 때 `wsl --` 프리픽스를 붙이는 패턴 사용.
 
+### 릴리즈 배포
+
+코드는 `ybgwon96/easyclaw` (private), 바이너리는 `ybgwon96/easyclaw-releases` (public)에 분리.
+
+**릴리즈 절차:**
+1. `package.json` 버전 bump (`npm version patch --no-git-tag-version`)
+2. 커밋 & 푸시
+3. `gh release create vX.Y.Z` 로 private 저장소에 릴리즈 생성
+4. GitHub Actions가 자동으로: macOS/Windows 빌드 → `easyclaw-releases`에 릴리즈 + 바이너리 업로드
+
+**워크플로우 구조** (`.github/workflows/release.yml`):
+- `build-mac` (macos-latest): `build:mac-local` → artifact 업로드
+- `build-win` (windows-latest): `build:win-local` → artifact 업로드
+- `publish` (ubuntu-latest): 두 빌드 완료 후 `easyclaw-releases` 저장소에 `gh release create`
+
+**시크릿**: `RELEASE_TOKEN` (fine-grained PAT, `easyclaw-releases` 저장소 Contents Read/Write 권한)
+
+**다운로드 URL** (버전 무관, 항상 최신):
+- macOS: `https://github.com/ybgwon96/easyclaw-releases/releases/latest/download/easy-claw.dmg`
+- Windows: `https://github.com/ybgwon96/easyclaw-releases/releases/latest/download/easy-claw-setup.exe`
+
+**빌드 파일명**: `electron-builder.yml`에서 버전 없이 고정 (`easy-claw.dmg`, `easy-claw-setup.exe`)
+
 ### Vercel 배포 (docs/ + api/)
 
 - `docs/`: 정적 마케팅 페이지 (easyclaw.kr)
