@@ -67,9 +67,10 @@ function App(): React.JSX.Element {
     nodeVersionOk: boolean
     openclawInstalled: boolean
     wslInstalled: boolean | null
+    installMode: 'wsl' | 'native' | null
   }): void => {
     setInstallNeeds({
-      needWsl: env.os === 'windows' && !env.wslInstalled,
+      needWsl: env.os === 'windows' && env.installMode !== 'native' && !env.wslInstalled,
       needNode: !env.nodeVersionOk,
       needOpenclaw: !env.openclawInstalled
     })

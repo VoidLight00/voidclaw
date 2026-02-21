@@ -102,6 +102,30 @@ const runWithLog = (
     child.on('error', reject)
   })
 
+export const installNodeNative = async (win: BrowserWindow): Promise<void> => {
+  const log = (msg: string): void => sendProgress(win, msg)
+  const url = 'https://nodejs.org/dist/v22.14.0/node-v22.14.0-x64.msi'
+  const dest = join(tmpdir(), 'node-installer.msi')
+
+  log('Node.js 22 다운로드 중...')
+  await downloadFile(url, dest)
+  log('Node.js 설치 중...')
+  await runWithLog('msiexec', ['/i', dest, '/passive', '/norestart'], log, { shell: true })
+  // MSI가 PATH를 추가하지만 현재 프로세스에는 미반영 → 직접 추가
+  const nodePath = 'C:\\Program Files\\nodejs'
+  if (!process.env.PATH?.includes(nodePath)) {
+    process.env.PATH = `${nodePath};${process.env.PATH}`
+  }
+  log('Node.js 설치 완료!')
+}
+
+export const installOpenClawNative = async (win: BrowserWindow): Promise<void> => {
+  const log = (msg: string): void => sendProgress(win, msg)
+  log('OpenClaw 설치 중...')
+  await runWithLog('npm', ['install', '-g', 'openclaw@latest'], log, { shell: true })
+  log('OpenClaw 설치 완료!')
+}
+
 export const installNodeMac = async (win: BrowserWindow): Promise<void> => {
   const log = (msg: string): void => sendProgress(win, msg)
   const url = `https://nodejs.org/dist/v22.14.0/node-v22.14.0.pkg`

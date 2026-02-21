@@ -12,6 +12,7 @@ interface EnvResult {
   openclawLatestVersion: string | null
   wslInstalled: boolean | null
   wslRegistered: boolean | null
+  installMode: 'wsl' | 'native' | null
 }
 
 const CheckRow = ({
@@ -81,7 +82,7 @@ export default function EnvCheckStep({
     ? env.nodeInstalled &&
       env.nodeVersionOk &&
       env.openclawInstalled &&
-      (env.os !== 'windows' || env.wslInstalled === true)
+      (env.os !== 'windows' || env.installMode === 'native' || env.wslInstalled === true)
     : false
 
   const handleContinue = (): void => {
@@ -104,12 +105,15 @@ export default function EnvCheckStep({
             ok={true}
             detail={env.os === 'macos' ? 'macOS' : env.os === 'windows' ? 'Windows' : 'Linux'}
           />
-          {env.os === 'windows' && (
+          {env.os === 'windows' && env.installMode !== 'native' && (
             <CheckRow
               label="WSL2"
               ok={env.wslInstalled === true}
               detail={env.wslInstalled ? '설치됨' : env.wslRegistered ? '초기화 중...' : '미설치'}
             />
+          )}
+          {env.os === 'windows' && env.installMode === 'native' && (
+            <CheckRow label="실행 모드" ok={true} detail="Windows 네이티브" />
           )}
           <CheckRow
             label="Node.js"

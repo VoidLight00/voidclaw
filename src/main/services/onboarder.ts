@@ -51,6 +51,7 @@ const waitTelegramClear = async (token: string): Promise<void> => {
 }
 
 import { getPathEnv, findBin } from './path-utils'
+import type { WinInstallMode } from './env-checker'
 
 const wslExec = (command: string, timeoutMs = 30000): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -88,30 +89,48 @@ const wslWriteFile = (wslPath: string, content: string): Promise<void> =>
     child.stdin.end()
   })
 
-const runCmd = (cmd: string, args: string[], onLog: (msg: string) => void): Promise<void> =>
-  new Promise((resolve, reject) => {
-    const isWindows = platform() === 'win32'
-    const fullCmd = isWindows ? 'wsl' : cmd
-    const fullArgs = isWindows ? ['--', cmd, ...args] : args
+const createRunCmd = (
+  installMode: WinInstallMode
+): ((cmd: string, args: string[], onLog: (msg: string) => void) => Promise<void>) => {
+  const isWsl = platform() === 'win32' && installMode !== 'native'
+  const isNative = platform() === 'win32' && installMode === 'native'
 
-    const child = spawn(fullCmd, fullArgs, {
-      env: getPathEnv()
-    })
+  return (cmd, args, onLog) =>
+    new Promise((resolve, reject) => {
+      const fullCmd = isWsl ? 'wsl' : cmd
+      const fullArgs = isWsl ? ['--', cmd, ...args] : args
 
-    const outDecoder = new StringDecoder('utf8')
-    const errDecoder = new StringDecoder('utf8')
-    child.stdout.on('data', (d) => outDecoder.write(d).split('\n').filter(Boolean).forEach(onLog))
-    child.stderr.on('data', (d) => errDecoder.write(d).split('\n').filter(Boolean).forEach(onLog))
-    child.on('close', (code) => {
-      if (code === 0) resolve()
-      else reject(new Error(`Command failed with exit code ${code}`))
+      const child = spawn(fullCmd, fullArgs, {
+        env: isNative ? process.env : getPathEnv(),
+        shell: isNative
+      })
+
+      const outDecoder = new StringDecoder('utf8')
+      const errDecoder = new StringDecoder('utf8')
+      child.stdout.on('data', (d) => outDecoder.write(d).split('\n').filter(Boolean).forEach(onLog))
+      child.stderr.on('data', (d) => errDecoder.write(d).split('\n').filter(Boolean).forEach(onLog))
+      child.on('close', (code) => {
+        if (code === 0) resolve()
+        else reject(new Error(`Command failed with exit code ${code}`))
+      })
+      child.on('error', reject)
     })
-    child.on('error', reject)
+}
+
+const nativeKillOpenclaw = (): Promise<void> =>
+  new Promise((resolve) => {
+    const ps =
+      'Get-Process node -ErrorAction SilentlyContinue | ' +
+      "Where-Object {$_.CommandLine -like '*openclaw*'} | Stop-Process -Force"
+    const child = spawn('powershell', ['-Command', ps], { shell: true })
+    child.on('close', () => resolve())
+    child.on('error', () => resolve())
   })
 
 export const runOnboard = async (
   win: BrowserWindow,
-  config: OnboardConfig
+  config: OnboardConfig,
+  installMode: WinInstallMode
 ): Promise<OnboardResult> => {
   const log = (msg: string): void => {
     win.webContents.send('install:progress', msg)
@@ -119,11 +138,14 @@ export const runOnboard = async (
 
   log('OpenClaw 초기 설정 시작...')
 
-  const npm = findBin('npm')
   const isWindows = platform() === 'win32'
+  const isNative = isWindows && installMode === 'native'
+  const isWsl = isWindows && installMode !== 'native'
   const isMac = platform() === 'darwin'
+  const npm = isNative ? 'npm' : findBin('npm')
   const ocDir = join(homedir(), '.openclaw')
   const fixPath = join(ocDir, 'ipv4-fix.js')
+  const runCmd = createRunCmd(installMode)
 
   // Node.js 22 autoSelectFamily + IPv6 미지원 환경에서 Telegram API ETIMEDOUT 방지
   // onboard 전에 ipv4-fix.js를 생성하고 세션 레벨 NODE_OPTIONS를 설정하여
@@ -153,10 +175,30 @@ export const runOnboard = async (
   // 기존 daemon 제거 + 프로세스 종료 + 깨진 설정 정리
   // 재설치 시 이전 제공사의 인증 정보가 남아 있으면 새 제공사로 전환 실패하므로
   // openclaw.json + 에이전트 인증 파일을 모두 삭제
-  if (isWindows) {
+  if (isWsl) {
     await wslExec('pkill -9 -f openclaw || true').catch(() => {})
     await wslExec('rm -f $HOME/.openclaw/openclaw.json').catch(() => {})
     await wslExec('rm -rf $HOME/.openclaw/agents/main/agent/auth*.json').catch(() => {})
+  } else if (isNative) {
+    await nativeKillOpenclaw().catch(() => {})
+    // 네이티브: macOS와 동일하게 fs 모듈 직접 사용
+    const configFile = join(ocDir, 'openclaw.json')
+    if (existsSync(configFile))
+      try {
+        unlinkSync(configFile)
+      } catch {
+        /* ignore */
+      }
+    const agentAuthDir = join(ocDir, 'agents', 'main', 'agent')
+    for (const f of ['auth.json', 'auth-profiles.json']) {
+      const p = join(agentAuthDir, f)
+      if (existsSync(p))
+        try {
+          unlinkSync(p)
+        } catch {
+          /* ignore */
+        }
+    }
   } else {
     const plist = join(homedir(), 'Library', 'LaunchAgents', 'ai.openclaw.gateway.plist')
     if (existsSync(plist)) {
@@ -218,8 +260,7 @@ export const runOnboard = async (
     '18789',
     '--gateway-bind',
     'loopback',
-    // Windows: DoneStep에서 포그라운드 프로세스로 시작하므로 데몬 설치 불필요
-    // WSL에서 --install-daemon 시 gateway가 바로 시작되나 데몬 환경이 불안정하여 1006 에러 발생
+    // Windows(WSL/네이티브): DoneStep에서 포그라운드 프로세스로 시작하므로 데몬 설치 불필요
     ...(isWindows ? [] : ['--install-daemon', '--daemon-runtime', 'node']),
     '--skip-skills'
   ]
@@ -229,11 +270,15 @@ export const runOnboard = async (
   } catch (e) {
     // onboard가 gateway 연결 테스트(1006)로 실패해도
     // config 파일이 생성되었으면 계속 진행 (DoneStep에서 gateway를 별도 시작)
-    if (isWindows) {
+    if (isWsl) {
       const configExists = await wslExec(
         'test -f $HOME/.openclaw/openclaw.json && echo yes || echo no'
       ).catch(() => 'no')
       if (configExists.trim() !== 'yes') throw e
+      log('설정 파일 생성 완료 (gateway 검증 건너뜀)')
+    } else if (isNative) {
+      const configPath = join(ocDir, 'openclaw.json')
+      if (!existsSync(configPath)) throw e
       log('설정 파일 생성 완료 (gateway 검증 건너뜀)')
     } else if (isMac) {
       const configPath = join(ocDir, 'openclaw.json')
@@ -268,7 +313,7 @@ export const runOnboard = async (
     openai: 'openai/gpt-5.2'
   }
   const modelConfigPath = join(ocDir, 'openclaw.json')
-  if (isWindows) {
+  if (isWsl) {
     const wslModelPath = '$HOME/.openclaw/openclaw.json'
     try {
       const raw = await wslExec(`cat ${wslModelPath}`)
@@ -332,7 +377,7 @@ export const runOnboard = async (
       groups: { '*': { requireMention: true } }
     }
 
-    if (isWindows) {
+    if (isWsl) {
       // WSL 안의 openclaw.json을 읽고 수정
       const wslConfigPath = '$HOME/.openclaw/openclaw.json'
       try {
@@ -366,10 +411,14 @@ export const runOnboard = async (
   }
 
   // 모든 패치 완료 후 데몬 완전 재시작
-  // Windows: DoneStep에서 포그라운드 프로세스로 시작하므로 여기서는 기존 프로세스만 정리
-  if (isWindows) {
+  // Windows(WSL/네이티브): DoneStep에서 포그라운드 프로세스로 시작하므로 여기서는 기존 프로세스만 정리
+  if (isWsl) {
     log('기존 Gateway 정리 중...')
     await wslExec('pkill -9 -f openclaw || true').catch(() => {})
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+  } else if (isNative) {
+    log('기존 Gateway 정리 중...')
+    await nativeKillOpenclaw().catch(() => {})
     await new Promise((resolve) => setTimeout(resolve, 2000))
   } else if (isMac) {
     log('Gateway 시작 중...')

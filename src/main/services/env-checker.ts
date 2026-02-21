@@ -3,6 +3,8 @@ import { platform } from 'os'
 import https from 'https'
 import { decodeWslOutput } from './path-utils'
 
+export type WinInstallMode = 'wsl' | 'native' | null
+
 export interface EnvCheckResult {
   os: 'macos' | 'windows' | 'linux'
   nodeInstalled: boolean
@@ -13,6 +15,7 @@ export interface EnvCheckResult {
   openclawLatestVersion: string | null
   wslInstalled: boolean | null
   wslRegistered: boolean | null
+  installMode: WinInstallMode
 }
 
 const PATH_EXTENSIONS = [
@@ -33,6 +36,25 @@ const getEnv = (): NodeJS.ProcessEnv => ({
 })
 
 const isWindows = platform() === 'win32'
+
+const runNativeCommand = (cmd: string, args: string[]): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const child = spawn(cmd, args, { shell: true, env: process.env })
+    const timer = setTimeout(() => {
+      child.kill()
+      reject(new Error('timeout'))
+    }, 15000)
+    let stdout = ''
+    child.stdout.on('data', (d) => (stdout += d.toString()))
+    child.on('close', (code) => {
+      clearTimeout(timer)
+      code === 0 ? resolve(stdout.trim()) : reject(new Error(`exit ${code}`))
+    })
+    child.on('error', (err) => {
+      clearTimeout(timer)
+      reject(err)
+    })
+  })
 
 const runCommand = (cmd: string, args: string[]): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -184,10 +206,11 @@ const fetchLatestVersion = (pkg: string): Promise<string> =>
 export const checkEnvironment = async (): Promise<EnvCheckResult> => {
   const os = platform() === 'darwin' ? 'macos' : platform() === 'win32' ? 'windows' : 'linux'
 
-  // Windows: WSL 먼저 체크 — WSL 없으면 node/npm 체크를 건너뛰어 불필요한 대기 방지
+  // Windows: WSL 먼저 체크 — WSL 없으면 네이티브 fallback
   const wslStatus = os === 'windows' ? await checkWslStatus() : null
   const wslInstalled = wslStatus?.running ?? null
   const wslRegistered = wslStatus?.registered ?? null
+  const installMode: WinInstallMode = os !== 'windows' ? null : wslInstalled ? 'wsl' : 'native'
 
   let nodeVersion: string | null = null
   let nodeInstalled = false
@@ -195,7 +218,8 @@ export const checkEnvironment = async (): Promise<EnvCheckResult> => {
   let openclawInstalled = false
   let openclawVersion: string | null = null
 
-  if (os !== 'windows' || wslInstalled) {
+  if (os !== 'windows' || installMode === 'wsl') {
+    // macOS / Linux / WSL 모드: 기존 경로
     try {
       const raw = await runCommand('node', ['--version'])
       nodeVersion = parseVersion(raw)
@@ -207,6 +231,28 @@ export const checkEnvironment = async (): Promise<EnvCheckResult> => {
 
     try {
       const raw = await runCommand('npm', ['list', '-g', 'openclaw', '--json'])
+      const json = JSON.parse(raw)
+      const deps = json.dependencies?.openclaw
+      if (deps) {
+        openclawInstalled = true
+        openclawVersion = deps.version ?? null
+      }
+    } catch {
+      /* not installed */
+    }
+  } else if (installMode === 'native') {
+    // 네이티브 Windows: WSL 없이 직접 실행
+    try {
+      const raw = await runNativeCommand('node', ['--version'])
+      nodeVersion = parseVersion(raw)
+      nodeInstalled = nodeVersion !== null
+      nodeVersionOk = nodeVersion ? semverGte(nodeVersion, '22.12.0') : false
+    } catch {
+      /* not installed */
+    }
+
+    try {
+      const raw = await runNativeCommand('npm', ['list', '-g', 'openclaw', '--json'])
       const json = JSON.parse(raw)
       const deps = json.dependencies?.openclaw
       if (deps) {
@@ -235,6 +281,7 @@ export const checkEnvironment = async (): Promise<EnvCheckResult> => {
     openclawVersion,
     openclawLatestVersion,
     wslInstalled,
-    wslRegistered
+    wslRegistered,
+    installMode
   }
 }
