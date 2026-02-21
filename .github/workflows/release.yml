@@ -45,37 +45,3 @@ jobs:
           for asset in $(gh release view "$tag" --json assets -q '.assets[].name | select(endswith(".zip"))'); do
             gh release delete-asset "$tag" "$asset" --yes || true
           done
-
-  release-win:
-    runs-on: windows-latest
-
-    permissions:
-      contents: write
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.release.tag_name }}
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - run: npm ci
-
-      - run: npm run build:win
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Clean up unnecessary release assets
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        shell: bash
-        run: |
-          tag="${{ github.event.release.tag_name }}"
-          for suffix in .blockmap latest.yml; do
-            for asset in $(gh release view "$tag" --json assets -q ".assets[].name | select(endswith(\"$suffix\"))"); do
-              gh release delete-asset "$tag" "$asset" --yes || true
-            done
-          done
