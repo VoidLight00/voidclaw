@@ -45,11 +45,11 @@ const runGateway = (args: string[]): Promise<string> => {
 // WSL에 ipv4-fix.js를 생성하여 dns.lookup을 IPv4 전용으로 패치
 const ensureWslIpv4Fix = (): Promise<string> => {
   const fixScript = [
-    "const dns=require('dns');",
+    'const dns=require("dns");',
     'const ol=dns.lookup;',
     'dns.lookup=function(h,o,c){',
-    "if(typeof o==='function'){c=o;o={family:4}}",
-    "else if(typeof o==='number'){o={family:4}}",
+    'if(typeof o==="function"){c=o;o={family:4}}',
+    'else if(typeof o==="number"){o={family:4}}',
     'else{o=Object.assign({},o,{family:4})}',
     'return ol.call(this,h,o,c)}'
   ].join('')
