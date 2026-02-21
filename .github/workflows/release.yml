@@ -28,10 +28,13 @@ jobs:
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: mac-build
-          path: dist/*.dmg
+      - name: Upload to easyclaw-releases
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          tag="${{ github.event.release.tag_name }}"
+          gh release create "$tag" --repo ybgwon96/easyclaw-releases --title "$tag" --notes "https://easyclaw.kr" 2>/dev/null || true
+          gh release upload "$tag" --repo ybgwon96/easyclaw-releases dist/*.dmg --clobber
 
   build-win:
     runs-on: windows-latest
@@ -50,30 +53,11 @@ jobs:
 
       - run: npm run build:win-local
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: win-build
-          path: dist/*-setup.exe
-
-  publish:
-    needs: [build-mac, build-win]
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-          merge-multiple: true
-
-      - name: Publish to easyclaw-releases
+      - name: Upload to easyclaw-releases
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        shell: bash
         run: |
           tag="${{ github.event.release.tag_name }}"
-          # 기존 릴리즈가 있으면 삭제 후 재생성
-          gh release delete "$tag" --repo ybgwon96/easyclaw-releases --yes --cleanup-tag 2>/dev/null || true
-          gh release create "$tag" \
-            --repo ybgwon96/easyclaw-releases \
-            --title "$tag" \
-            --notes "https://easyclaw.kr" \
-            artifacts/*
+          gh release create "$tag" --repo ybgwon96/easyclaw-releases --title "$tag" --notes "https://easyclaw.kr" 2>/dev/null || true
+          gh release upload "$tag" --repo ybgwon96/easyclaw-releases dist/*-setup.exe --clobber
