@@ -184,9 +184,12 @@ const runDoctorFix = (): Promise<void> =>
   })
 
 export const startGateway = async (): Promise<string> => {
-  // doctor --fix를 먼저 실행하여 세션/설정을 복구한 뒤 gateway 시작
-  await runDoctorFix()
-  return platform() === 'win32' ? startGatewayWin() : runGateway(['start'])
+  const result = await (platform() === 'win32' ? startGatewayWin() : runGateway(['start']))
+  // gateway 실행 후 doctor --fix로 세션/설정 복구 (완료 대기)
+  if (result === 'started') {
+    await runDoctorFix()
+  }
+  return result
 }
 
 export const stopGateway = (): Promise<string> =>
