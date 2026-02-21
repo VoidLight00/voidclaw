@@ -1,5 +1,5 @@
 import { existsSync } from 'fs'
-import { platform } from 'os'
+import { platform, homedir } from 'os'
 import { join } from 'path'
 
 export const PATH_DIRS = [
@@ -24,11 +24,12 @@ export const decodeWslOutput = (buf: Buffer): string => {
   return buf.toString('utf8').trim()
 }
 
-/** Windows 네이티브 모드용 PATH 확장 (npm 글로벌 bin + Node.js 포함) */
+/** Windows 네이티브 모드용 PATH 확장 (로컬 cli bin + npm 글로벌 bin + Node.js 포함) */
 export const getNativeEnv = (extra?: Record<string, string>): NodeJS.ProcessEnv => {
+  const localCliBin = join(homedir(), '.openclaw', 'cli', 'node_modules', '.bin')
   const npmGlobalBin = join(process.env.APPDATA ?? '', 'npm')
   const nodePath = 'C:\\Program Files\\nodejs'
-  const dirs = [npmGlobalBin, nodePath, process.env.PATH ?? ''].filter(Boolean)
+  const dirs = [localCliBin, npmGlobalBin, nodePath, process.env.PATH ?? ''].filter(Boolean)
   return { ...process.env, PATH: dirs.join(';'), ...extra }
 }
 

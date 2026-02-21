@@ -1,6 +1,14 @@
 import { spawn } from 'child_process'
 import { StringDecoder } from 'string_decoder'
-import { createWriteStream, existsSync, mkdirSync, writeFileSync, unlinkSync } from 'fs'
+import {
+  createWriteStream,
+  existsSync,
+  mkdirSync,
+  writeFileSync,
+  readFileSync,
+  readdirSync,
+  unlinkSync
+} from 'fs'
 import { tmpdir, platform, homedir } from 'os'
 import { join } from 'path'
 import https from 'https'
@@ -123,34 +131,70 @@ export const installNodeNative = async (win: BrowserWindow): Promise<void> => {
   log('Node.js 설치 완료!')
 }
 
+const logNpmDebug = (log: ProgressCallback): void => {
+  try {
+    const logsDir = join(process.env.LOCALAPPDATA ?? '', 'npm-cache', '_logs')
+    if (!existsSync(logsDir)) return
+    const files = readdirSync(logsDir).sort().reverse()
+    const latest = files.find((f) => f.endsWith('-debug-0.log'))
+    if (!latest) return
+    const content = readFileSync(join(logsDir, latest), 'utf-8')
+    const lines = content
+      .split('\n')
+      .filter((l) => /enoent|error|ERR!/i.test(l))
+    lines.slice(-15).forEach((l) => log(`[npm] ${l.trim()}`))
+  } catch {
+    /* ignore */
+  }
+}
+
 export const installOpenClawNative = async (win: BrowserWindow): Promise<void> => {
   const log = (msg: string): void => sendProgress(win, msg)
   log('OpenClaw 설치 중...')
-  // MSI 기본 npm prefix는 C:\Program Files\nodejs → 관리자 권한 필요
-  // %APPDATA%\npm 으로 변경하면 일반 유저 권한으로 글로벌 설치 가능
+
   const npmGlobalDir = join(process.env.APPDATA ?? '', 'npm')
-  // npm prefix + node_modules 디렉토리 구조 보장
   for (const dir of [npmGlobalDir, join(npmGlobalDir, 'node_modules')]) {
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
   }
-  // getNativeEnv()로 Node.js + npm global bin PATH 포함, npm_config_prefix로 prefix 강제
   const env = getNativeEnv({ npm_config_prefix: npmGlobalDir })
   const cwd = homedir()
   if (!process.env.PATH?.includes(npmGlobalDir)) {
     process.env.PATH = `${npmGlobalDir};${process.env.PATH}`
   }
-  // --ignore-scripts: openclaw 의존성의 postinstall 스크립트가 Windows에서 ENOENT 유발 방지
-  const installArgs = ['install', '-g', '--ignore-scripts', 'openclaw@latest']
+
+  // 1차: 글로벌 설치 시도
   try {
-    await runWithLog('npm', installArgs, log, { shell: true, env, cwd })
+    await runWithLog('npm', ['install', '-g', '--ignore-scripts', 'openclaw@latest'], log, {
+      shell: true,
+      env,
+      cwd
+    })
+    log('OpenClaw 설치 완료!')
+    return
   } catch {
-    // 실패 시 캐시 정리 후 재시도
-    log('캐시 정리 후 재시도 중...')
-    await runWithLog('npm', ['cache', 'clean', '--force'], log, { shell: true, env, cwd }).catch(
-      () => {}
-    )
-    await runWithLog('npm', installArgs, log, { shell: true, env, cwd })
+    logNpmDebug(log)
+    log('글로벌 설치 실패, 로컬 설치로 전환...')
   }
+
+  // 2차: 로컬 설치 fallback (~/.openclaw/cli/)
+  // npm install -g의 bin-linking이 Windows에서 ENOENT를 유발하는 경우를 우회
+  const cliDir = join(homedir(), '.openclaw', 'cli')
+  if (!existsSync(cliDir)) mkdirSync(cliDir, { recursive: true })
+  const pkgJson = join(cliDir, 'package.json')
+  if (!existsSync(pkgJson)) writeFileSync(pkgJson, '{"private":true}')
+
+  await runWithLog('npm', ['install', '--ignore-scripts', 'openclaw@latest'], log, {
+    shell: true,
+    env,
+    cwd: cliDir
+  })
+
+  // 로컬 bin을 PATH에 추가 (openclaw.cmd가 여기에 생성됨)
+  const binDir = join(cliDir, 'node_modules', '.bin')
+  if (!process.env.PATH?.includes(binDir)) {
+    process.env.PATH = `${binDir};${process.env.PATH}`
+  }
+
   log('OpenClaw 설치 완료!')
 }
 

@@ -260,7 +260,20 @@ export const checkEnvironment = async (): Promise<EnvCheckResult> => {
         openclawVersion = deps.version ?? null
       }
     } catch {
-      /* not installed */
+      /* not installed globally */
+    }
+    // 글로벌 미설치 시 로컬 설치 (fallback) 확인
+    if (!openclawInstalled) {
+      try {
+        const raw = await runNativeCommand('openclaw', ['--version'])
+        const ver = parseVersion(raw)
+        if (ver) {
+          openclawInstalled = true
+          openclawVersion = ver
+        }
+      } catch {
+        /* not installed */
+      }
     }
   }
 
