@@ -52,18 +52,28 @@ const waitTelegramClear = async (token: string): Promise<void> => {
 
 import { getPathEnv, findBin } from './path-utils'
 
-const wslExec = (command: string): Promise<string> =>
+const wslExec = (command: string, timeoutMs = 30000): Promise<string> =>
   new Promise((resolve, reject) => {
     const child = spawn('wsl', ['--', 'bash', '-c', command])
+
+    const timer = setTimeout(() => {
+      child.kill()
+      reject(new Error(`wsl timeout after ${timeoutMs}ms`))
+    }, timeoutMs)
+
     let stdout = ''
     let stderr = ''
     child.stdout.on('data', (d) => (stdout += d.toString()))
     child.stderr.on('data', (d) => (stderr += d.toString()))
     child.on('close', (code) => {
+      clearTimeout(timer)
       if (code === 0) resolve(stdout)
       else reject(new Error(stderr || `wsl exit ${code}`))
     })
-    child.on('error', reject)
+    child.on('error', (err) => {
+      clearTimeout(timer)
+      reject(err)
+    })
   })
 
 const wslWriteFile = (wslPath: string, content: string): Promise<void> =>

@@ -5,6 +5,7 @@ import LogViewer from '../components/LogViewer'
 
 export default function DoneStep({ botUsername }: { botUsername?: string }): React.JSX.Element {
   const [status, setStatus] = useState<'starting' | 'running' | 'stopped'>('starting')
+  const [hasError, setHasError] = useState(false)
   const [logs, setLogs] = useState<string[]>([])
   const [showLogs, setShowLogs] = useState(false)
 
@@ -31,7 +32,10 @@ export default function DoneStep({ botUsername }: { botUsername?: string }): Rea
       }
       if (cancelled) return
       const r = await window.electronAPI.gateway.start()
-      if (!cancelled) setStatus(r.success ? 'running' : 'stopped')
+      if (!cancelled) {
+        setStatus(r.success ? 'running' : 'stopped')
+        if (!r.success) setHasError(true)
+      }
     }
     poll()
 
@@ -48,16 +52,20 @@ export default function DoneStep({ botUsername }: { botUsername?: string }): Rea
   const handleStart = async (): Promise<void> => {
     setStatus('starting')
     setLogs([])
+    setHasError(false)
     const r = await window.electronAPI.gateway.start()
     setStatus(r.success ? 'running' : 'stopped')
+    if (!r.success) setHasError(true)
   }
 
   const handleRestart = useCallback(async (): Promise<void> => {
     setStatus('starting')
     setLogs([])
+    setHasError(false)
     await window.electronAPI.gateway.stop()
     const r = await window.electronAPI.gateway.start()
     setStatus(r.success ? 'running' : 'stopped')
+    if (!r.success) setHasError(true)
   }, [])
 
   return (
@@ -156,9 +164,7 @@ export default function DoneStep({ botUsername }: { botUsername?: string }): Rea
             className="text-[11px] text-text-muted/60 hover:text-text-muted transition-colors mb-1"
           >
             {showLogs ? '▼ 로그 숨기기' : '▶ 로그 보기'}
-            {logs.some((l) => l.includes('프로세스 종료') || l.includes('오류:')) && (
-              <span className="ml-1.5 text-error">● 오류 감지</span>
-            )}
+            {hasError && <span className="ml-1.5 text-error">● 오류 감지</span>}
           </button>
           {showLogs && <LogViewer lines={logs} />}
         </div>

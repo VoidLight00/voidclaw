@@ -42,16 +42,25 @@ const runCommand = (cmd: string, args: string[]): Promise<string> =>
       shell: platform() === 'win32'
     })
 
+    const timer = setTimeout(() => {
+      child.kill()
+      reject(new Error('timeout after 15000ms'))
+    }, 15000)
+
     let stdout = ''
     let stderr = ''
 
     child.stdout.on('data', (d) => (stdout += d.toString()))
     child.stderr.on('data', (d) => (stderr += d.toString()))
     child.on('close', (code) => {
+      clearTimeout(timer)
       if (code === 0) resolve(stdout.trim())
       else reject(new Error(stderr || `exit code ${code}`))
     })
-    child.on('error', reject)
+    child.on('error', (err) => {
+      clearTimeout(timer)
+      reject(err)
+    })
   })
 
 const parseVersion = (raw: string): string | null => {
@@ -70,10 +79,20 @@ const semverGte = (version: string, min: string): boolean => {
 const checkWslRunningOnce = (): Promise<boolean> =>
   new Promise((resolve) => {
     const child = spawn('wsl', ['-d', 'Ubuntu', '--', 'echo', 'ok'], { shell: true })
+    const timer = setTimeout(() => {
+      child.kill()
+      resolve(false)
+    }, 15000)
     let out = ''
     child.stdout.on('data', (d) => (out += d.toString()))
-    child.on('close', (code) => resolve(code === 0 && out.trim().includes('ok')))
-    child.on('error', () => resolve(false))
+    child.on('close', (code) => {
+      clearTimeout(timer)
+      resolve(code === 0 && out.trim().includes('ok'))
+    })
+    child.on('error', () => {
+      clearTimeout(timer)
+      resolve(false)
+    })
   })
 
 const delay = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms))
@@ -95,9 +114,15 @@ const checkWsl = async (): Promise<boolean> => {
         shell: true
       })
 
+      const timer = setTimeout(() => {
+        child.kill()
+        reject(new Error('wsl list timeout'))
+      }, 15000)
+
       const chunks: Buffer[] = []
       child.stdout.on('data', (d) => chunks.push(d))
       child.on('close', (code) => {
+        clearTimeout(timer)
         if (code === 0) {
           const buf = Buffer.concat(chunks)
           // wsl --list 출력은 UTF-16 LE 인코딩 — null 바이트 제거 후 비교
@@ -107,7 +132,10 @@ const checkWsl = async (): Promise<boolean> => {
           reject(new Error(`exit code ${code}`))
         }
       })
-      child.on('error', reject)
+      child.on('error', (err) => {
+        clearTimeout(timer)
+        reject(err)
+      })
     })
     if (!output.toLowerCase().includes('ubuntu')) return false
 
@@ -120,55 +148,69 @@ const checkWsl = async (): Promise<boolean> => {
 
 const fetchLatestVersion = (pkg: string): Promise<string> =>
   new Promise((resolve, reject) => {
-    https
-      .get(`https://registry.npmjs.org/${pkg}/latest`, (res) => {
-        if (res.statusCode !== 200) {
-          res.resume()
-          reject(new Error(`npm registry HTTP ${res.statusCode}`))
-          return
+    const req = https.get(`https://registry.npmjs.org/${pkg}/latest`, (res) => {
+      if (res.statusCode !== 200) {
+        clearTimeout(timer)
+        res.resume()
+        reject(new Error(`npm registry HTTP ${res.statusCode}`))
+        return
+      }
+      let data = ''
+      res.on('data', (chunk) => (data += chunk))
+      res.on('end', () => {
+        clearTimeout(timer)
+        try {
+          resolve(JSON.parse(data).version)
+        } catch {
+          reject(new Error('parse error'))
         }
-        let data = ''
-        res.on('data', (chunk) => (data += chunk))
-        res.on('end', () => {
-          try {
-            resolve(JSON.parse(data).version)
-          } catch {
-            reject(new Error('parse error'))
-          }
-        })
       })
-      .on('error', reject)
+    })
+
+    req.on('error', (err) => {
+      clearTimeout(timer)
+      reject(err)
+    })
+
+    const timer = setTimeout(() => {
+      req.destroy()
+      reject(new Error('timeout after 5000ms'))
+    }, 5000)
   })
 
 export const checkEnvironment = async (): Promise<EnvCheckResult> => {
   const os = platform() === 'darwin' ? 'macos' : platform() === 'win32' ? 'windows' : 'linux'
 
+  // Windows: WSL 먼저 체크 — WSL 없으면 node/npm 체크를 건너뛰어 불필요한 대기 방지
+  const wslInstalled = os === 'windows' ? await checkWsl() : null
+
   let nodeVersion: string | null = null
   let nodeInstalled = false
   let nodeVersionOk = false
-
-  try {
-    const raw = await runCommand('node', ['--version'])
-    nodeVersion = parseVersion(raw)
-    nodeInstalled = nodeVersion !== null
-    nodeVersionOk = nodeVersion ? semverGte(nodeVersion, '22.12.0') : false
-  } catch {
-    /* not installed */
-  }
-
   let openclawInstalled = false
   let openclawVersion: string | null = null
 
-  try {
-    const raw = await runCommand('npm', ['list', '-g', 'openclaw', '--json'])
-    const json = JSON.parse(raw)
-    const deps = json.dependencies?.openclaw
-    if (deps) {
-      openclawInstalled = true
-      openclawVersion = deps.version ?? null
+  if (os !== 'windows' || wslInstalled) {
+    try {
+      const raw = await runCommand('node', ['--version'])
+      nodeVersion = parseVersion(raw)
+      nodeInstalled = nodeVersion !== null
+      nodeVersionOk = nodeVersion ? semverGte(nodeVersion, '22.12.0') : false
+    } catch {
+      /* not installed */
     }
-  } catch {
-    /* not installed */
+
+    try {
+      const raw = await runCommand('npm', ['list', '-g', 'openclaw', '--json'])
+      const json = JSON.parse(raw)
+      const deps = json.dependencies?.openclaw
+      if (deps) {
+        openclawInstalled = true
+        openclawVersion = deps.version ?? null
+      }
+    } catch {
+      /* not installed */
+    }
   }
 
   let openclawLatestVersion: string | null = null
@@ -178,8 +220,6 @@ export const checkEnvironment = async (): Promise<EnvCheckResult> => {
   } catch {
     /* network error — skip */
   }
-
-  const wslInstalled = os === 'windows' ? await checkWsl() : null
 
   return {
     os,
