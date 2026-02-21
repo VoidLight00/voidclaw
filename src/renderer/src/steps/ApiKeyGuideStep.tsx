@@ -1,6 +1,6 @@
 import Button from '../components/Button'
 
-type Provider = 'anthropic' | 'google' | 'openai'
+type Provider = 'anthropic' | 'google' | 'openai' | 'deepseek' | 'glm'
 
 interface ProviderInfo {
   name: string
@@ -89,10 +89,66 @@ const providers: Record<Provider, ProviderInfo> = {
         desc: 'Create Key 버튼 → 이름 입력 → sk-ant-... 로 시작하는 키를 복사하세요. '
       }
     ]
+  },
+  deepseek: {
+    name: 'DeepSeek',
+    model: 'DeepSeek Chat',
+    consoleUrl: 'https://platform.deepseek.com/api_keys',
+    consoleLabel: 'Platform 바로가기',
+    steps: [
+      {
+        emoji: '🌐',
+        title: 'DeepSeek Platform 접속',
+        desc: 'platform.deepseek.com 에 접속하세요. 이메일 또는 휴대폰 번호로 가입할 수 있습니다.'
+      },
+      {
+        emoji: '💳',
+        title: '크레딧 충전',
+        desc: 'Top Up 메뉴에서 크레딧을 충전하세요. 가격이 매우 저렴합니다!'
+      },
+      {
+        emoji: '🔑',
+        title: 'API Keys 메뉴 이동',
+        desc: 'API Keys 페이지로 이동하세요. 좌측 사이드바에서 찾을 수 있습니다.'
+      },
+      {
+        emoji: '📋',
+        title: '새 키 생성 및 복사',
+        desc: 'Create new API key → 이름 입력 → sk-... 로 시작하는 키를 복사하세요.'
+      }
+    ]
+  },
+  glm: {
+    name: 'Z.AI (智谱)',
+    model: 'GLM-5',
+    consoleUrl: 'https://z.ai/manage-apikey/apikey-list',
+    consoleLabel: 'Z.AI 바로가기',
+    steps: [
+      {
+        emoji: '🌐',
+        title: 'Z.AI 접속',
+        desc: 'z.ai 에 접속하세요. 이메일 또는 휴대폰 번호로 가입할 수 있습니다.'
+      },
+      {
+        emoji: '💳',
+        title: '크레딧 충전',
+        desc: '충전 메뉴에서 크레딧을 충전하세요. 신규 가입 시 무료 크레딧이 제공됩니다.'
+      },
+      {
+        emoji: '🔑',
+        title: 'API Keys 메뉴 이동',
+        desc: 'API 키 관리 페이지로 이동하세요.'
+      },
+      {
+        emoji: '📋',
+        title: '새 키 생성 및 복사',
+        desc: 'API 키 생성 버튼 → 생성된 키를 복사하세요.'
+      }
+    ]
   }
 }
 
-const providerOrder: Provider[] = ['google', 'openai', 'anthropic']
+const providerOrder: Provider[] = ['google', 'openai', 'anthropic', 'deepseek', 'glm']
 
 interface Props {
   provider: Provider
@@ -123,10 +179,10 @@ export default function ApiKeyGuideStep({
               i > 0 ? 'border-l border-glass-border' : ''
             } ${provider === p ? 'bg-primary/15 text-text' : 'hover:bg-white/5 text-text-muted'}`}
           >
-            <p className={`text-sm font-bold ${provider === p ? 'text-primary' : ''}`}>
+            <p className={`text-xs font-bold ${provider === p ? 'text-primary' : ''}`}>
               {providers[p].name}
             </p>
-            <p className="text-[10px] mt-0.5 opacity-60">{providers[p].model}</p>
+            <p className="text-[9px] mt-0.5 opacity-60">{providers[p].model}</p>
           </button>
         ))}
       </div>

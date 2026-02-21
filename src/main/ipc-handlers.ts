@@ -95,7 +95,7 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
     async (
       _e,
       config: {
-        provider: 'anthropic' | 'google' | 'openai'
+        provider: 'anthropic' | 'google' | 'openai' | 'deepseek' | 'glm'
         apiKey: string
         telegramBotToken?: string
       }

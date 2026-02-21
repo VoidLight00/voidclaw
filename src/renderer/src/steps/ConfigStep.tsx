@@ -4,12 +4,14 @@ import Button from '../components/Button'
 import LogViewer from '../components/LogViewer'
 import { useInstallLogs } from '../hooks/useIpc'
 
-type Provider = 'anthropic' | 'google' | 'openai'
+type Provider = 'anthropic' | 'google' | 'openai' | 'deepseek' | 'glm'
 
 const providerConfig: Record<Provider, { pattern: RegExp; label: string; placeholder: string }> = {
   anthropic: { pattern: /^sk-ant-/, label: 'Anthropic API 키', placeholder: 'sk-ant-...' },
   google: { pattern: /^AIza/, label: 'Gemini API 키', placeholder: 'AIza...' },
-  openai: { pattern: /^sk-(?!ant-)/, label: 'OpenAI API 키', placeholder: 'sk-...' }
+  openai: { pattern: /^sk-(?!ant-)/, label: 'OpenAI API 키', placeholder: 'sk-...' },
+  deepseek: { pattern: /^sk-/, label: 'DeepSeek API 키', placeholder: 'sk-...' },
+  glm: { pattern: /^.{8,}$/, label: 'Z.AI API 키', placeholder: 'API 키 입력' }
 }
 
 const BOT_TOKEN_PATTERN = /^\d+:[A-Za-z0-9_-]+$/

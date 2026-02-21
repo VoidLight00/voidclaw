@@ -54,7 +54,9 @@ function App(): React.JSX.Element {
     needNode: false,
     needOpenclaw: false
   })
-  const [provider, setProvider] = useState<'anthropic' | 'google' | 'openai'>('anthropic')
+  const [provider, setProvider] = useState<'anthropic' | 'google' | 'openai' | 'deepseek' | 'glm'>(
+    'anthropic'
+  )
   const [botUsername, setBotUsername] = useState<string | undefined>()
   const [version, setVersion] = useState('')
 

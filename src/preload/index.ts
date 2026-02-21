@@ -35,7 +35,7 @@ const electronAPI = {
   },
   onboard: {
     run: (config: {
-      provider: 'anthropic' | 'google' | 'openai'
+      provider: 'anthropic' | 'google' | 'openai' | 'deepseek' | 'glm'
       apiKey: string
       telegramBotToken?: string
     }): Promise<{ success: boolean; error?: string; botUsername?: string }> =>

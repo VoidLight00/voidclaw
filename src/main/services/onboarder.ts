@@ -7,7 +7,7 @@ import https from 'https'
 import { BrowserWindow } from 'electron'
 
 interface OnboardConfig {
-  provider: 'anthropic' | 'google' | 'openai'
+  provider: 'anthropic' | 'google' | 'openai' | 'deepseek' | 'glm'
   apiKey: string
   telegramBotToken?: string
 }
@@ -243,7 +243,22 @@ export const runOnboard = async (
   const authFlags: Record<OnboardConfig['provider'], string[]> = {
     anthropic: ['--auth-choice', 'apiKey', '--anthropic-api-key', config.apiKey],
     google: ['--auth-choice', 'gemini-api-key', '--gemini-api-key', config.apiKey],
-    openai: ['--auth-choice', 'openai-api-key', '--openai-api-key', config.apiKey]
+    openai: ['--auth-choice', 'openai-api-key', '--openai-api-key', config.apiKey],
+    deepseek: [
+      '--auth-choice',
+      'custom-api-key',
+      '--custom-base-url',
+      'https://api.deepseek.com/v1',
+      '--custom-model-id',
+      'deepseek-chat',
+      '--custom-api-key',
+      config.apiKey,
+      '--custom-provider-id',
+      'deepseek',
+      '--custom-compatibility',
+      'openai'
+    ],
+    glm: ['--auth-choice', 'zai-api-key', '--zai-api-key', config.apiKey]
   }
 
   const onboardArgs = [
@@ -310,7 +325,9 @@ export const runOnboard = async (
   const defaultModels: Record<OnboardConfig['provider'], string> = {
     anthropic: 'anthropic/claude-sonnet-4-6',
     google: 'google/gemini-3-flash',
-    openai: 'openai/gpt-5.2'
+    openai: 'openai/gpt-5.2',
+    deepseek: 'deepseek/deepseek-chat',
+    glm: 'zai/glm-5'
   }
   const modelConfigPath = join(ocDir, 'openclaw.json')
   if (isWsl) {
