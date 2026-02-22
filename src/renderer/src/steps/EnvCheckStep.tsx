@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import LobsterLogo from '../components/LobsterLogo'
 import Button from '../components/Button'
 
@@ -43,6 +44,7 @@ export default function EnvCheckStep({
   onNext: () => void
   onNeedInstall: (env: EnvResult) => void
 }): React.JSX.Element {
+  const { t } = useTranslation()
   const [checking, setChecking] = useState(true)
   const [env, setEnv] = useState<EnvResult | null>(null)
   const [updating, setUpdating] = useState(false)
@@ -94,36 +96,46 @@ export default function EnvCheckStep({
     <div className="flex-1 flex flex-col items-center pt-16 px-8 gap-5">
       <LobsterLogo state={checking ? 'loading' : allReady ? 'success' : 'idle'} size={72} />
 
-      <h2 className="text-lg font-extrabold">환경 검사</h2>
+      <h2 className="text-lg font-extrabold">{t('envCheck.title')}</h2>
 
       {checking ? (
-        <p className="text-text-muted text-sm animate-pulse">시스템을 확인하고 있습니다...</p>
+        <p className="text-text-muted text-sm animate-pulse">{t('envCheck.checking')}</p>
       ) : env ? (
         <div className="w-full max-w-xs space-y-2.5">
           <CheckRow
-            label="운영체제"
+            label={t('envCheck.os')}
             ok={true}
             detail={env.os === 'macos' ? 'macOS' : env.os === 'windows' ? 'Windows' : 'Linux'}
           />
           {env.os === 'windows' && env.installMode !== 'native' && (
             <CheckRow
-              label="WSL2"
+              label={t('envCheck.wsl2')}
               ok={env.wslInstalled === true}
-              detail={env.wslInstalled ? '설치됨' : env.wslRegistered ? '초기화 중...' : '미설치'}
+              detail={
+                env.wslInstalled
+                  ? t('envCheck.installed')
+                  : env.wslRegistered
+                    ? t('envCheck.initializing')
+                    : t('envCheck.notInstalled')
+              }
             />
           )}
           {env.os === 'windows' && env.installMode === 'native' && (
-            <CheckRow label="실행 모드" ok={true} detail="Windows 네이티브" />
+            <CheckRow
+              label={t('envCheck.runMode')}
+              ok={true}
+              detail={t('envCheck.windowsNative')}
+            />
           )}
           <CheckRow
             label="Node.js"
             ok={env.nodeVersionOk}
-            detail={env.nodeInstalled ? `v${env.nodeVersion}` : '미설치'}
+            detail={env.nodeInstalled ? `v${env.nodeVersion}` : t('envCheck.notInstalled')}
           />
           <CheckRow
             label="OpenClaw"
             ok={env.openclawInstalled}
-            detail={env.openclawInstalled ? `v${env.openclawVersion}` : '미설치'}
+            detail={env.openclawInstalled ? `v${env.openclawVersion}` : t('envCheck.notInstalled')}
           />
           {hasUpdate && (
             <button
@@ -131,7 +143,9 @@ export default function EnvCheckStep({
               disabled={updating}
               className="w-full text-xs text-center py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-accent transition-colors disabled:opacity-50"
             >
-              {updating ? '업데이트 중...' : `v${env.openclawLatestVersion} 업데이트 가능`}
+              {updating
+                ? t('envCheck.updating')
+                : t('envCheck.updateAvailable', { version: env.openclawLatestVersion })}
             </button>
           )}
         </div>
@@ -144,7 +158,11 @@ export default function EnvCheckStep({
         disabled={checking}
         loading={checking}
       >
-        {checking ? '검사 중' : allReady ? '다음 단계로' : '필요한 것 설치하기'}
+        {checking
+          ? t('envCheck.checking2')
+          : allReady
+            ? t('envCheck.nextStep')
+            : t('envCheck.installNeeded')}
       </Button>
     </div>
   )

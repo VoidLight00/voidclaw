@@ -1,4 +1,4 @@
-const STEP_LABELS = ['시작', '환경', '설치', 'API키', '텔레그램', '설정', '완료']
+import { useTranslation } from 'react-i18next'
 
 export default function StepIndicator({
   current,
@@ -7,6 +7,9 @@ export default function StepIndicator({
   current: number
   total?: number
 }): React.JSX.Element {
+  const { t } = useTranslation()
+  const labels = t('steps.labels', { returnObjects: true }) as readonly string[]
+
   return (
     <div className="px-8 pt-12 pb-3">
       {/* Dot indicators with connecting line */}
@@ -19,12 +22,12 @@ export default function StepIndicator({
           style={{ width: `${(current / (total - 1)) * 100}%` }}
         />
 
-        {STEP_LABELS.map((label, i) => {
+        {labels.map((label, i) => {
           const isActive = i <= current
           const isCurrent = i === current
 
           return (
-            <div key={label} className="relative flex flex-col items-center z-10">
+            <div key={i} className="relative flex flex-col items-center z-10">
               <div
                 className={`w-3 h-3 rounded-full transition-all duration-500 ${
                   isCurrent

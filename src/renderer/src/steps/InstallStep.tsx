@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import LobsterLogo from '../components/LobsterLogo'
 import Button from '../components/Button'
 import LogViewer from '../components/LogViewer'
@@ -17,6 +18,7 @@ export default function InstallStep({
   needs: InstallNeeds
   onDone: () => void
 }): React.JSX.Element {
+  const { t } = useTranslation()
   const { logs, error, clearLogs } = useInstallLogs()
   const [installing, setInstalling] = useState(false)
   const [done, setDone] = useState(false)
@@ -68,25 +70,25 @@ export default function InstallStep({
         <div>
           <h2 className="text-lg font-extrabold">
             {needsReboot
-              ? 'PC 재부팅 필요'
+              ? t('install.pcReboot')
               : done
-                ? '설치 완료!'
+                ? t('install.done')
                 : failed
-                  ? '설치 실패'
+                  ? t('install.failed')
                   : installing
-                    ? '설치 중...'
-                    : '설치 준비'}
+                    ? t('install.installing')
+                    : t('install.ready')}
           </h2>
           <p className="text-text-muted text-xs font-medium">
             {needsReboot
-              ? 'WSL2 활성화를 위해 재부팅 후 앱을 다시 실행해 주세요'
+              ? t('install.rebootDesc')
               : installing
-                ? '잠시만 기다려 주세요'
+                ? t('install.pleaseWait')
                 : done
-                  ? '모든 항목이 준비되었습니다'
+                  ? t('install.allReady')
                   : failed
-                    ? '로그를 확인해 주세요'
-                    : '아래 항목을 설치합니다'}
+                    ? t('install.checkLogs')
+                    : t('install.itemsToInstall')}
           </p>
         </div>
       </div>
@@ -120,22 +122,22 @@ export default function InstallStep({
       <div className="flex gap-3 justify-end mt-1">
         {failed && (
           <Button variant="secondary" size="sm" onClick={runInstall}>
-            다시 시도
+            {t('install.retry')}
           </Button>
         )}
         {!done && !installing && !failed && !needsReboot && (
           <Button variant="primary" size="lg" onClick={runInstall}>
-            설치 시작
+            {t('install.startInstall')}
           </Button>
         )}
         {done && (
           <Button variant="primary" size="lg" onClick={onDone}>
-            다음 단계로
+            {t('install.nextStep')}
           </Button>
         )}
         {needsReboot && (
           <Button variant="primary" size="lg" onClick={() => window.electronAPI.reboot()}>
-            지금 재부팅
+            {t('install.rebootNow')}
           </Button>
         )}
       </div>

@@ -2,6 +2,7 @@ import { contextBridge, ipcRenderer } from 'electron'
 
 const electronAPI = {
   version: (): Promise<string> => ipcRenderer.invoke('app:version'),
+  locale: (): Promise<string> => ipcRenderer.invoke('app:locale'),
   env: {
     check: (): Promise<{
       os: 'macos' | 'windows' | 'linux'

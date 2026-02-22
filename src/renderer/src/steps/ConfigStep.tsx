@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import LobsterLogo from '../components/LobsterLogo'
 import Button from '../components/Button'
 import LogViewer from '../components/LogViewer'
@@ -6,12 +7,12 @@ import { useInstallLogs } from '../hooks/useIpc'
 
 type Provider = 'anthropic' | 'google' | 'openai' | 'deepseek' | 'glm'
 
-const providerConfig: Record<Provider, { pattern: RegExp; label: string; placeholder: string }> = {
-  anthropic: { pattern: /^sk-ant-/, label: 'Anthropic API 키', placeholder: 'sk-ant-...' },
-  google: { pattern: /^AIza/, label: 'Gemini API 키', placeholder: 'AIza...' },
-  openai: { pattern: /^sk-(?!ant-)/, label: 'OpenAI API 키', placeholder: 'sk-...' },
-  deepseek: { pattern: /^sk-/, label: 'DeepSeek API 키', placeholder: 'sk-...' },
-  glm: { pattern: /^.{8,}$/, label: 'Z.AI API 키', placeholder: 'API 키 입력' }
+const providerPatterns: Record<Provider, RegExp> = {
+  anthropic: /^sk-ant-/,
+  google: /^AIza/,
+  openai: /^sk-(?!ant-)/,
+  deepseek: /^sk-/,
+  glm: /^.{8,}$/
 }
 
 const BOT_TOKEN_PATTERN = /^\d+:[A-Za-z0-9_-]+$/
@@ -22,13 +23,16 @@ interface Props {
 }
 
 export default function ConfigStep({ provider, onDone }: Props): React.JSX.Element {
+  const { t } = useTranslation()
   const [apiKey, setApiKey] = useState('')
   const [botToken, setBotToken] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const { logs, clearLogs } = useInstallLogs()
 
-  const { pattern, label, placeholder } = providerConfig[provider]
+  const pattern = providerPatterns[provider]
+  const label = t(`config.providers.${provider}.label`)
+  const placeholder = t(`config.providers.${provider}.placeholder`)
   const apiKeyValid = pattern.test(apiKey)
   const botTokenValid = BOT_TOKEN_PATTERN.test(botToken)
   const canSave = apiKeyValid && botTokenValid && !saving
@@ -46,10 +50,10 @@ export default function ConfigStep({ provider, onDone }: Props): React.JSX.Eleme
       if (result.success) {
         onDone(result.botUsername)
       } else {
-        setError(result.error ?? '설정 중 오류가 발생했습니다')
+        setError(result.error ?? t('config.defaultError'))
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : '알 수 없는 오류가 발생했습니다')
+      setError(e instanceof Error ? e.message : t('config.unknownError'))
     } finally {
       setSaving(false)
     }
@@ -60,14 +64,14 @@ export default function ConfigStep({ provider, onDone }: Props): React.JSX.Eleme
       <div className="flex items-center gap-3">
         <LobsterLogo state={saving ? 'loading' : 'idle'} size={48} />
         <div>
-          <h2 className="text-lg font-extrabold">API 키 설정</h2>
-          <p className="text-text-muted text-xs">발급받은 키를 입력해 주세요</p>
+          <h2 className="text-lg font-extrabold">{t('config.title')}</h2>
+          <p className="text-text-muted text-xs">{t('config.subtitle')}</p>
         </div>
       </div>
 
       <div className="space-y-1.5">
         <label className="text-sm font-bold">
-          {label} <span className="text-error text-xs">필수</span>
+          {label} <span className="text-error text-xs">{t('config.required')}</span>
         </label>
         <input
           type="password"
@@ -84,7 +88,7 @@ export default function ConfigStep({ provider, onDone }: Props): React.JSX.Eleme
 
       <div className="space-y-1.5">
         <label className="text-sm font-bold">
-          Telegram Bot Token <span className="text-error text-xs">필수</span>
+          Telegram Bot Token <span className="text-error text-xs">{t('config.required')}</span>
         </label>
         <input
           type="text"
@@ -98,7 +102,7 @@ export default function ConfigStep({ provider, onDone }: Props): React.JSX.Eleme
           }`}
         />
         {botToken && !botTokenValid && (
-          <p className="text-error text-[11px] font-medium">올바른 형식: 123456:ABCDEF...</p>
+          <p className="text-error text-[11px] font-medium">{t('config.botTokenFormat')}</p>
         )}
       </div>
 
@@ -113,7 +117,7 @@ export default function ConfigStep({ provider, onDone }: Props): React.JSX.Eleme
           disabled={!canSave}
           loading={saving}
         >
-          {saving ? '설정 중...' : '설정 저장'}
+          {saving ? t('config.saving') : t('config.save')}
         </Button>
       </div>
     </div>
