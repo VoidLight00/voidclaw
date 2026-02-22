@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import LobsterLogo from '../components/LobsterLogo'
 import Button from '../components/Button'
 import LogViewer from '../components/LogViewer'
@@ -15,6 +14,14 @@ const providerPatterns: Record<Provider, RegExp> = {
   glm: /^.{8,}$/
 }
 
+const providerLabels: Record<Provider, { label: string; placeholder: string }> = {
+  anthropic: { label: 'Anthropic API 키', placeholder: 'sk-ant-...' },
+  google: { label: 'Gemini API 키', placeholder: 'AIza...' },
+  openai: { label: 'OpenAI API 키', placeholder: 'sk-...' },
+  deepseek: { label: 'DeepSeek API 키', placeholder: 'sk-...' },
+  glm: { label: 'Z.AI API 키', placeholder: 'API 키 입력' }
+}
+
 const BOT_TOKEN_PATTERN = /^\d+:[A-Za-z0-9_-]+$/
 
 interface Props {
@@ -23,7 +30,6 @@ interface Props {
 }
 
 export default function ConfigStep({ provider, onDone }: Props): React.JSX.Element {
-  const { t } = useTranslation()
   const [apiKey, setApiKey] = useState('')
   const [botToken, setBotToken] = useState('')
   const [saving, setSaving] = useState(false)
@@ -31,8 +37,7 @@ export default function ConfigStep({ provider, onDone }: Props): React.JSX.Eleme
   const { logs, clearLogs } = useInstallLogs()
 
   const pattern = providerPatterns[provider]
-  const label = t(`config.providers.${provider}.label`)
-  const placeholder = t(`config.providers.${provider}.placeholder`)
+  const { label, placeholder } = providerLabels[provider]
   const apiKeyValid = pattern.test(apiKey)
   const botTokenValid = BOT_TOKEN_PATTERN.test(botToken)
   const canSave = apiKeyValid && botTokenValid && !saving
@@ -50,10 +55,10 @@ export default function ConfigStep({ provider, onDone }: Props): React.JSX.Eleme
       if (result.success) {
         onDone(result.botUsername)
       } else {
-        setError(result.error ?? t('config.defaultError'))
+        setError(result.error ?? '설정 중 오류가 발생했습니다')
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : t('config.unknownError'))
+      setError(e instanceof Error ? e.message : '알 수 없는 오류가 발생했습니다')
     } finally {
       setSaving(false)
     }
@@ -64,14 +69,14 @@ export default function ConfigStep({ provider, onDone }: Props): React.JSX.Eleme
       <div className="flex items-center gap-3">
         <LobsterLogo state={saving ? 'loading' : 'idle'} size={48} />
         <div>
-          <h2 className="text-lg font-extrabold">{t('config.title')}</h2>
-          <p className="text-text-muted text-xs">{t('config.subtitle')}</p>
+          <h2 className="text-lg font-extrabold">API 키 설정</h2>
+          <p className="text-text-muted text-xs">발급받은 키를 입력해 주세요</p>
         </div>
       </div>
 
       <div className="space-y-1.5">
         <label className="text-sm font-bold">
-          {label} <span className="text-error text-xs">{t('config.required')}</span>
+          {label} <span className="text-error text-xs">필수</span>
         </label>
         <input
           type="password"
@@ -88,7 +93,7 @@ export default function ConfigStep({ provider, onDone }: Props): React.JSX.Eleme
 
       <div className="space-y-1.5">
         <label className="text-sm font-bold">
-          Telegram Bot Token <span className="text-error text-xs">{t('config.required')}</span>
+          Telegram Bot Token <span className="text-error text-xs">필수</span>
         </label>
         <input
           type="text"
@@ -102,7 +107,7 @@ export default function ConfigStep({ provider, onDone }: Props): React.JSX.Eleme
           }`}
         />
         {botToken && !botTokenValid && (
-          <p className="text-error text-[11px] font-medium">{t('config.botTokenFormat')}</p>
+          <p className="text-error text-[11px] font-medium">올바른 형식: 123456:ABCDEF...</p>
         )}
       </div>
 
@@ -117,7 +122,7 @@ export default function ConfigStep({ provider, onDone }: Props): React.JSX.Eleme
           disabled={!canSave}
           loading={saving}
         >
-          {saving ? t('config.saving') : t('config.save')}
+          {saving ? '설정 중...' : '설정 저장'}
         </Button>
       </div>
     </div>

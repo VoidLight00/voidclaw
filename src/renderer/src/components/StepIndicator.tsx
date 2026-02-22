@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+const labels = ['시작', '환경', '설치', 'API키', '텔레그램', '설정', '완료']
 
 export default function StepIndicator({
   current,
@@ -7,9 +7,6 @@ export default function StepIndicator({
   current: number
   total?: number
 }): React.JSX.Element {
-  const { t } = useTranslation()
-  const labels = t('steps.labels', { returnObjects: true }) as readonly string[]
-
   return (
     <div className="px-8 pt-12 pb-3">
       {/* Dot indicators with connecting line */}

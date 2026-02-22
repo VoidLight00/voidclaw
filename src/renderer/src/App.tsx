@@ -1,5 +1,4 @@
 import { useState, useMemo, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
 import StepIndicator from './components/StepIndicator'
 import { useWizard } from './hooks/useWizard'
 import WelcomeStep from './steps/WelcomeStep'
@@ -50,7 +49,6 @@ const Bubbles = (): React.JSX.Element => {
 
 function App(): React.JSX.Element {
   const { currentStep, stepIndex, next, prev, canGoBack, goTo } = useWizard()
-  const { t, i18n } = useTranslation()
   const [installNeeds, setInstallNeeds] = useState<InstallNeeds>({
     needWsl: false,
     needNode: false,
@@ -64,14 +62,7 @@ function App(): React.JSX.Element {
 
   useEffect(() => {
     window.electronAPI.version().then(setVersion)
-    window.electronAPI.locale().then((locale) => {
-      i18n.changeLanguage(locale)
-    })
-  }, [i18n])
-
-  const toggleLanguage = (): void => {
-    i18n.changeLanguage(i18n.language === 'ko' ? 'ja' : 'ko')
-  }
+  }, [])
 
   const handleEnvCheckDone = (env: {
     os: string
@@ -122,12 +113,6 @@ function App(): React.JSX.Element {
         </div>
 
         <div className="absolute bottom-3 right-4 flex items-center gap-2">
-          <button
-            onClick={toggleLanguage}
-            className="text-[10px] text-text-muted/30 hover:text-text-muted/60 font-medium select-none transition-colors"
-          >
-            {i18n.language === 'ko' ? '日本語' : '한국어'}
-          </button>
           {version && (
             <span className="text-[10px] text-text-muted/30 font-medium select-none">
               v{version}
@@ -152,7 +137,7 @@ function App(): React.JSX.Element {
             >
               <polyline points="15 18 9 12 15 6" />
             </svg>
-            {t('app.back')}
+            이전
           </button>
         )}
       </div>

@@ -1,6 +1,5 @@
 interface ElectronAPI {
   version: () => Promise<string>
-  locale: () => Promise<string>
   env: {
     check: () => Promise<{
       os: 'macos' | 'windows' | 'linux'

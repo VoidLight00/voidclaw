@@ -30,12 +30,6 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
 
   ipcMain.handle('app:version', () => app.getVersion())
 
-  ipcMain.handle('app:locale', () => {
-    const locale = app.getLocale()
-    if (locale.startsWith('ja')) return 'ja'
-    return 'ko'
-  })
-
   ipcMain.handle('env:check', async () => {
     const result = await checkEnvironment()
     currentInstallMode = result.installMode

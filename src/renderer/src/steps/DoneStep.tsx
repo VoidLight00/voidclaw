@@ -1,11 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
 import LobsterLogo from '../components/LobsterLogo'
 import Button from '../components/Button'
 import LogViewer from '../components/LogViewer'
 
 export default function DoneStep({ botUsername }: { botUsername?: string }): React.JSX.Element {
-  const { t } = useTranslation()
   const [status, setStatus] = useState<'starting' | 'running' | 'stopped'>('starting')
   const [hasError, setHasError] = useState(false)
   const [logs, setLogs] = useState<string[]>([])
@@ -87,17 +85,17 @@ export default function DoneStep({ botUsername }: { botUsername?: string }): Rea
       <div className="text-center space-y-1.5">
         <h2 className="text-xl font-black">
           {status === 'running'
-            ? t('done.allReady')
+            ? '모든 준비 완료!'
             : status === 'starting'
-              ? t('done.starting')
-              : t('done.gatewayStopped')}
+              ? '시작하는 중...'
+              : '게이트웨이 중지됨'}
         </h2>
         <p className="text-text-muted text-sm font-medium">
           {status === 'running'
-            ? t('done.talkToAgent')
+            ? '텔레그램에서 AI 에이전트와 대화하세요'
             : status === 'starting'
               ? ''
-              : t('done.canRestart')}
+              : '다시 시작할 수 있습니다'}
         </p>
       </div>
 
@@ -122,10 +120,10 @@ export default function DoneStep({ botUsername }: { botUsername?: string }): Rea
         />
         <span className="text-sm font-bold tracking-wide">
           {status === 'running'
-            ? t('done.gatewayRunning')
+            ? 'Gateway 실행 중'
             : status === 'starting'
-              ? t('done.gatewayStarting')
-              : t('done.gatewayStopped2')}
+              ? '시작 중...'
+              : 'Gateway 중지됨'}
         </span>
       </div>
 
@@ -139,21 +137,21 @@ export default function DoneStep({ botUsername }: { botUsername?: string }): Rea
               window.open(url, '_blank')
             }}
           >
-            {t('done.openTelegram')}
+            텔레그램 열기
           </Button>
         )}
         {status === 'running' ? (
           <>
             <Button variant="secondary" size="sm" onClick={handleRestart}>
-              {t('done.restart')}
+              재시작
             </Button>
             <Button variant="secondary" size="sm" onClick={handleStop}>
-              {t('done.stop')}
+              중지
             </Button>
           </>
         ) : status === 'stopped' ? (
           <Button variant="secondary" size="sm" onClick={handleStart}>
-            {t('done.restartBtn')}
+            다시 시작
           </Button>
         ) : null}
       </div>
@@ -165,8 +163,8 @@ export default function DoneStep({ botUsername }: { botUsername?: string }): Rea
             onClick={() => setShowLogs((v) => !v)}
             className="text-[11px] text-text-muted/60 hover:text-text-muted transition-colors mb-1"
           >
-            {showLogs ? t('done.hideLogs') : t('done.showLogs')}
-            {hasError && <span className="ml-1.5 text-error">{t('done.errorDetected')}</span>}
+            {showLogs ? '▼ 로그 숨기기' : '▶ 로그 보기'}
+            {hasError && <span className="ml-1.5 text-error">● 오류 감지</span>}
           </button>
           {showLogs && <LogViewer lines={logs} />}
         </div>
@@ -174,13 +172,13 @@ export default function DoneStep({ botUsername }: { botUsername?: string }): Rea
 
       {status === 'running' && (
         <button
-          onClick={() => window.open(t('done.communityUrl'), '_blank')}
+          onClick={() => window.open('https://open.kakao.com/o/gbBkPehi', '_blank')}
           className="glass-card flex items-center gap-3 px-5 py-3 cursor-pointer hover:border-primary/40 transition-all duration-200"
         >
           <span className="text-base">💬</span>
           <div className="text-left">
-            <p className="text-sm font-bold">{t('done.communityChat')}</p>
-            <p className="text-[11px] text-text-muted">{t('done.communityDesc')}</p>
+            <p className="text-sm font-bold">카카오 오픈채팅방 참여하기</p>
+            <p className="text-[11px] text-text-muted">사용법, 질문, 피드백을 나눠보세요</p>
           </div>
           <svg
             className="ml-auto text-text-muted"

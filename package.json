@@ -1,6 +1,6 @@
 {
   "name": "easy-claw",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "description": "OpenClaw 원클릭 설치 프로그램",
   "license": "MIT",
   "main": "./out/main/index.js",
@@ -25,9 +25,7 @@
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
-    "@electron-toolkit/utils": "^4.0.0",
-    "i18next": "^25.8.13",
-    "react-i18next": "^16.5.4"
+    "@electron-toolkit/utils": "^4.0.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",

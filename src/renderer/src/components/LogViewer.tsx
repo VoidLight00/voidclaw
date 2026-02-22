@@ -1,10 +1,8 @@
 import { useRef, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
 
 const MAX_LINES = 500
 
 export default function LogViewer({ lines }: { lines: string[] }): React.JSX.Element {
-  const { t } = useTranslation()
   const bottomRef = useRef<HTMLDivElement>(null)
   const displayLines = lines.length > MAX_LINES ? lines.slice(-MAX_LINES) : lines
 
@@ -23,9 +21,7 @@ export default function LogViewer({ lines }: { lines: string[] }): React.JSX.Ele
       </div>
 
       <div className="p-3 h-32 overflow-y-auto font-mono text-[11px] leading-5 text-text-muted">
-        {displayLines.length === 0 && (
-          <span className="opacity-40 italic">{t('logViewer.waiting')}</span>
-        )}
+        {displayLines.length === 0 && <span className="opacity-40 italic">대기 중...</span>}
         {displayLines.map((line, i) => (
           <div key={i} className="break-all hover:text-text/80 transition-colors">
             <span className="text-primary/30 mr-2 select-none">&gt;</span>
