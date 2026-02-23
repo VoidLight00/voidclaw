@@ -12,13 +12,11 @@ on:
 jobs:
   build-mac:
     runs-on: macos-latest
-    env:
-      RELEASE_TAG: ${{ github.event.release.tag_name || github.event.inputs.tag }}
 
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ env.RELEASE_TAG }}
+          ref: ${{ github.event.release.tag_name || github.event.inputs.tag }}
 
       - uses: actions/setup-node@v4
         with:
@@ -39,19 +37,17 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
-          tag="${{ env.RELEASE_TAG }}"
+          tag="${{ github.event.release.tag_name || github.event.inputs.tag }}"
           gh release create "$tag" --repo ybgwon96/easyclaw-releases --title "$tag" --notes "https://easyclaw.kr" 2>/dev/null || true
           gh release upload "$tag" --repo ybgwon96/easyclaw-releases dist/*.dmg --clobber
 
   build-win:
     runs-on: windows-latest
-    env:
-      RELEASE_TAG: ${{ github.event.release.tag_name || github.event.inputs.tag }}
 
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ env.RELEASE_TAG }}
+          ref: ${{ github.event.release.tag_name || github.event.inputs.tag }}
 
       - uses: actions/setup-node@v4
         with:
@@ -67,6 +63,6 @@ jobs:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         shell: bash
         run: |
-          tag="${{ env.RELEASE_TAG }}"
+          tag="${{ github.event.release.tag_name || github.event.inputs.tag }}"
           gh release create "$tag" --repo ybgwon96/easyclaw-releases --title "$tag" --notes "https://easyclaw.kr" 2>/dev/null || true
           gh release upload "$tag" --repo ybgwon96/easyclaw-releases dist/*-setup.exe --clobber
