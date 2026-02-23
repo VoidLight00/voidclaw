@@ -3,6 +3,12 @@ import { spawn } from 'child_process'
 import { platform } from 'os'
 import { checkEnvironment } from './services/env-checker'
 import {
+  checkPort,
+  runDoctorFix,
+  checkExecutionPolicy,
+  fixExecutionPolicy
+} from './services/troubleshooter'
+import {
   installNodeMac,
   installNodeNative,
   installOpenClaw,
@@ -118,6 +124,11 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
   })
 
   ipcMain.handle('gateway:status', () => getGatewayStatus())
+
+  ipcMain.handle('troubleshoot:check-port', () => checkPort())
+  ipcMain.handle('troubleshoot:doctor-fix', () => runDoctorFix(win()))
+  ipcMain.handle('troubleshoot:check-execution-policy', () => checkExecutionPolicy())
+  ipcMain.handle('troubleshoot:fix-execution-policy', () => fixExecutionPolicy())
 
   ipcMain.handle('newsletter:subscribe', async (_e, email: string) => {
     try {

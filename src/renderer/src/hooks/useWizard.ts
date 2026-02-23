@@ -8,6 +8,7 @@ export type StepName =
   | 'telegramGuide'
   | 'config'
   | 'done'
+  | 'troubleshoot'
 
 const STEPS: StepName[] = [
   'welcome',

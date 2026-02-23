@@ -8,6 +8,7 @@ import ApiKeyGuideStep from './steps/ApiKeyGuideStep'
 import TelegramGuideStep from './steps/TelegramGuideStep'
 import ConfigStep from './steps/ConfigStep'
 import DoneStep from './steps/DoneStep'
+import TroubleshootStep from './steps/TroubleshootStep'
 
 interface InstallNeeds {
   needNode: boolean
@@ -56,10 +57,12 @@ function App(): React.JSX.Element {
     'anthropic'
   )
   const [botUsername, setBotUsername] = useState<string | undefined>()
+  const [isWindows, setIsWindows] = useState(false)
   const [version, setVersion] = useState('')
 
   useEffect(() => {
     window.electronAPI.version().then(setVersion)
+    window.electronAPI.env.check().then((env) => setIsWindows(env.os === 'windows'))
   }, [])
 
   const handleEnvCheckDone = (env: {
@@ -81,7 +84,9 @@ function App(): React.JSX.Element {
       <Bubbles />
 
       <div className="flex flex-col h-full relative z-10">
-        {currentStep !== 'welcome' && <StepIndicator current={stepIndex} />}
+        {currentStep !== 'welcome' && currentStep !== 'troubleshoot' && (
+          <StepIndicator current={stepIndex} />
+        )}
 
         <div className="flex-1 flex flex-col min-h-0 step-enter" key={currentStep}>
           {currentStep === 'welcome' && <WelcomeStep onNext={next} />}
@@ -104,7 +109,12 @@ function App(): React.JSX.Element {
               }}
             />
           )}
-          {currentStep === 'done' && <DoneStep botUsername={botUsername} />}
+          {currentStep === 'done' && (
+            <DoneStep botUsername={botUsername} onTroubleshoot={() => goTo('troubleshoot')} />
+          )}
+          {currentStep === 'troubleshoot' && (
+            <TroubleshootStep isWindows={isWindows} onBack={prev} />
+          )}
         </div>
 
         <div className="absolute bottom-3 right-4 flex items-center gap-2">
@@ -115,7 +125,7 @@ function App(): React.JSX.Element {
           )}
         </div>
 
-        {canGoBack && (
+        {canGoBack && currentStep !== 'troubleshoot' && (
           <button
             onClick={prev}
             className="absolute bottom-16 left-6 z-20 flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-text-muted hover:text-text bg-white/5 hover:bg-white/10 rounded-xl border border-glass-border transition-all duration-200"

@@ -47,6 +47,15 @@ const electronAPI = {
       return () => ipcRenderer.removeListener('gateway:log', handler)
     }
   },
+  troubleshoot: {
+    checkPort: (): Promise<{ inUse: boolean; pid?: string }> =>
+      ipcRenderer.invoke('troubleshoot:check-port'),
+    doctorFix: (): Promise<{ success: boolean }> => ipcRenderer.invoke('troubleshoot:doctor-fix'),
+    checkExecutionPolicy: (): Promise<{ restricted: boolean; policy: string }> =>
+      ipcRenderer.invoke('troubleshoot:check-execution-policy'),
+    fixExecutionPolicy: (): Promise<{ success: boolean }> =>
+      ipcRenderer.invoke('troubleshoot:fix-execution-policy')
+  },
   newsletter: {
     subscribe: (email: string): Promise<{ success: boolean }> =>
       ipcRenderer.invoke('newsletter:subscribe', email)

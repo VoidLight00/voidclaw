@@ -3,7 +3,13 @@ import LobsterLogo from '../components/LobsterLogo'
 import Button from '../components/Button'
 import LogViewer from '../components/LogViewer'
 
-export default function DoneStep({ botUsername }: { botUsername?: string }): React.JSX.Element {
+export default function DoneStep({
+  botUsername,
+  onTroubleshoot
+}: {
+  botUsername?: string
+  onTroubleshoot?: () => void
+}): React.JSX.Element {
   const [status, setStatus] = useState<'starting' | 'running' | 'stopped'>('starting')
   const [hasError, setHasError] = useState(false)
   const [logs, setLogs] = useState<string[]>([])
@@ -179,6 +185,32 @@ export default function DoneStep({ botUsername }: { botUsername?: string }): Rea
           <div className="text-left">
             <p className="text-sm font-bold">카카오 오픈채팅방 참여하기</p>
             <p className="text-[11px] text-text-muted">사용법, 질문, 피드백을 나눠보세요</p>
+          </div>
+          <svg
+            className="ml-auto text-text-muted"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+      )}
+
+      {onTroubleshoot && (
+        <button
+          onClick={onTroubleshoot}
+          className="glass-card flex items-center gap-3 px-5 py-3 cursor-pointer hover:border-primary/40 transition-all duration-200"
+        >
+          <span className="text-base">🔧</span>
+          <div className="text-left">
+            <p className="text-sm font-bold">문제 해결</p>
+            <p className="text-[11px] text-text-muted">자동 진단 및 복구를 실행합니다</p>
           </div>
           <svg
             className="ml-auto text-text-muted"

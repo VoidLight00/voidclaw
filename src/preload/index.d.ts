@@ -31,6 +31,12 @@ interface ElectronAPI {
     status: () => Promise<'running' | 'stopped'>
     onLog: (cb: (msg: string) => void) => () => void
   }
+  troubleshoot: {
+    checkPort: () => Promise<{ inUse: boolean; pid?: string }>
+    doctorFix: () => Promise<{ success: boolean }>
+    checkExecutionPolicy: () => Promise<{ restricted: boolean; policy: string }>
+    fixExecutionPolicy: () => Promise<{ success: boolean }>
+  }
   newsletter: {
     subscribe: (email: string) => Promise<{ success: boolean }>
   }
