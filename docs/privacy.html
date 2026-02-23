@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W8QS7CKLN8"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-W8QS7CKLN8');
+    </script>
+    <title>개인정보처리방침 — EasyClaw</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="description" content="EasyClaw 개인정보처리방침" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --primary: #f97316;
+        --primary-hover: #fb923c;
+        --primary-light: #fdba74;
+        --bg: #080c18;
+        --bg-card: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --text: #f0eef6;
+        --text-muted: #8b8a9e;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          'Nunito',
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+        line-height: 1.6;
+      }
+      a {
+        color: var(--primary);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+
+      /* ── Header ── */
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem 1rem;
+      }
+      .header-logo {
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: var(--text);
+        text-decoration: none;
+      }
+      .header-logo:hover {
+        text-decoration: none;
+      }
+      .header-logo .easy {
+        color: var(--text);
+      }
+      .header-logo .claw {
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .header-back {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--text-muted);
+      }
+      .header-back:hover {
+        color: var(--text);
+        text-decoration: none;
+      }
+
+      /* ── Content ── */
+      .content {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem 4rem;
+      }
+      .content h1 {
+        font-size: 2rem;
+        font-weight: 900;
+        margin-bottom: 0.5rem;
+      }
+      .content .date {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 2.5rem;
+      }
+      .content h2 {
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin-top: 2.5rem;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .content h2 .num {
+        color: var(--primary);
+        margin-right: 0.4rem;
+      }
+      .content p,
+      .content li {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        line-height: 1.8;
+      }
+      .content p {
+        margin-bottom: 0.75rem;
+      }
+      .content ul {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 0.75rem;
+      }
+      .content li {
+        position: relative;
+        padding-left: 1.2rem;
+        margin-bottom: 0.35rem;
+      }
+      .content li::before {
+        content: '·';
+        position: absolute;
+        left: 0;
+        color: var(--primary);
+        font-weight: 900;
+      }
+      .content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        font-size: 0.9rem;
+      }
+      .content th,
+      .content td {
+        text-align: left;
+        padding: 0.65rem 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .content th {
+        background: rgba(255, 255, 255, 0.04);
+        font-weight: 800;
+        color: var(--text);
+        white-space: nowrap;
+      }
+      .content td {
+        color: var(--text-muted);
+      }
+      .info-box {
+        background: var(--bg-card);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 1.25rem 1.5rem;
+        margin: 1.5rem 0;
+      }
+      .info-box p {
+        margin-bottom: 0.35rem;
+      }
+      .info-box p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* ── Footer ── */
+      footer {
+        text-align: center;
+        padding: 2rem 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      footer a {
+        color: var(--text-muted);
+        text-decoration: underline;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 600px) {
+        .content h1 {
+          font-size: 1.5rem;
+        }
+        .content h2 {
+          font-size: 1.1rem;
+        }
+        .content table {
+          font-size: 0.8rem;
+        }
+        .content th,
+        .content td {
+          padding: 0.5rem 0.6rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <a href="/" class="header-logo">
+        <span class="easy">Easy</span><span class="claw">Claw</span>
+      </a>
+      <a href="/" class="header-back">← 홈으로</a>
+    </header>
+
+    <main class="content">
+      <h1>개인정보처리방침</h1>
+      <p class="date">시행일: 2026년 2월 23일</p>
+
+      <p>
+        오르비스(ORBIS)(이하 "회사")는 「개인정보 보호법」에 따라 이용자의 개인정보를 보호하고,
+        이와 관련한 고충을 신속하게 처리할 수 있도록 다음과 같이 개인정보처리방침을 수립·공개합니다.
+      </p>
+
+      <h2><span class="num">1.</span> 개인정보 수집 항목 및 목적</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>수집 항목</th>
+            <th>수집 목적</th>
+            <th>수집 방법</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>이메일 주소</td>
+            <td>뉴스레터 발송 및 서비스 관련 안내</td>
+            <td>웹사이트 뉴스레터 구독 폼</td>
+          </tr>
+          <tr>
+            <td>쿠키, 접속 로그(IP, 브라우저 정보, 접속 시간 등)</td>
+            <td>웹사이트 이용 통계 분석 및 서비스 개선</td>
+            <td>Google Analytics 자동 수집</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2><span class="num">2.</span> 개인정보 보유 및 이용 기간</h2>
+      <p>
+        회사는 개인정보 수집 및 이용 목적이 달성된 후에는 해당 정보를 지체 없이 파기합니다.
+      </p>
+      <ul>
+        <li><strong>이메일 주소:</strong> 뉴스레터 구독 해지(동의 철회) 시까지</li>
+        <li><strong>접속 로그:</strong> Google Analytics 데이터 보존 정책에 따름 (기본 14개월)</li>
+      </ul>
+
+      <h2><span class="num">3.</span> 개인정보의 제3자 제공</h2>
+      <p>
+        회사는 이용자의 개인정보를 제3자에게 제공하지 않습니다.
+        다만, 법령에 의해 요구되는 경우는 예외로 합니다.
+      </p>
+
+      <h2><span class="num">4.</span> 개인정보 처리 위탁</h2>
+      <p>회사는 원활한 서비스 제공을 위하여 다음과 같이 개인정보 처리를 위탁하고 있습니다.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>수탁 업체</th>
+            <th>위탁 업무</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Google LLC</td>
+            <td>웹사이트 이용 통계 분석 (Google Analytics)</td>
+          </tr>
+          <tr>
+            <td>Vercel Inc.</td>
+            <td>웹사이트 호스팅 및 서버리스 함수 실행</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2><span class="num">5.</span> 정보주체의 권리·의무 및 행사 방법</h2>
+      <p>이용자는 언제든지 다음의 권리를 행사할 수 있습니다.</p>
+      <ul>
+        <li>개인정보 열람 요청</li>
+        <li>개인정보 정정·삭제 요청</li>
+        <li>개인정보 처리 정지 요청</li>
+        <li>뉴스레터 구독 해지 (수신 메일 내 수신거부 링크 또는 이메일 요청)</li>
+      </ul>
+      <p>
+        위 권리 행사는 아래 개인정보보호 책임자에게 이메일로 요청하실 수 있으며,
+        회사는 이에 대해 지체 없이 조치하겠습니다.
+      </p>
+
+      <h2><span class="num">6.</span> 개인정보 파기 절차 및 방법</h2>
+      <ul>
+        <li><strong>파기 절차:</strong> 수집·이용 목적이 달성되거나 보유 기간이 경과한 개인정보는 지체 없이 파기합니다.</li>
+        <li><strong>파기 방법:</strong> 전자적 파일 형태의 정보는 복구할 수 없는 기술적 방법을 사용하여 삭제합니다.</li>
+      </ul>
+
+      <h2><span class="num">7.</span> 쿠키의 사용</h2>
+      <p>
+        회사는 Google Analytics를 통해 쿠키를 사용하여 웹사이트 이용 통계를 수집합니다.
+        쿠키는 이용자의 브라우저에 저장되는 작은 텍스트 파일로, 웹사이트 이용 패턴을 분석하는 데 활용됩니다.
+      </p>
+      <ul>
+        <li><strong>쿠키 거부 방법:</strong> 브라우저 설정에서 쿠키 저장을 거부할 수 있습니다. 다만, 쿠키를 거부하더라도 서비스 이용에는 영향이 없습니다.</li>
+        <li><strong>Google Analytics 수집 거부:</strong> <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google Analytics 차단 브라우저 부가기능</a>을 설치하여 거부할 수 있습니다.</li>
+      </ul>
+
+      <h2><span class="num">8.</span> 개인정보보호 책임자</h2>
+      <div class="info-box">
+        <p><strong>성명:</strong> 권용범</p>
+        <p><strong>이메일:</strong> <a href="mailto:ybgwon96@gmail.com">ybgwon96@gmail.com</a></p>
+      </div>
+      <p>
+        개인정보 관련 문의, 불만 처리, 피해 구제 등에 관한 사항은 위 책임자에게 연락해 주시기 바랍니다.
+      </p>
+
+      <h2><span class="num">9.</span> 사업자 정보</h2>
+      <div class="info-box">
+        <p><strong>상호:</strong> 오르비스(ORBIS)</p>
+        <p><strong>대표자:</strong> 권용범</p>
+        <p><strong>사업자등록번호:</strong> 825-16-02771</p>
+        <p><strong>주소:</strong> 서울특별시 금천구 서부샛길 224, 203호(독산동, 모던하우스 금천2호점)</p>
+        <p><strong>이메일:</strong> <a href="mailto:ybgwon96@gmail.com">ybgwon96@gmail.com</a></p>
+      </div>
+
+      <h2><span class="num">10.</span> 개인정보처리방침 변경</h2>
+      <p>
+        이 개인정보처리방침은 2026년 2월 23일부터 적용됩니다.
+        변경 사항이 있을 경우 웹사이트를 통해 공지하겠습니다.
+      </p>
+    </main>
+
+    <footer>
+      <p>
+        <a href="/privacy.html">개인정보처리방침</a>
+      </p>
+      <p>&copy; 2026 오르비스(ORBIS) | 사업자등록번호: 825-16-02771</p>
+    </footer>
+
+    <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
+  </body>
+</html>
