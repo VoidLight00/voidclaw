@@ -1,3 +1,11 @@
+type WslState = 'not_available' | 'not_installed' | 'needs_reboot' | 'no_distro' | 'ready'
+
+interface WizardPersistedState {
+  step: string
+  wslInstalled: boolean
+  timestamp: number
+}
+
 interface ElectronAPI {
   version: () => Promise<string>
   env: {
@@ -9,6 +17,7 @@ interface ElectronAPI {
       openclawInstalled: boolean
       openclawVersion: string | null
       openclawLatestVersion: string | null
+      wslState?: WslState
     }>
   }
   install: {
@@ -34,8 +43,15 @@ interface ElectronAPI {
   troubleshoot: {
     checkPort: () => Promise<{ inUse: boolean; pid?: string }>
     doctorFix: () => Promise<{ success: boolean }>
-    checkExecutionPolicy: () => Promise<{ restricted: boolean; policy: string }>
-    fixExecutionPolicy: () => Promise<{ success: boolean }>
+  }
+  wsl: {
+    check: () => Promise<WslState>
+    install: () => Promise<{ success: boolean; needsReboot?: boolean; error?: string }>
+  }
+  wizard: {
+    saveState: (state: WizardPersistedState) => Promise<{ success: boolean }>
+    loadState: () => Promise<WizardPersistedState | null>
+    clearState: () => Promise<{ success: boolean }>
   }
   newsletter: {
     subscribe: (email: string) => Promise<{ success: boolean }>

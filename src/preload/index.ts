@@ -11,6 +11,7 @@ const electronAPI = {
       openclawInstalled: boolean
       openclawVersion: string | null
       openclawLatestVersion: string | null
+      wslState?: 'not_available' | 'not_installed' | 'needs_reboot' | 'no_distro' | 'ready'
     }> => ipcRenderer.invoke('env:check')
   },
   install: {
@@ -50,11 +51,27 @@ const electronAPI = {
   troubleshoot: {
     checkPort: (): Promise<{ inUse: boolean; pid?: string }> =>
       ipcRenderer.invoke('troubleshoot:check-port'),
-    doctorFix: (): Promise<{ success: boolean }> => ipcRenderer.invoke('troubleshoot:doctor-fix'),
-    checkExecutionPolicy: (): Promise<{ restricted: boolean; policy: string }> =>
-      ipcRenderer.invoke('troubleshoot:check-execution-policy'),
-    fixExecutionPolicy: (): Promise<{ success: boolean }> =>
-      ipcRenderer.invoke('troubleshoot:fix-execution-policy')
+    doctorFix: (): Promise<{ success: boolean }> => ipcRenderer.invoke('troubleshoot:doctor-fix')
+  },
+  wsl: {
+    check: (): Promise<
+      'not_available' | 'not_installed' | 'needs_reboot' | 'no_distro' | 'ready'
+    > => ipcRenderer.invoke('wsl:check'),
+    install: (): Promise<{ success: boolean; needsReboot?: boolean; error?: string }> =>
+      ipcRenderer.invoke('wsl:install')
+  },
+  wizard: {
+    saveState: (state: {
+      step: string
+      wslInstalled: boolean
+      timestamp: number
+    }): Promise<{ success: boolean }> => ipcRenderer.invoke('wizard:save-state', state),
+    loadState: (): Promise<{
+      step: string
+      wslInstalled: boolean
+      timestamp: number
+    } | null> => ipcRenderer.invoke('wizard:load-state'),
+    clearState: (): Promise<{ success: boolean }> => ipcRenderer.invoke('wizard:clear-state')
   },
   newsletter: {
     subscribe: (email: string): Promise<{ success: boolean }> =>

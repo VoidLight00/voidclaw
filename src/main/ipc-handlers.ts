@@ -1,18 +1,16 @@
 import { ipcMain, BrowserWindow, app } from 'electron'
 import { spawn } from 'child_process'
 import { platform } from 'os'
+import { join } from 'path'
+import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'fs'
 import { checkEnvironment } from './services/env-checker'
-import {
-  checkPort,
-  runDoctorFix,
-  checkExecutionPolicy,
-  fixExecutionPolicy
-} from './services/troubleshooter'
+import { checkPort, runDoctorFix } from './services/troubleshooter'
 import {
   installNodeMac,
-  installNodeNative,
   installOpenClaw,
-  installOpenClawNative
+  installWsl,
+  installNodeWsl,
+  installOpenClawWsl
 } from './services/installer'
 import { runOnboard } from './services/onboarder'
 import {
@@ -21,6 +19,15 @@ import {
   getGatewayStatus,
   setGatewayLogCallback
 } from './services/gateway'
+import { checkWslState } from './services/wsl-utils'
+
+interface WizardPersistedState {
+  step: string
+  wslInstalled: boolean
+  timestamp: number
+}
+
+const getWizardStatePath = (): string => join(app.getPath('userData'), 'wizard-state.json')
 
 export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void => {
   const win = (): BrowserWindow => {
@@ -33,10 +40,64 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
 
   ipcMain.handle('env:check', () => checkEnvironment())
 
+  // WSL 관련 IPC
+  ipcMain.handle('wsl:check', () => checkWslState())
+
+  ipcMain.handle('wsl:install', async () => {
+    try {
+      const result = await installWsl(win())
+      return { success: true, needsReboot: result.needsReboot }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e)
+      try {
+        win().webContents.send('install:error', msg)
+      } catch {
+        /* window destroyed */
+      }
+      return { success: false, error: msg }
+    }
+  })
+
+  // Wizard 상태 영속화 IPC
+  ipcMain.handle('wizard:save-state', (_e, state: WizardPersistedState) => {
+    try {
+      writeFileSync(getWizardStatePath(), JSON.stringify(state))
+      return { success: true }
+    } catch {
+      return { success: false }
+    }
+  })
+
+  ipcMain.handle('wizard:load-state', () => {
+    try {
+      const path = getWizardStatePath()
+      if (!existsSync(path)) return null
+      const state: WizardPersistedState = JSON.parse(readFileSync(path, 'utf-8'))
+      // 24시간 경과 시 만료
+      if (Date.now() - state.timestamp > 24 * 60 * 60 * 1000) {
+        unlinkSync(path)
+        return null
+      }
+      return state
+    } catch {
+      return null
+    }
+  })
+
+  ipcMain.handle('wizard:clear-state', () => {
+    try {
+      const path = getWizardStatePath()
+      if (existsSync(path)) unlinkSync(path)
+      return { success: true }
+    } catch {
+      return { success: false }
+    }
+  })
+
   ipcMain.handle('install:node', async () => {
     try {
       if (platform() === 'win32') {
-        await installNodeNative(win())
+        await installNodeWsl(win())
       } else {
         await installNodeMac(win())
       }
@@ -55,7 +116,7 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
   ipcMain.handle('install:openclaw', async () => {
     try {
       if (platform() === 'win32') {
-        await installOpenClawNative(win())
+        await installOpenClawWsl(win())
       } else {
         await installOpenClaw(win())
       }
@@ -127,8 +188,6 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
 
   ipcMain.handle('troubleshoot:check-port', () => checkPort())
   ipcMain.handle('troubleshoot:doctor-fix', () => runDoctorFix(win()))
-  ipcMain.handle('troubleshoot:check-execution-policy', () => checkExecutionPolicy())
-  ipcMain.handle('troubleshoot:fix-execution-policy', () => fixExecutionPolicy())
 
   ipcMain.handle('newsletter:subscribe', async (_e, email: string) => {
     try {

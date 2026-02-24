@@ -1,9 +1,9 @@
 import { spawn, ChildProcess } from 'child_process'
 import { platform } from 'os'
-import { getPathEnv, getNativeEnv, findBin } from './path-utils'
+import { getPathEnv, findBin } from './path-utils'
 
-// Windows: gateway를 포그라운드 프로세스로 유지
-let nativeGatewayProcess: ChildProcess | null = null
+// Windows WSL: gateway를 포그라운드 프로세스로 유지
+let wslGatewayProcess: ChildProcess | null = null
 
 // Gateway 로그 콜백 (ipc-handlers에서 설정)
 let logCallback: ((msg: string) => void) | null = null
@@ -38,22 +38,31 @@ const runGateway = (args: string[]): Promise<string> => {
   })
 }
 
-const startGatewayNative = async (): Promise<string> => {
-  if (nativeGatewayProcess) {
-    nativeGatewayProcess.kill()
-    nativeGatewayProcess = null
+const startGatewayWsl = async (): Promise<string> => {
+  if (wslGatewayProcess) {
+    wslGatewayProcess.kill()
+    wslGatewayProcess = null
   }
-  await killNativeGateway()
+  await killWslGateway()
   await new Promise((r) => setTimeout(r, 1000))
 
   return new Promise((resolve) => {
-    const child = spawn('openclaw', ['gateway', 'run'], {
-      shell: true,
-      env: getNativeEnv({ NODE_OPTIONS: '--dns-result-order=ipv4first' }),
-      stdio: ['ignore', 'pipe', 'pipe']
-    })
+    const child = spawn(
+      'wsl',
+      [
+        '-d',
+        'Ubuntu',
+        '-u',
+        'root',
+        '--',
+        'bash',
+        '-lc',
+        'NODE_OPTIONS=--dns-result-order=ipv4first openclaw gateway run'
+      ],
+      { shell: true, stdio: ['ignore', 'pipe', 'pipe'] }
+    )
 
-    nativeGatewayProcess = child
+    wslGatewayProcess = child
 
     let resolved = false
 
@@ -76,7 +85,7 @@ const startGatewayNative = async (): Promise<string> => {
     })
 
     child.on('close', (code) => {
-      nativeGatewayProcess = null
+      wslGatewayProcess = null
       emitLog(`[gateway] 프로세스 종료 (code: ${code})`)
       if (!resolved) {
         resolved = true
@@ -85,7 +94,7 @@ const startGatewayNative = async (): Promise<string> => {
     })
 
     child.on('error', (err) => {
-      nativeGatewayProcess = null
+      wslGatewayProcess = null
       emitLog(`[gateway] 오류: ${err.message}`)
       if (!resolved) {
         resolved = true
@@ -102,22 +111,23 @@ const startGatewayNative = async (): Promise<string> => {
   })
 }
 
-const killNativeGateway = (): Promise<void> =>
+const killWslGateway = (): Promise<void> =>
   new Promise((resolve) => {
-    const ps =
-      'Get-Process node -ErrorAction SilentlyContinue | ' +
-      "Where-Object {$_.CommandLine -like '*openclaw*'} | Stop-Process -Force"
-    const child = spawn('powershell', ['-Command', ps], { shell: true })
+    const child = spawn(
+      'wsl',
+      ['-d', 'Ubuntu', '-u', 'root', '--', 'pkill', '-9', '-f', 'openclaw'],
+      { shell: true }
+    )
     child.on('close', () => resolve())
     child.on('error', () => resolve())
   })
 
-const stopGatewayNative = async (): Promise<string> => {
-  if (nativeGatewayProcess) {
-    nativeGatewayProcess.kill()
-    nativeGatewayProcess = null
+const stopGatewayWsl = async (): Promise<string> => {
+  if (wslGatewayProcess) {
+    wslGatewayProcess.kill()
+    wslGatewayProcess = null
   }
-  await killNativeGateway()
+  await killWslGateway()
   await new Promise((r) => setTimeout(r, 1000))
   return 'stopped'
 }
@@ -125,11 +135,19 @@ const stopGatewayNative = async (): Promise<string> => {
 const runDoctorFix = (): Promise<void> =>
   new Promise((resolve) => {
     const isWin = platform() === 'win32'
-    const cmd = isWin ? 'openclaw' : findBin('npm')
-    const args = isWin ? ['doctor', '--fix'] : ['exec', '--', 'openclaw', 'doctor', '--fix']
+    let cmd: string
+    let args: string[]
+
+    if (isWin) {
+      cmd = 'wsl'
+      args = ['-d', 'Ubuntu', '-u', 'root', '--', 'bash', '-lc', 'openclaw doctor --fix']
+    } else {
+      cmd = findBin('npm')
+      args = ['exec', '--', 'openclaw', 'doctor', '--fix']
+    }
 
     const child = spawn(cmd, args, {
-      env: isWin ? getNativeEnv() : getPathEnv(),
+      env: isWin ? process.env : getPathEnv(),
       shell: isWin
     })
     child.stdout.on('data', (d) => {
@@ -146,9 +164,8 @@ const runDoctorFix = (): Promise<void> =>
 
 export const startGateway = async (): Promise<string> => {
   const isWin = platform() === 'win32'
-  const starter = isWin ? startGatewayNative() : runGateway(['start'])
+  const starter = isWin ? startGatewayWsl() : runGateway(['start'])
   const result = await starter
-  // gateway 실행 후 doctor --fix로 세션/설정 복구 (완료 대기)
   if (result === 'started') {
     await runDoctorFix()
   }
@@ -157,13 +174,13 @@ export const startGateway = async (): Promise<string> => {
 
 export const stopGateway = (): Promise<string> => {
   const isWin = platform() === 'win32'
-  if (isWin) return stopGatewayNative()
+  if (isWin) return stopGatewayWsl()
   return runGateway(['stop'])
 }
 
 export const getGatewayStatus = async (): Promise<'running' | 'stopped'> => {
   if (platform() === 'win32') {
-    return nativeGatewayProcess && !nativeGatewayProcess.killed ? 'running' : 'stopped'
+    return wslGatewayProcess && !wslGatewayProcess.killed ? 'running' : 'stopped'
   }
   try {
     const output = await runGateway(['status'])

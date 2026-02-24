@@ -1,7 +1,7 @@
 import { spawn } from 'child_process'
 import { platform } from 'os'
 import { BrowserWindow } from 'electron'
-import { getPathEnv, getNativeEnv, findBin } from './path-utils'
+import { getPathEnv, findBin } from './path-utils'
 
 const exec = (
   cmd: string,
@@ -20,8 +20,9 @@ const exec = (
 
 export const checkPort = async (port = 18789): Promise<{ inUse: boolean; pid?: string }> => {
   const isWin = platform() === 'win32'
+  // Windows에서도 호스트 OS의 netstat으로 포트 체크 (WSL localhost 포워딩)
   const out = isWin
-    ? await exec('netstat', ['-ano'], getNativeEnv(), true)
+    ? await exec('netstat', ['-ano'], process.env as NodeJS.ProcessEnv, true)
     : await exec('lsof', ['-i', `:${port}`, '-t'], getPathEnv())
 
   if (isWin) {
@@ -37,12 +38,20 @@ export const checkPort = async (port = 18789): Promise<{ inUse: boolean; pid?: s
 
 export const runDoctorFix = async (win: BrowserWindow): Promise<{ success: boolean }> => {
   const isWin = platform() === 'win32'
-  const cmd = isWin ? 'openclaw' : findBin('npm')
-  const args = isWin ? ['doctor', '--fix'] : ['exec', '--', 'openclaw', 'doctor', '--fix']
+  let cmd: string
+  let args: string[]
+
+  if (isWin) {
+    cmd = 'wsl'
+    args = ['-d', 'Ubuntu', '-u', 'root', '--', 'bash', '-lc', 'openclaw doctor --fix']
+  } else {
+    cmd = findBin('npm')
+    args = ['exec', '--', 'openclaw', 'doctor', '--fix']
+  }
 
   return new Promise((resolve) => {
     const child = spawn(cmd, args, {
-      env: isWin ? getNativeEnv() : getPathEnv(),
+      env: isWin ? process.env : getPathEnv(),
       shell: isWin
     })
 
@@ -69,32 +78,4 @@ export const runDoctorFix = async (win: BrowserWindow): Promise<{ success: boole
     child.on('close', (code) => resolve({ success: code === 0 }))
     child.on('error', () => resolve({ success: false }))
   })
-}
-
-export const checkExecutionPolicy = async (): Promise<{
-  restricted: boolean
-  policy: string
-}> => {
-  if (platform() !== 'win32') return { restricted: false, policy: 'N/A' }
-
-  const out = await exec(
-    'powershell',
-    ['-Command', 'Get-ExecutionPolicy -Scope CurrentUser'],
-    getNativeEnv(),
-    true
-  )
-  const policy = out.trim() || 'Unknown'
-  return { restricted: policy === 'Restricted' || policy === 'Undefined', policy }
-}
-
-export const fixExecutionPolicy = async (): Promise<{ success: boolean }> => {
-  if (platform() !== 'win32') return { success: true }
-
-  const out = await exec(
-    'powershell',
-    ['-Command', 'Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; echo OK'],
-    getNativeEnv(),
-    true
-  )
-  return { success: out.includes('OK') }
 }

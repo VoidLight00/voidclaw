@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import LobsterLogo from '../components/LobsterLogo'
 import Button from '../components/Button'
 
+type WslState = 'not_available' | 'not_installed' | 'needs_reboot' | 'no_distro' | 'ready'
+
 interface EnvResult {
   os: 'macos' | 'windows' | 'linux'
   nodeInstalled: boolean
@@ -10,6 +12,7 @@ interface EnvResult {
   openclawInstalled: boolean
   openclawVersion: string | null
   openclawLatestVersion: string | null
+  wslState?: WslState
 }
 
 const CheckRow = ({
@@ -32,6 +35,23 @@ const CheckRow = ({
     </div>
   </div>
 )
+
+const wslStateLabel = (state?: WslState): string => {
+  switch (state) {
+    case 'ready':
+      return '준비됨'
+    case 'no_distro':
+      return 'Ubuntu 미설치'
+    case 'needs_reboot':
+      return '재부팅 필요'
+    case 'not_installed':
+      return '미설치'
+    case 'not_available':
+      return '미지원'
+    default:
+      return '확인 중'
+  }
+}
 
 export default function EnvCheckStep({
   onNext,
@@ -97,6 +117,13 @@ export default function EnvCheckStep({
             ok={true}
             detail={env.os === 'macos' ? 'macOS' : env.os === 'windows' ? 'Windows' : 'Linux'}
           />
+          {env.os === 'windows' && (
+            <CheckRow
+              label="WSL"
+              ok={env.wslState === 'ready'}
+              detail={wslStateLabel(env.wslState)}
+            />
+          )}
           <CheckRow
             label="Node.js"
             ok={env.nodeVersionOk}

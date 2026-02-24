@@ -16,14 +16,11 @@ interface DiagItem {
 }
 
 interface TroubleshootStepProps {
-  isWindows: boolean
+  isWindows?: boolean
   onBack: () => void
 }
 
-export default function TroubleshootStep({
-  isWindows,
-  onBack
-}: TroubleshootStepProps): React.JSX.Element {
+export default function TroubleshootStep({ onBack }: TroubleshootStepProps): React.JSX.Element {
   const { logs, clearLogs } = useInstallLogs()
   const [showLogs, setShowLogs] = useState(false)
 
@@ -40,22 +37,13 @@ export default function TroubleshootStep({
   const [portDetail, setPortDetail] = useState('확인 중...')
   const [portFixing, setPortFixing] = useState(false)
 
-  const [epStatus, setEpStatus] = useState<DiagStatus>('checking')
-  const [epDetail, setEpDetail] = useState('확인 중...')
-  const [epFixing, setEpFixing] = useState(false)
-
   const diagnose = useCallback(async () => {
-    // 환경 체크
     setEnvStatus('checking')
     setEnvDetail('확인 중...')
     setGwStatus('checking')
     setGwDetail('확인 중...')
     setPortStatus('checking')
     setPortDetail('확인 중...')
-    if (isWindows) {
-      setEpStatus('checking')
-      setEpDetail('확인 중...')
-    }
 
     try {
       const env = await window.electronAPI.env.check()
@@ -103,18 +91,7 @@ export default function TroubleshootStep({
       setPortStatus('error')
       setPortDetail('포트 확인 실패')
     }
-
-    if (isWindows) {
-      try {
-        const ep = await window.electronAPI.troubleshoot.checkExecutionPolicy()
-        setEpStatus(ep.restricted ? 'warn' : 'ok')
-        setEpDetail(ep.restricted ? `정책: ${ep.policy} — 변경 필요` : `정책: ${ep.policy}`)
-      } catch {
-        setEpStatus('error')
-        setEpDetail('정책 확인 실패')
-      }
-    }
-  }, [isWindows])
+  }, [])
 
   const didRun = useRef<true | null>(null)
   if (didRun.current == null) {
@@ -149,19 +126,6 @@ export default function TroubleshootStep({
     diagnose()
   }
 
-  const fixEp = async (): Promise<void> => {
-    setEpFixing(true)
-    const r = await window.electronAPI.troubleshoot.fixExecutionPolicy()
-    setEpFixing(false)
-    if (r.success) {
-      setEpStatus('ok')
-      setEpDetail('정책: RemoteSigned')
-    } else {
-      setEpStatus('error')
-      setEpDetail('변경 실패 — 관리자 권한 필요')
-    }
-  }
-
   const items: DiagItem[] = [
     {
       label: '환경',
@@ -188,17 +152,6 @@ export default function TroubleshootStep({
       fixing: portFixing
     }
   ]
-
-  if (isWindows) {
-    items.push({
-      label: 'ExecutionPolicy',
-      detail: epDetail,
-      status: epStatus,
-      fixLabel: '변경',
-      onFix: fixEp,
-      fixing: epFixing
-    })
-  }
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center px-10 gap-5">

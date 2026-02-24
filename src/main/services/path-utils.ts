@@ -1,5 +1,5 @@
-import { existsSync, readFileSync } from 'fs'
-import { platform, homedir } from 'os'
+import { existsSync } from 'fs'
+import { platform } from 'os'
 import { join } from 'path'
 
 export const PATH_DIRS = [
@@ -14,65 +14,6 @@ export const getPathEnv = (): NodeJS.ProcessEnv => ({
   ...process.env,
   PATH: [...PATH_DIRS, process.env.PATH ?? ''].join(':')
 })
-
-/** Windows 네이티브 모드용 node.exe 절대 경로 탐색 */
-export const findNodeExe = (): string | null => {
-  const candidates = [
-    join('C:\\Program Files\\nodejs', 'node.exe'),
-    join('C:\\Program Files (x86)\\nodejs', 'node.exe')
-  ]
-  return candidates.find(existsSync) ?? null
-}
-
-/** Windows 네이티브 모드용 npm-cli.js 절대 경로 탐색 */
-export const findNpmCli = (): string | null => {
-  const candidates = [
-    join('C:\\Program Files\\nodejs', 'node_modules', 'npm', 'bin', 'npm-cli.js'),
-    join(process.env.APPDATA ?? '', 'npm', 'node_modules', 'npm', 'bin', 'npm-cli.js')
-  ]
-  return candidates.find(existsSync) ?? null
-}
-
-/** Windows 네이티브 모드용 PATH 확장 (PATH/Path 중복 제거) */
-export const getNativeEnv = (extra?: Record<string, string>): NodeJS.ProcessEnv => {
-  const cleaned: Record<string, string> = {}
-  for (const [key, val] of Object.entries(process.env)) {
-    if (key.toLowerCase() !== 'path' && val !== undefined) cleaned[key] = val
-  }
-  const existingPath = process.env.PATH ?? process.env.Path ?? ''
-  const localCliBin = join(homedir(), '.openclaw', 'cli', 'node_modules', '.bin')
-  const npmGlobalBin = join(process.env.APPDATA ?? '', 'npm')
-  const nodePath = 'C:\\Program Files\\nodejs'
-  const gitPath = 'C:\\Program Files\\Git\\cmd'
-  const mingitPath = join(homedir(), '.openclaw', 'mingit', 'cmd')
-  cleaned.PATH = [localCliBin, npmGlobalBin, nodePath, gitPath, mingitPath, existingPath]
-    .filter(Boolean)
-    .join(';')
-  return extra ? { ...cleaned, ...extra } : cleaned
-}
-
-/** Windows 네이티브 모드용 openclaw bin 엔트리 파일 절대 경로 탐색 */
-export const findOpenclawBin = (): string | null => {
-  const candidateDirs = [
-    join(process.env.APPDATA ?? '', 'npm', 'node_modules', 'openclaw'),
-    join(homedir(), '.openclaw', 'cli', 'node_modules', 'openclaw')
-  ]
-  for (const dir of candidateDirs) {
-    const pkgPath = join(dir, 'package.json')
-    if (!existsSync(pkgPath)) continue
-    try {
-      const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'))
-      const bin = typeof pkg.bin === 'string' ? pkg.bin : pkg.bin?.openclaw
-      if (bin) {
-        const resolved = join(dir, bin)
-        if (existsSync(resolved)) return resolved
-      }
-    } catch {
-      /* ignore */
-    }
-  }
-  return null
-}
 
 export const findBin = (name: string): string => {
   if (platform() === 'win32') return name

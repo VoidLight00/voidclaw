@@ -1,7 +1,7 @@
 import { spawn } from 'child_process'
 import { platform } from 'os'
 import https from 'https'
-import { getNativeEnv, findNodeExe, findNpmCli } from './path-utils'
+import { checkWslState, runInWsl, type WslState } from './wsl-utils'
 
 export interface EnvCheckResult {
   os: 'macos' | 'windows' | 'linux'
@@ -11,6 +11,7 @@ export interface EnvCheckResult {
   openclawInstalled: boolean
   openclawVersion: string | null
   openclawLatestVersion: string | null
+  wslState?: WslState
 }
 
 const PATH_EXTENSIONS = [
@@ -29,38 +30,6 @@ const getEnv = (): NodeJS.ProcessEnv => ({
   ...process.env,
   PATH: `${PATH_EXTENSIONS}:${process.env.PATH ?? ''}`
 })
-
-const runNativeCommand = (cmd: string, args: string[]): Promise<string> =>
-  new Promise((resolve, reject) => {
-    let actualCmd = cmd
-    let actualArgs = args
-    let useShell = true
-    // npm 명령은 node.exe로 npm-cli.js 직접 실행 (cmd.exe 체인 ENOENT 방지)
-    if (cmd === 'npm') {
-      const nodeExe = findNodeExe()
-      const npmCli = findNpmCli()
-      if (nodeExe && npmCli) {
-        actualCmd = nodeExe
-        actualArgs = [npmCli, ...args]
-        useShell = false
-      }
-    }
-    const child = spawn(actualCmd, actualArgs, { shell: useShell, env: getNativeEnv() })
-    const timer = setTimeout(() => {
-      child.kill()
-      reject(new Error('timeout'))
-    }, 15000)
-    let stdout = ''
-    child.stdout.on('data', (d) => (stdout += d.toString()))
-    child.on('close', (code) => {
-      clearTimeout(timer)
-      code === 0 ? resolve(stdout.trim()) : reject(new Error(`exit ${code}`))
-    })
-    child.on('error', (err) => {
-      clearTimeout(timer)
-      reject(err)
-    })
-  })
 
 const runCommand = (cmd: string, args: string[]): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -132,86 +101,93 @@ const fetchLatestVersion = (pkg: string): Promise<string> =>
     }, 5000)
   })
 
-export const checkEnvironment = async (): Promise<EnvCheckResult> => {
-  const os = platform() === 'darwin' ? 'macos' : platform() === 'win32' ? 'windows' : 'linux'
-
+const checkNodeAndOpenclaw = async (
+  run: (cmd: string, args: string[]) => Promise<string>
+): Promise<{
+  nodeInstalled: boolean
+  nodeVersion: string | null
+  nodeVersionOk: boolean
+  openclawInstalled: boolean
+  openclawVersion: string | null
+}> => {
   let nodeVersion: string | null = null
   let nodeInstalled = false
   let nodeVersionOk = false
   let openclawInstalled = false
   let openclawVersion: string | null = null
 
-  if (os === 'windows') {
-    // Windows: 네이티브 모드로 직접 실행
+  try {
+    const raw = await run('node', ['--version'])
+    nodeVersion = parseVersion(raw)
+    nodeInstalled = nodeVersion !== null
+    nodeVersionOk = nodeVersion ? semverGte(nodeVersion, '22.12.0') : false
+  } catch {
+    /* not installed */
+  }
+
+  try {
+    const raw = await run('npm', ['list', '-g', 'openclaw', '--json'])
+    const json = JSON.parse(raw)
+    const deps = json.dependencies?.openclaw
+    if (deps) {
+      openclawInstalled = true
+      openclawVersion = deps.version ?? null
+    }
+  } catch {
+    /* not installed */
+  }
+
+  if (!openclawInstalled || !openclawVersion) {
     try {
-      const raw = await runNativeCommand('node', ['--version'])
-      nodeVersion = parseVersion(raw)
-      nodeInstalled = nodeVersion !== null
-      nodeVersionOk = nodeVersion ? semverGte(nodeVersion, '22.12.0') : false
+      const raw = await run('openclaw', ['--version'])
+      const ver = parseVersion(raw)
+      if (ver) {
+        openclawInstalled = true
+        openclawVersion = ver
+      }
     } catch {
       /* not installed */
     }
+  }
 
-    try {
-      const raw = await runNativeCommand('npm', ['list', '-g', 'openclaw', '--json'])
-      const json = JSON.parse(raw)
-      const deps = json.dependencies?.openclaw
-      if (deps) {
-        openclawInstalled = true
-        openclawVersion = deps.version ?? null
-      }
-    } catch {
-      /* not installed globally */
+  return { nodeInstalled, nodeVersion, nodeVersionOk, openclawInstalled, openclawVersion }
+}
+
+export const checkEnvironment = async (): Promise<EnvCheckResult> => {
+  const os = platform() === 'darwin' ? 'macos' : platform() === 'win32' ? 'windows' : 'linux'
+
+  let wslState: WslState | undefined
+  let nodeInstalled = false
+  let nodeVersion: string | null = null
+  let nodeVersionOk = false
+  let openclawInstalled = false
+  let openclawVersion: string | null = null
+
+  if (os === 'windows') {
+    // Windows: WSL 상태 확인 후, ready면 WSL 내부에서 Node.js/OpenClaw 체크
+    wslState = await checkWslState()
+
+    if (wslState === 'ready') {
+      const shellEscape = (s: string): string => `'${s.replace(/'/g, "'\\''")}'`
+      const wslRun = (cmd: string, args: string[]): Promise<string> =>
+        runInWsl(`${cmd} ${args.map(shellEscape).join(' ')}`)
+
+      const result = await checkNodeAndOpenclaw(wslRun)
+      nodeInstalled = result.nodeInstalled
+      nodeVersion = result.nodeVersion
+      nodeVersionOk = result.nodeVersionOk
+      openclawInstalled = result.openclawInstalled
+      openclawVersion = result.openclawVersion
     }
-    // 글로벌 미설치 또는 버전 파싱 실패 시 fallback
-    if (!openclawInstalled || !openclawVersion) {
-      try {
-        const raw = await runNativeCommand('openclaw', ['--version'])
-        const ver = parseVersion(raw)
-        if (ver) {
-          openclawInstalled = true
-          openclawVersion = ver
-        }
-      } catch {
-        /* not installed */
-      }
-    }
+    // wslState !== 'ready'이면 모두 false로 유지
   } else {
     // macOS / Linux
-    try {
-      const raw = await runCommand('node', ['--version'])
-      nodeVersion = parseVersion(raw)
-      nodeInstalled = nodeVersion !== null
-      nodeVersionOk = nodeVersion ? semverGte(nodeVersion, '22.12.0') : false
-    } catch {
-      /* not installed */
-    }
-
-    try {
-      const raw = await runCommand('npm', ['list', '-g', 'openclaw', '--json'])
-      const json = JSON.parse(raw)
-      const deps = json.dependencies?.openclaw
-      if (deps) {
-        openclawInstalled = true
-        openclawVersion = deps.version ?? null
-      }
-    } catch {
-      /* not installed */
-    }
-
-    // 글로벌 미설치 또는 버전 파싱 실패 시 fallback
-    if (!openclawInstalled || !openclawVersion) {
-      try {
-        const raw = await runCommand('openclaw', ['--version'])
-        const ver = parseVersion(raw)
-        if (ver) {
-          openclawInstalled = true
-          openclawVersion = ver
-        }
-      } catch {
-        /* not installed */
-      }
-    }
+    const result = await checkNodeAndOpenclaw(runCommand)
+    nodeInstalled = result.nodeInstalled
+    nodeVersion = result.nodeVersion
+    nodeVersionOk = result.nodeVersionOk
+    openclawInstalled = result.openclawInstalled
+    openclawVersion = result.openclawVersion
   }
 
   let openclawLatestVersion: string | null = null
@@ -229,6 +205,7 @@ export const checkEnvironment = async (): Promise<EnvCheckResult> => {
     nodeVersionOk,
     openclawInstalled,
     openclawVersion,
-    openclawLatestVersion
+    openclawLatestVersion,
+    wslState
   }
 }

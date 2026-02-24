@@ -1,12 +1,38 @@
-const labels = ['시작', '환경', '설치', 'API키', '텔레그램', '설정', '완료']
+const defaultSteps = [
+  'welcome',
+  'envCheck',
+  'install',
+  'apiKeyGuide',
+  'telegramGuide',
+  'config',
+  'done'
+]
+const defaultLabels = ['시작', '환경', '설치', 'API키', '텔레그램', '설정', '완료']
+
+const windowsSteps = [
+  'welcome',
+  'envCheck',
+  'wslSetup',
+  'install',
+  'apiKeyGuide',
+  'telegramGuide',
+  'config',
+  'done'
+]
+const windowsLabels = ['시작', '환경', 'WSL', '설치', 'API키', '텔레그램', '설정', '완료']
 
 export default function StepIndicator({
-  current,
-  total = 7
+  currentStep,
+  isWindows = false
 }: {
-  current: number
-  total?: number
+  currentStep: string
+  isWindows?: boolean
 }): React.JSX.Element {
+  const steps = isWindows ? windowsSteps : defaultSteps
+  const labels = isWindows ? windowsLabels : defaultLabels
+  const total = labels.length
+  const current = Math.max(0, steps.indexOf(currentStep))
+
   return (
     <div className="px-8 pt-12 pb-3">
       {/* Dot indicators with connecting line */}
