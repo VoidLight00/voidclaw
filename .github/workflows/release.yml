@@ -3,66 +3,13 @@ name: Build & Release
 on:
   release:
     types: [published]
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Release tag (e.g. v1.2.12)'
-        required: true
 
 jobs:
-  build-mac:
-    runs-on: macos-latest
-
+  trigger:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.release.tag_name || github.event.inputs.tag }}
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - run: npm ci
-
-      - run: npm run build:mac-local
-        env:
-          CSC_LINK: ${{ secrets.CSC_LINK }}
-          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-
-      - name: Upload to easyclaw-releases
+      - name: Trigger build on easyclaw-releases
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
-          tag="${{ github.event.release.tag_name || github.event.inputs.tag }}"
-          gh release create "$tag" --repo ybgwon96/easyclaw-releases --title "$tag" --notes "https://easyclaw.kr" 2>/dev/null || true
-          gh release upload "$tag" --repo ybgwon96/easyclaw-releases dist/*.dmg --clobber
-
-  build-win:
-    runs-on: windows-latest
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.release.tag_name || github.event.inputs.tag }}
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - run: npm ci
-
-      - run: npm run build:win-local
-
-      - name: Upload to easyclaw-releases
-        env:
-          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-        shell: bash
-        run: |
-          tag="${{ github.event.release.tag_name || github.event.inputs.tag }}"
-          gh release create "$tag" --repo ybgwon96/easyclaw-releases --title "$tag" --notes "https://easyclaw.kr" 2>/dev/null || true
-          gh release upload "$tag" --repo ybgwon96/easyclaw-releases dist/*-setup.exe --clobber
+          gh workflow run build.yml --repo ybgwon96/easyclaw-releases -f tag="${{ github.event.release.tag_name }}"
