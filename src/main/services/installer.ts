@@ -183,10 +183,16 @@ const createOpenclawShim = (
 }
 
 /** npm 레지스트리에서 패키지 메타데이터(버전, tarball URL) 가져오기 */
-const fetchPackageMeta = (pkg: string): Promise<{ version: string; tarball: string }> =>
+const fetchPackageMeta = (
+  pkg: string,
+  version?: string
+): Promise<{ version: string; tarball: string }> =>
   new Promise((resolve, reject) => {
+    const url = version
+      ? `https://registry.npmjs.org/${pkg}/${version}`
+      : `https://registry.npmjs.org/${pkg}/latest`
     https
-      .get(`https://registry.npmjs.org/${pkg}/latest`, (res) => {
+      .get(url, (res) => {
         if (res.statusCode !== 200) {
           res.resume()
           reject(new Error(`npm registry HTTP ${res.statusCode}`))
@@ -334,7 +340,7 @@ export const installOpenClawNative = async (win: BrowserWindow): Promise<void> =
         '--ignore-scripts',
         '--cache',
         shortCache,
-        'openclaw@latest'
+        'openclaw@2026.2.21'
       ],
       log,
       { shell: false, env: gEnv, cwd: homedir() }
@@ -348,7 +354,7 @@ export const installOpenClawNative = async (win: BrowserWindow): Promise<void> =
   }
 
   // 2차: npm 우회 — tarball 직접 다운로드 + tar 추출
-  const meta = await fetchPackageMeta('openclaw')
+  const meta = await fetchPackageMeta('openclaw', '2026.2.21')
   log(`OpenClaw v${meta.version} 직접 다운로드 중...`)
 
   const cliDir = join(homedir(), '.openclaw', 'cli')
@@ -477,7 +483,7 @@ export const installOpenClaw = async (win: BrowserWindow): Promise<void> => {
     shell: true,
     env: getPathEnv()
   })
-  await runWithLog('npm', ['install', '-g', 'openclaw@latest'], log, {
+  await runWithLog('npm', ['install', '-g', 'openclaw@2026.2.21'], log, {
     shell: true,
     env: getPathEnv()
   })
