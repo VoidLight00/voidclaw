@@ -74,10 +74,12 @@ export default function TroubleshootStep({
       setEnvDetail('환경 확인 실패')
     }
 
+    let gwRunning = false
     try {
       const gw = await window.electronAPI.gateway.status()
-      setGwStatus(gw === 'running' ? 'ok' : 'warn')
-      setGwDetail(gw === 'running' ? '정상 실행 중' : '게이트웨이 중지됨')
+      gwRunning = gw === 'running'
+      setGwStatus(gwRunning ? 'ok' : 'warn')
+      setGwDetail(gwRunning ? '정상 실행 중' : '게이트웨이 중지됨')
     } catch {
       setGwStatus('error')
       setGwDetail('상태 확인 실패')
@@ -86,11 +88,16 @@ export default function TroubleshootStep({
     try {
       const port = await window.electronAPI.troubleshoot.checkPort()
       if (port.inUse) {
-        setPortStatus('warn')
-        setPortDetail(`포트 18789 사용 중 (PID: ${port.pid ?? '?'})`)
+        if (gwRunning) {
+          setPortStatus('ok')
+          setPortDetail(`게이트웨이가 사용 중 (PID: ${port.pid ?? '?'})`)
+        } else {
+          setPortStatus('warn')
+          setPortDetail(`다른 프로세스가 점유 중 (PID: ${port.pid ?? '?'})`)
+        }
       } else {
-        setPortStatus('ok')
-        setPortDetail('포트 18789 사용 가능')
+        setPortStatus(gwRunning ? 'warn' : 'ok')
+        setPortDetail(gwRunning ? '게이트웨이 실행 중이나 포트 미사용' : '포트 18789 사용 가능')
       }
     } catch {
       setPortStatus('error')
