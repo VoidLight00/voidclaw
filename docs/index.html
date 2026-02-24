@@ -6,10 +6,12 @@
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-W8QS7CKLN8"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-W8QS7CKLN8');
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+      gtag('config', 'G-W8QS7CKLN8')
     </script>
     <title>EasyClaw — OpenClaw 원클릭 설치 프로그램</title>
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -19,11 +21,11 @@
     />
     <meta property="og:title" content="EasyClaw — OpenClaw 원클릭 설치" />
     <meta property="og:description" content="복잡한 설정 없이 AI 에이전트를 바로 사용하세요." />
-    <meta property="og:image" content="https://easyclaw.kr/og-image.png?v=1.2.15" />
+    <meta property="og:image" content="https://easyclaw.kr/og-image.png?v=1.3.0" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://easyclaw.kr" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://easyclaw.kr/og-image.png?v=1.2.15" />
+    <meta name="twitter:image" content="https://easyclaw.kr/og-image.png?v=1.3.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -83,7 +85,7 @@
         background:
           radial-gradient(ellipse at 15% 85%, rgba(249, 115, 22, 0.18) 0%, transparent 50%),
           radial-gradient(ellipse at 85% 15%, rgba(139, 92, 246, 0.14) 0%, transparent 50%),
-          radial-gradient(ellipse at 50% 50%, rgba(14, 165, 233, 0.10) 0%, transparent 60%),
+          radial-gradient(ellipse at 50% 50%, rgba(14, 165, 233, 0.1) 0%, transparent 60%),
           radial-gradient(ellipse at 30% 20%, rgba(249, 115, 22, 0.06) 0%, transparent 40%),
           var(--bg);
         animation: aurora-shift 14s ease-in-out infinite alternate;
@@ -134,7 +136,7 @@
       .orb--violet {
         width: 500px;
         height: 500px;
-        background: radial-gradient(circle, rgba(139, 92, 246, 0.10), transparent 70%);
+        background: radial-gradient(circle, rgba(139, 92, 246, 0.1), transparent 70%);
         top: 30%;
         right: -8%;
         animation: orb-drift-2 25s ease-in-out infinite alternate;
@@ -148,16 +150,28 @@
         animation: orb-drift-3 20s ease-in-out infinite alternate;
       }
       @keyframes orb-drift-1 {
-        0% { transform: translate(0, 0) scale(1); }
-        100% { transform: translate(80px, 60px) scale(1.1); }
+        0% {
+          transform: translate(0, 0) scale(1);
+        }
+        100% {
+          transform: translate(80px, 60px) scale(1.1);
+        }
       }
       @keyframes orb-drift-2 {
-        0% { transform: translate(0, 0) scale(1); }
-        100% { transform: translate(-60px, 80px) scale(1.05); }
+        0% {
+          transform: translate(0, 0) scale(1);
+        }
+        100% {
+          transform: translate(-60px, 80px) scale(1.05);
+        }
       }
       @keyframes orb-drift-3 {
-        0% { transform: translate(0, 0) scale(1); }
-        100% { transform: translate(50px, -70px) scale(1.08); }
+        0% {
+          transform: translate(0, 0) scale(1);
+        }
+        100% {
+          transform: translate(50px, -70px) scale(1.08);
+        }
       }
 
       /* ── Floating Navigation ── */
@@ -273,12 +287,24 @@
           transform: translateY(0);
         }
       }
-      .hero-anim-d1 { animation-delay: 0s; }
-      .hero-anim-d2 { animation-delay: 0.15s; }
-      .hero-anim-d3 { animation-delay: 0.3s; }
-      .hero-anim-d4 { animation-delay: 0.45s; }
-      .hero-anim-d5 { animation-delay: 0.6s; }
-      .hero-anim-d6 { animation-delay: 0.75s; }
+      .hero-anim-d1 {
+        animation-delay: 0s;
+      }
+      .hero-anim-d2 {
+        animation-delay: 0.15s;
+      }
+      .hero-anim-d3 {
+        animation-delay: 0.3s;
+      }
+      .hero-anim-d4 {
+        animation-delay: 0.45s;
+      }
+      .hero-anim-d5 {
+        animation-delay: 0.6s;
+      }
+      .hero-anim-d6 {
+        animation-delay: 0.75s;
+      }
 
       .hero .lobster-wrap {
         display: inline-block;
@@ -295,17 +321,28 @@
         width: 200px;
         height: 200px;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(249, 115, 22, 0.20), transparent 70%);
+        background: radial-gradient(circle, rgba(249, 115, 22, 0.2), transparent 70%);
         z-index: -1;
         animation: glow-pulse 3s ease-in-out infinite alternate;
       }
       @keyframes hero-float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
       }
       @keyframes glow-pulse {
-        0% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
-        100% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+        0% {
+          opacity: 0.6;
+          transform: translate(-50%, -50%) scale(1);
+        }
+        100% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1.15);
+        }
       }
       .logo {
         font-family: var(--font-heading);
@@ -514,19 +551,19 @@
       .feature-card--orange:hover {
         border-color: rgba(249, 115, 22, 0.3);
         box-shadow:
-          0 8px 32px rgba(249, 115, 22, 0.10),
+          0 8px 32px rgba(249, 115, 22, 0.1),
           inset 0 1px 0 rgba(249, 115, 22, 0.08);
       }
       .feature-card--violet:hover {
         border-color: rgba(139, 92, 246, 0.3);
         box-shadow:
-          0 8px 32px rgba(139, 92, 246, 0.10),
+          0 8px 32px rgba(139, 92, 246, 0.1),
           inset 0 1px 0 rgba(139, 92, 246, 0.08);
       }
       .feature-card--cyan:hover {
         border-color: rgba(6, 182, 212, 0.3);
         box-shadow:
-          0 8px 32px rgba(6, 182, 212, 0.10),
+          0 8px 32px rgba(6, 182, 212, 0.1),
           inset 0 1px 0 rgba(6, 182, 212, 0.08);
       }
       .feature-icon {
@@ -546,17 +583,23 @@
         background: linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(249, 115, 22, 0.05));
         border: 1px solid rgba(249, 115, 22, 0.2);
       }
-      .feature-icon--orange svg { color: var(--primary); }
+      .feature-icon--orange svg {
+        color: var(--primary);
+      }
       .feature-icon--violet {
         background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.05));
         border: 1px solid rgba(139, 92, 246, 0.2);
       }
-      .feature-icon--violet svg { color: var(--violet); }
+      .feature-icon--violet svg {
+        color: var(--violet);
+      }
       .feature-icon--cyan {
         background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(6, 182, 212, 0.05));
         border: 1px solid rgba(6, 182, 212, 0.2);
       }
-      .feature-icon--cyan svg { color: var(--cyan); }
+      .feature-icon--cyan svg {
+        color: var(--cyan);
+      }
       .feature-card h3 {
         font-size: 1.1rem;
         font-weight: 800;
@@ -611,7 +654,7 @@
         background: linear-gradient(135deg, var(--primary), #ea580c);
         box-shadow:
           0 0 20px var(--primary-glow),
-          0 0 0 4px rgba(249, 115, 22, 0.10);
+          0 0 0 4px rgba(249, 115, 22, 0.1);
       }
       .step-card h3 {
         font-size: 1rem;
@@ -725,7 +768,7 @@
           105deg,
           transparent 20%,
           rgba(255, 255, 255, 0.25) 45%,
-          rgba(255, 255, 255, 0.40) 50%,
+          rgba(255, 255, 255, 0.4) 50%,
           rgba(255, 255, 255, 0.25) 55%,
           transparent 80%
         );
@@ -852,13 +895,21 @@
         transform: translateY(0);
         filter: blur(0);
       }
-      .reveal-d1 { transition-delay: 0.1s; }
-      .reveal-d2 { transition-delay: 0.25s; }
-      .reveal-d3 { transition-delay: 0.4s; }
+      .reveal-d1 {
+        transition-delay: 0.1s;
+      }
+      .reveal-d2 {
+        transition-delay: 0.25s;
+      }
+      .reveal-d3 {
+        transition-delay: 0.4s;
+      }
 
       /* Accessibility: reduced motion */
       @media (prefers-reduced-motion: reduce) {
-        *, *::before, *::after {
+        *,
+        *::before,
+        *::after {
           animation-duration: 0.01ms !important;
           animation-iteration-count: 1 !important;
           transition-duration: 0.01ms !important;
@@ -879,9 +930,18 @@
 
       /* ── Responsive: 1024px ── */
       @media (max-width: 1024px) {
-        .orb--orange { width: 450px; height: 450px; }
-        .orb--violet { width: 380px; height: 380px; }
-        .orb--cyan { width: 340px; height: 340px; }
+        .orb--orange {
+          width: 450px;
+          height: 450px;
+        }
+        .orb--violet {
+          width: 380px;
+          height: 380px;
+        }
+        .orb--cyan {
+          width: 340px;
+          height: 340px;
+        }
       }
 
       /* ── Responsive: 768px ── */
@@ -916,9 +976,18 @@
         .cta-card {
           padding: 2.5rem 1.5rem;
         }
-        .orb--orange { width: 320px; height: 320px; }
-        .orb--violet { width: 260px; height: 260px; }
-        .orb--cyan { width: 240px; height: 240px; }
+        .orb--orange {
+          width: 320px;
+          height: 320px;
+        }
+        .orb--violet {
+          width: 260px;
+          height: 260px;
+        }
+        .orb--cyan {
+          width: 240px;
+          height: 240px;
+        }
         .floating-nav {
           padding: 0.75rem 1.25rem;
         }
@@ -948,9 +1017,21 @@
         .nav-download {
           display: none;
         }
-        .orb--orange { width: 220px; height: 220px; filter: blur(60px); }
-        .orb--violet { width: 180px; height: 180px; filter: blur(60px); }
-        .orb--cyan { width: 160px; height: 160px; filter: blur(60px); }
+        .orb--orange {
+          width: 220px;
+          height: 220px;
+          filter: blur(60px);
+        }
+        .orb--violet {
+          width: 180px;
+          height: 180px;
+          filter: blur(60px);
+        }
+        .orb--cyan {
+          width: 160px;
+          height: 160px;
+          filter: blur(60px);
+        }
       }
     </style>
   </head>
@@ -972,10 +1053,17 @@
         href="https://github.com/ybgwon96/easyclaw-releases/releases/latest/download/easy-claw.dmg"
         class="nav-download"
       >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-          <polyline points="7 10 12 15 17 10"/>
-          <line x1="12" y1="15" x2="12" y2="3"/>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
         </svg>
         다운로드
       </a>
@@ -985,72 +1073,78 @@
       <!-- Hero -->
       <section class="hero">
         <div class="hero-inner">
-          <div class="hero-anim hero-anim-d1"><div class="lobster-wrap">
-            <svg
-              width="140"
-              height="140"
-              viewBox="0 0 120 120"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <defs>
-                <linearGradient id="mg" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#fb923c" />
-                  <stop offset="100%" stop-color="#c2410c" />
-                </linearGradient>
-                <radialGradient id="gw" cx="50%" cy="45%">
-                  <stop offset="0%" stop-color="#f97316" stop-opacity=".2" />
-                  <stop offset="100%" stop-color="#f97316" stop-opacity="0" />
-                </radialGradient>
-              </defs>
-              <ellipse cx="60" cy="55" rx="48" ry="46" fill="url(#gw)" />
-              <path
-                d="M45 15 Q36 4 29 7"
-                stroke="#fb923c"
-                stroke-width="2.5"
-                stroke-linecap="round"
+          <div class="hero-anim hero-anim-d1">
+            <div class="lobster-wrap">
+              <svg
+                width="140"
+                height="140"
+                viewBox="0 0 120 120"
                 fill="none"
-              />
-              <path
-                d="M75 15 Q84 4 91 7"
-                stroke="#fb923c"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                fill="none"
-              />
-              <path
-                d="M60 12 C32 12 16 35 16 55 C16 74 30 93 44 98 L44 108 L53 108 L53 98 C56 99 60 100 60 100 C60 100 64 99 67 98 L67 108 L76 108 L76 98 C90 93 104 74 104 55 C104 35 88 12 60 12Z"
-                fill="url(#mg)"
-              />
-              <path
-                d="M20 44 C6 39 1 49 5 58 C9 67 19 63 24 54 C27 48 24 44 20 44Z"
-                fill="url(#mg)"
-              />
-              <path
-                d="M100 44 C114 39 119 49 115 58 C111 67 101 63 96 54 C93 48 96 44 100 44Z"
-                fill="url(#mg)"
-              />
-              <circle cx="45" cy="40" r="7" fill="#050810" />
-              <circle cx="75" cy="40" r="7" fill="#050810" />
-              <circle cx="47" cy="38" r="3" fill="#34d4b0" />
-              <circle cx="77" cy="38" r="3" fill="#34d4b0" />
-            </svg>
-          </div></div>
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <defs>
+                  <linearGradient id="mg" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#fb923c" />
+                    <stop offset="100%" stop-color="#c2410c" />
+                  </linearGradient>
+                  <radialGradient id="gw" cx="50%" cy="45%">
+                    <stop offset="0%" stop-color="#f97316" stop-opacity=".2" />
+                    <stop offset="100%" stop-color="#f97316" stop-opacity="0" />
+                  </radialGradient>
+                </defs>
+                <ellipse cx="60" cy="55" rx="48" ry="46" fill="url(#gw)" />
+                <path
+                  d="M45 15 Q36 4 29 7"
+                  stroke="#fb923c"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  fill="none"
+                />
+                <path
+                  d="M75 15 Q84 4 91 7"
+                  stroke="#fb923c"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  fill="none"
+                />
+                <path
+                  d="M60 12 C32 12 16 35 16 55 C16 74 30 93 44 98 L44 108 L53 108 L53 98 C56 99 60 100 60 100 C60 100 64 99 67 98 L67 108 L76 108 L76 98 C90 93 104 74 104 55 C104 35 88 12 60 12Z"
+                  fill="url(#mg)"
+                />
+                <path
+                  d="M20 44 C6 39 1 49 5 58 C9 67 19 63 24 54 C27 48 24 44 20 44Z"
+                  fill="url(#mg)"
+                />
+                <path
+                  d="M100 44 C114 39 119 49 115 58 C111 67 101 63 96 54 C93 48 96 44 100 44Z"
+                  fill="url(#mg)"
+                />
+                <circle cx="45" cy="40" r="7" fill="#050810" />
+                <circle cx="75" cy="40" r="7" fill="#050810" />
+                <circle cx="47" cy="38" r="3" fill="#34d4b0" />
+                <circle cx="77" cy="38" r="3" fill="#34d4b0" />
+              </svg>
+            </div>
+          </div>
 
-          <h1 class="logo hero-anim hero-anim-d2"><span class="easy">Easy</span><span class="claw">Claw</span></h1>
+          <h1 class="logo hero-anim hero-anim-d2">
+            <span class="easy">Easy</span><span class="claw">Claw</span>
+          </h1>
           <p class="tagline hero-anim hero-anim-d3">
             복잡한 설정은 잊으세요.<br />
             <strong>OpenClaw AI 에이전트</strong>를 원클릭으로 설치하고 바로 대화하세요.
           </p>
 
-          <span class="waitlist-badge hero-anim hero-anim-d4">v1.2.15 출시</span>
+          <span class="waitlist-badge hero-anim hero-anim-d4">v1.3.0 출시</span>
           <div class="btn-group hero-anim hero-anim-d5">
             <a
               href="https://github.com/ybgwon96/easyclaw-releases/releases/latest/download/easy-claw.dmg"
               class="btn btn-primary"
             >
               <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                <path
+                  d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"
+                />
               </svg>
               macOS 다운로드
             </a>
@@ -1059,7 +1153,9 @@
               class="btn btn-primary"
             >
               <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M3 12V6.75l8-1.25V12H3zm0 .5h8v6.5l-8-1.25V12.5zM11.5 12V5.35l9.5-1.6V12H11.5zm0 .5H21v8.25l-9.5-1.6V12.5z"/>
+                <path
+                  d="M3 12V6.75l8-1.25V12H3zm0 .5h8v6.5l-8-1.25V12.5zM11.5 12V5.35l9.5-1.6V12H11.5zm0 .5H21v8.25l-9.5-1.6V12.5z"
+                />
               </svg>
               Windows 다운로드
             </a>
@@ -1072,7 +1168,9 @@
             style="margin-top: 1rem"
           >
             <svg viewBox="0 0 24 24" fill="currentColor" style="color: #fee500">
-              <path d="M12 3C6.48 3 2 6.58 2 10.94c0 2.8 1.86 5.27 4.66 6.67-.15.53-.96 3.4-.99 3.62 0 0-.02.17.09.24.11.06.24.01.24.01.32-.04 3.7-2.44 4.28-2.85.55.08 1.13.12 1.72.12 5.52 0 10-3.58 10-7.81C22 6.58 17.52 3 12 3z"/>
+              <path
+                d="M12 3C6.48 3 2 6.58 2 10.94c0 2.8 1.86 5.27 4.66 6.67-.15.53-.96 3.4-.99 3.62 0 0-.02.17.09.24.11.06.24.01.24.01.32-.04 3.7-2.44 4.28-2.85.55.08 1.13.12 1.72.12 5.52 0 10-3.58 10-7.81C22 6.58 17.52 3 12 3z"
+              />
             </svg>
             오픈채팅방 참여하기
           </a>
@@ -1120,9 +1218,7 @@
                 </svg>
               </div>
               <h3>AI 에이전트</h3>
-              <p>
-                Google, OpenAI, Anthropic, DeepSeek, GLM 등 5개 제공사를 지원합니다.
-              </p>
+              <p>Google, OpenAI, Anthropic, DeepSeek, GLM 등 5개 제공사를 지원합니다.</p>
             </div>
             <div class="glass feature-card feature-card--cyan reveal reveal-d3">
               <div class="feature-icon feature-icon--cyan">
@@ -1186,7 +1282,9 @@
                 class="btn btn-primary"
               >
                 <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                  <path
+                    d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"
+                  />
                 </svg>
                 macOS 다운로드
               </a>
@@ -1195,7 +1293,9 @@
                 class="btn btn-primary"
               >
                 <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                  <path d="M3 12V6.75l8-1.25V12H3zm0 .5h8v6.5l-8-1.25V12.5zM11.5 12V5.35l9.5-1.6V12H11.5zm0 .5H21v8.25l-9.5-1.6V12.5z"/>
+                  <path
+                    d="M3 12V6.75l8-1.25V12H3zm0 .5h8v6.5l-8-1.25V12.5zM11.5 12V5.35l9.5-1.6V12H11.5zm0 .5H21v8.25l-9.5-1.6V12.5z"
+                  />
                 </svg>
                 Windows 다운로드
               </a>
@@ -1290,13 +1390,17 @@
       ;(function () {
         var nav = document.getElementById('floating-nav')
         var scrolled = false
-        window.addEventListener('scroll', function () {
-          var shouldScroll = window.scrollY > 80
-          if (shouldScroll !== scrolled) {
-            scrolled = shouldScroll
-            nav.classList.toggle('scrolled', scrolled)
-          }
-        }, { passive: true })
+        window.addEventListener(
+          'scroll',
+          function () {
+            var shouldScroll = window.scrollY > 80
+            if (shouldScroll !== scrolled) {
+              scrolled = shouldScroll
+              nav.classList.toggle('scrolled', scrolled)
+            }
+          },
+          { passive: true }
+        )
       })()
 
       // Waitlist form submission
