@@ -79,9 +79,7 @@ export const checkWslState = async (): Promise<WslState> => {
 /** WSL Ubuntu 내에서 bash -lc로 명령 실행 (nvm PATH 자동 로드) */
 export const runInWsl = (script: string, timeout = 30000): Promise<string> =>
   new Promise((resolve, reject) => {
-    const child = spawn('wsl', ['-d', WSL_DISTRO, '-u', WSL_USER, '--', 'bash', '-lc', script], {
-      shell: true
-    })
+    const child = spawn('wsl', ['-d', WSL_DISTRO, '-u', WSL_USER, '--', 'bash', '-lc', script])
     const timer = setTimeout(() => {
       child.kill()
       reject(new Error('timeout'))
