@@ -8,7 +8,7 @@ import { BrowserWindow } from 'electron'
 import { runInWsl, readWslFile, writeWslFile } from './wsl-utils'
 
 interface OnboardConfig {
-  provider: 'anthropic' | 'google' | 'openai' | 'deepseek' | 'glm'
+  provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm'
   apiKey: string
   telegramBotToken?: string
   modelId?: string
@@ -207,17 +207,17 @@ export const runOnboard = async (
     anthropic: ['--auth-choice', 'apiKey', '--anthropic-api-key', config.apiKey],
     google: ['--auth-choice', 'gemini-api-key', '--gemini-api-key', config.apiKey],
     openai: ['--auth-choice', 'openai-api-key', '--openai-api-key', config.apiKey],
-    deepseek: [
+    minimax: [
       '--auth-choice',
       'custom-api-key',
       '--custom-base-url',
-      'https://api.deepseek.com/v1',
+      'https://api.minimaxi.chat/v1',
       '--custom-model-id',
-      'deepseek-chat',
+      'MiniMax-M2.5',
       '--custom-api-key',
       config.apiKey,
       '--custom-provider-id',
-      'deepseek',
+      'minimax',
       '--custom-compatibility',
       'openai'
     ],
@@ -287,14 +287,14 @@ export const runOnboard = async (
     anthropic: 'anthropic/claude-sonnet-4-6',
     google: 'google/gemini-3-flash',
     openai: 'openai/gpt-5.2',
-    deepseek: 'deepseek/deepseek-chat',
+    minimax: 'minimax/MiniMax-M2.5',
     glm: 'zai/glm-5'
   }
 
   const modelSpecs: Partial<
     Record<OnboardConfig['provider'], { contextWindow: number; maxTokens: number }>
   > = {
-    deepseek: { contextWindow: 128000, maxTokens: 8192 }
+    minimax: { contextWindow: 1000000, maxTokens: 16384 }
   }
 
   const patchConfig = (ocConfig: Record<string, unknown>): void => {
@@ -545,17 +545,17 @@ export const switchProvider = async (
     anthropic: ['--auth-choice', 'apiKey', '--anthropic-api-key', config.apiKey],
     google: ['--auth-choice', 'gemini-api-key', '--gemini-api-key', config.apiKey],
     openai: ['--auth-choice', 'openai-api-key', '--openai-api-key', config.apiKey],
-    deepseek: [
+    minimax: [
       '--auth-choice',
       'custom-api-key',
       '--custom-base-url',
-      'https://api.deepseek.com/v1',
+      'https://api.minimaxi.chat/v1',
       '--custom-model-id',
-      'deepseek-chat',
+      'MiniMax-M2.5',
       '--custom-api-key',
       config.apiKey,
       '--custom-provider-id',
-      'deepseek',
+      'minimax',
       '--custom-compatibility',
       'openai'
     ],
@@ -618,14 +618,14 @@ export const switchProvider = async (
     anthropic: 'anthropic/claude-sonnet-4-6',
     google: 'google/gemini-3-flash',
     openai: 'openai/gpt-5.2',
-    deepseek: 'deepseek/deepseek-chat',
+    minimax: 'minimax/MiniMax-M2.5',
     glm: 'zai/glm-5'
   }
 
   const modelSpecs: Partial<
     Record<OnboardConfig['provider'], { contextWindow: number; maxTokens: number }>
   > = {
-    deepseek: { contextWindow: 128000, maxTokens: 8192 }
+    minimax: { contextWindow: 1000000, maxTokens: 16384 }
   }
 
   const patchSwitchConfig = (

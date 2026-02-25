@@ -17,9 +17,9 @@ const providerMeta: Record<Provider, { name: string; consoleUrl: string; console
     consoleUrl: 'https://console.anthropic.com/settings/keys',
     consoleLabel: '콘솔에서 API 키 발급'
   },
-  deepseek: {
-    name: 'DeepSeek',
-    consoleUrl: 'https://platform.deepseek.com/api_keys',
+  minimax: {
+    name: 'MiniMax',
+    consoleUrl: 'https://www.minimax.io/platform/api-keys',
     consoleLabel: 'Platform에서 API 키 발급'
   },
   glm: {
@@ -29,7 +29,7 @@ const providerMeta: Record<Provider, { name: string; consoleUrl: string; console
   }
 }
 
-const providerOrder: Provider[] = ['google', 'openai', 'anthropic', 'deepseek', 'glm']
+const providerOrder: Provider[] = ['google', 'openai', 'anthropic', 'minimax', 'glm']
 
 interface Props {
   provider: Provider
@@ -78,7 +78,7 @@ export default function ApiKeyGuideStep({
       {/* 모델 선택 */}
       <div className="flex-1 flex flex-col min-h-0 mt-3">
         <label className="shrink-0 text-xs font-bold text-text-muted mb-1.5">모델 선택</label>
-        <div className="flex-1 overflow-y-auto space-y-1.5 pr-1">
+        <div className="space-y-1.5">
           {providerConfig.models.map((m) => (
             <button
               key={m.id}
@@ -96,9 +96,14 @@ export default function ApiKeyGuideStep({
                     : 'border-text-muted/30 bg-transparent'
                 }`}
               />
-              <div className="min-w-0 flex items-baseline gap-1.5">
+              <div className="min-w-0 flex-1 flex items-baseline gap-1.5">
                 <span className="text-sm font-bold whitespace-nowrap">{m.name}</span>
                 <span className="text-xs text-text-muted/60 truncate">{m.desc}</span>
+                {m.price && (
+                  <span className="text-[10px] text-text-muted/40 font-mono ml-auto shrink-0">
+                    {m.price}
+                  </span>
+                )}
               </div>
             </button>
           ))}

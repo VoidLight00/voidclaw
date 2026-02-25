@@ -142,7 +142,7 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
     async (
       _e,
       config: {
-        provider: 'anthropic' | 'google' | 'openai' | 'deepseek' | 'glm'
+        provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm'
         apiKey: string
         telegramBotToken?: string
         modelId?: string
@@ -178,7 +178,7 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
     async (
       _e,
       config: {
-        provider: 'anthropic' | 'google' | 'openai' | 'deepseek' | 'glm'
+        provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm'
         apiKey: string
         modelId?: string
       }

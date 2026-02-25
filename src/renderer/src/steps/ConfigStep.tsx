@@ -4,13 +4,13 @@ import Button from '../components/Button'
 import LogViewer from '../components/LogViewer'
 import { useInstallLogs } from '../hooks/useIpc'
 
-type Provider = 'anthropic' | 'google' | 'openai' | 'deepseek' | 'glm'
+type Provider = 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm'
 
 const providerPatterns: Record<Provider, RegExp> = {
   anthropic: /^sk-ant-/,
   google: /^AIza/,
   openai: /^sk-(?!ant-)/,
-  deepseek: /^sk-/,
+  minimax: /^sk-/,
   glm: /^.{8,}$/
 }
 
@@ -18,7 +18,7 @@ const providerLabels: Record<Provider, { label: string; placeholder: string }> =
   anthropic: { label: 'Anthropic API 키', placeholder: 'sk-ant-...' },
   google: { label: 'Gemini API 키', placeholder: 'AIza...' },
   openai: { label: 'OpenAI API 키', placeholder: 'sk-...' },
-  deepseek: { label: 'DeepSeek API 키', placeholder: 'sk-...' },
+  minimax: { label: 'MiniMax API 키', placeholder: 'sk-...' },
   glm: { label: 'Z.AI API 키', placeholder: 'API 키 입력' }
 }
 

@@ -64,7 +64,7 @@ function App(): React.JSX.Element {
     needNode: false,
     needOpenclaw: false
   })
-  const [provider, setProvider] = useState<'anthropic' | 'google' | 'openai' | 'deepseek' | 'glm'>(
+  const [provider, setProvider] = useState<'anthropic' | 'google' | 'openai' | 'minimax' | 'glm'>(
     'anthropic'
   )
   const [modelId, setModelId] = useState<string | undefined>()

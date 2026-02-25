@@ -109,9 +109,14 @@ export default function ProviderSwitchModal({
                           : 'border-text-muted/30 bg-transparent'
                       }`}
                     />
-                    <div className="min-w-0 flex items-baseline gap-1.5">
+                    <div className="min-w-0 flex-1 flex items-baseline gap-1.5">
                       <span className="text-xs font-bold whitespace-nowrap">{m.name}</span>
                       <span className="text-[10px] text-text-muted/60 truncate">{m.desc}</span>
+                      {m.price && (
+                        <span className="text-[10px] text-text-muted/40 font-mono ml-auto shrink-0">
+                          {m.price}
+                        </span>
+                      )}
                     </div>
                   </button>
                 ))}
