@@ -167,7 +167,7 @@ function App(): React.JSX.Element {
         </div>
 
         <div className="absolute bottom-3 right-4 flex items-center gap-2">
-          {import.meta.env.DEV && currentStep !== 'done' && currentStep !== 'agentStore' && (
+          {import.meta.env.DEV && currentStep !== 'done' && (
             <button
               onClick={() => goTo('done')}
               className="text-[10px] text-text-muted/40 hover:text-primary/60 font-mono transition-colors"

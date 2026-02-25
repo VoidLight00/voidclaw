@@ -12,6 +12,23 @@ interface WizardPersistedState {
   timestamp: number
 }
 
+type AgentCategory = 'marketing' | 'productivity' | 'data' | 'custom'
+
+interface AgentMeta {
+  id: string
+  name: string
+  tagline: string
+  description: string
+  features: string[]
+  category: AgentCategory
+  price: number
+  icon: string
+  featured: boolean
+  comingSoon: boolean
+}
+
+type AgentStatus = 'not_purchased' | 'purchased' | 'installed' | 'active'
+
 interface ElectronAPI {
   version: () => Promise<string>
   env: {
@@ -72,26 +89,15 @@ interface ElectronAPI {
     onDownloaded: (cb: () => void) => () => void
     onError: (cb: (msg: string) => void) => () => void
   }
+  agentStore: {
+    list: () => Promise<AgentMeta[]>
+    status: (agentId: string) => Promise<AgentStatus>
+    activate: (agentId: string, licenseKey: string) => Promise<{ success: boolean; error?: string }>
+    install: (agentId: string) => Promise<{ success: boolean; error?: string }>
+  }
   autoLaunch: {
     get: () => Promise<{ enabled: boolean }>
     set: (enabled: boolean) => Promise<{ success: boolean }>
-  }
-  agentStore: {
-    list: () => Promise<
-      {
-        id: string
-        name: string
-        description: string
-        version: string
-        price: number
-        features: string[]
-        checkoutUrl: string
-      }[]
-    >
-    status: (agentId: string) => Promise<'not_purchased' | 'activated' | 'installed'>
-    activate: (agentId: string, licenseKey: string) => Promise<{ success: boolean; error?: string }>
-    install: (agentId: string) => Promise<{ success: boolean; error?: string }>
-    onProgress: (cb: (msg: string) => void) => () => void
   }
 }
 

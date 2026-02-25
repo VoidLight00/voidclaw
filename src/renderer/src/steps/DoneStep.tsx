@@ -220,15 +220,15 @@ export default function DoneStep({
         </div>
       )}
 
-      {status === 'running' && (
+      {onAgentStore && (
         <button
-          onClick={() => window.open('https://open.kakao.com/o/gbBkPehi', '_blank')}
-          className="glass-card flex items-center gap-3 px-5 py-3 cursor-pointer hover:border-primary/40 transition-all duration-200"
+          onClick={onAgentStore}
+          className="glass-card flex items-center gap-3 px-5 py-3 w-full max-w-sm cursor-pointer hover:border-primary/40 transition-all duration-200"
         >
-          <span className="text-base">💬</span>
+          <span className="text-base">🛒</span>
           <div className="text-left">
-            <p className="text-sm font-bold">카카오 오픈채팅방 참여하기</p>
-            <p className="text-[11px] text-text-muted">사용법, 질문, 피드백을 나눠보세요</p>
+            <p className="text-sm font-bold">에이전트 스토어</p>
+            <p className="text-[11px] text-text-muted">AI 에이전트를 추가하여 기능을 확장하세요</p>
           </div>
           <svg
             className="ml-auto text-text-muted"
@@ -246,15 +246,15 @@ export default function DoneStep({
         </button>
       )}
 
-      {onAgentStore && (
+      {status === 'running' && (
         <button
-          onClick={onAgentStore}
+          onClick={() => window.open('https://open.kakao.com/o/gbBkPehi', '_blank')}
           className="glass-card flex items-center gap-3 px-5 py-3 cursor-pointer hover:border-primary/40 transition-all duration-200"
         >
-          <span className="text-base">🤖</span>
+          <span className="text-base">💬</span>
           <div className="text-left">
-            <p className="text-sm font-bold">에이전트 스토어</p>
-            <p className="text-[11px] text-text-muted">AI 에이전트로 생산성을 높여보세요</p>
+            <p className="text-sm font-bold">카카오 오픈채팅방 참여하기</p>
+            <p className="text-[11px] text-text-muted">사용법, 질문, 피드백을 나눠보세요</p>
           </div>
           <svg
             className="ml-auto text-text-muted"

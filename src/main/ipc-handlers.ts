@@ -237,38 +237,19 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
     enabled: app.getLoginItemSettings().openAtLogin
   }))
 
+  // Agent Store IPC
+  ipcMain.handle('agent-store:list', () => getAgentList())
+  ipcMain.handle('agent-store:status', (_e, agentId: string) => getAgentStatus(agentId))
+  ipcMain.handle('agent-store:activate', (_e, agentId: string, licenseKey: string) =>
+    activateAgent(agentId, licenseKey)
+  )
+  ipcMain.handle('agent-store:install', (_e, agentId: string) => installAgent(agentId))
+
   ipcMain.handle('autolaunch:set', (_e, enabled: boolean) => {
     app.setLoginItemSettings({
       openAtLogin: enabled,
       openAsHidden: true
     })
     return { success: true }
-  })
-
-  // Agent Store IPC
-  ipcMain.handle('agent-store:list', () => getAgentList())
-
-  ipcMain.handle('agent-store:status', (_e, agentId: string) => getAgentStatus(agentId))
-
-  ipcMain.handle('agent-store:activate', async (_e, agentId: string, licenseKey: string) => {
-    return activateAgent(agentId, licenseKey)
-  })
-
-  ipcMain.handle('agent-store:install', async (_e, agentId: string) => {
-    try {
-      win().webContents.send('agent-store:progress', '설치 준비 중...')
-    } catch {
-      /* window destroyed */
-    }
-    const result = await installAgent(agentId)
-    try {
-      win().webContents.send(
-        'agent-store:progress',
-        result.success ? '설치 완료!' : `설치 실패: ${result.error}`
-      )
-    } catch {
-      /* window destroyed */
-    }
-    return result
   })
 }

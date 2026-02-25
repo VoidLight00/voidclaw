@@ -48,8 +48,8 @@ src/renderer/    → Renderer process (React UI)
 | `gateway.ts`        | OpenClaw gateway(로컬 서버) start/stop/status 관리            |
 | `path-utils.ts`     | macOS용 PATH 확장 + 바이너리 탐색 헬퍼                        |
 | `tray-manager.ts`   | 시스템 트레이 아이콘 + 10초 폴링으로 Gateway 상태 모니터링    |
-| `updater.ts`        | `electron-updater` 기반 자동 업데이트 (체크→다운로드→설치)     |
-| `troubleshooter.ts` | 포트 점유 확인, `openclaw doctor --fix` 실행 등 진단 도구      |
+| `updater.ts`        | `electron-updater` 기반 자동 업데이트 (체크→다운로드→설치)    |
+| `troubleshooter.ts` | 포트 점유 확인, `openclaw doctor --fix` 실행 등 진단 도구     |
 
 ### IPC 통신 패턴
 
@@ -143,13 +143,13 @@ Windows에서는 WSL(Windows Subsystem for Linux) Ubuntu 내에서 Node.js/OpenC
 
 변경 시 관련 파일 모두 확인 필요:
 
-| 항목               | 값         | 주요 위치                                             |
-| ------------------ | ---------- | ----------------------------------------------------- |
-| Node.js 최소 버전  | `22.12.0`  | `env-checker.ts`                                      |
-| Gateway 포트       | `18789`    | `troubleshooter.ts`, `onboarder.ts`, `TroubleshootStep.tsx` |
-| 리부트 복원 만료   | 24시간     | `ipc-handlers.ts`                                     |
-| 트레이 폴링 간격   | 10초       | `tray-manager.ts`                                     |
-| 업데이트 체크 지연  | 5초        | `index.ts`                                            |
+| 항목               | 값        | 주요 위치                                                   |
+| ------------------ | --------- | ----------------------------------------------------------- |
+| Node.js 최소 버전  | `22.12.0` | `env-checker.ts`                                            |
+| Gateway 포트       | `18789`   | `troubleshooter.ts`, `onboarder.ts`, `TroubleshootStep.tsx` |
+| 리부트 복원 만료   | 24시간    | `ipc-handlers.ts`                                           |
+| 트레이 폴링 간격   | 10초      | `tray-manager.ts`                                           |
+| 업데이트 체크 지연 | 5초       | `index.ts`                                                  |
 
 ## 주의사항
 

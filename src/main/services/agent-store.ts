@@ -1,136 +1,87 @@
-import { app } from 'electron'
-import { platform, homedir } from 'os'
-import { join } from 'path'
-import { existsSync, readFileSync, writeFileSync, mkdirSync, cpSync } from 'fs'
-import { runInWsl } from './wsl-utils'
+/* eslint-disable @typescript-eslint/no-unused-vars */
+export type AgentCategory = 'marketing' | 'productivity' | 'data' | 'custom'
 
 export interface AgentMeta {
   id: string
   name: string
+  tagline: string
   description: string
-  version: string
-  price: number
   features: string[]
-  checkoutUrl: string
+  category: AgentCategory
+  price: number // KRW, 0 = 무료
+  icon: string // emoji or gradient key
+  featured: boolean
+  comingSoon: boolean
 }
 
-interface AgentLicense {
-  licenseKey: string
-  activatedAt: string
-  installed: boolean
-}
-
-interface AgentLicenses {
-  [agentId: string]: AgentLicense
-}
-
-export type AgentStatus = 'not_purchased' | 'activated' | 'installed'
+export type AgentStatus = 'not_purchased' | 'purchased' | 'installed' | 'active'
 
 const AGENTS: AgentMeta[] = [
   {
     id: 'naver-blogger',
-    name: '네이버 블로거 에이전트',
-    description: '네이버 블로그 SEO에 최적화된 자동 글 작성 에이전트입니다.',
-    version: '1.0.0',
-    price: 19900,
+    name: '네이버 블로거',
+    tagline: 'AI가 매일 블로그를 대신 써줍니다',
+    description:
+      '키워드 리서치부터 SEO 최적화 글 작성까지 자동화. 네이버 블로그 상위 노출을 위한 전략적 콘텐츠를 생성합니다.',
     features: [
-      '웹 검색 기반 키워드 리서치',
-      '네이버 상위 글 경쟁 분석',
-      'C-Rank/D.I.A. 최적화 글 작성',
-      '5가지 글 유형 템플릿',
-      '100점 SEO 채점 시스템',
-      '시리즈 기획 + 내부 링크 전략'
+      '키워드 리서치 자동화',
+      '네이버 SEO 최적화',
+      '시리즈 기획',
+      '경쟁사 분석',
+      '다양한 템플릿 (리뷰, 비교, 리스티클)'
     ],
-    checkoutUrl: 'https://easyclaw.lemonsqueezy.com/buy/naver-blogger'
+    category: 'marketing',
+    price: 29000,
+    icon: 'blog',
+    featured: true,
+    comingSoon: false
+  },
+  {
+    id: 'coming-soon-1',
+    name: '인스타그램 매니저',
+    tagline: '곧 출시 예정',
+    description: '인스타그램 콘텐츠 기획과 자동 포스팅을 지원합니다.',
+    features: [],
+    category: 'marketing',
+    price: 0,
+    icon: 'camera',
+    featured: false,
+    comingSoon: true
+  },
+  {
+    id: 'coming-soon-2',
+    name: '데이터 분석가',
+    tagline: '곧 출시 예정',
+    description: '데이터를 자동으로 분석하고 리포트를 생성합니다.',
+    features: [],
+    category: 'data',
+    price: 0,
+    icon: 'chart',
+    featured: false,
+    comingSoon: true
   }
 ]
 
-const getLicensesPath = (): string => join(app.getPath('userData'), 'agent-licenses.json')
-
-const loadLicenses = (): AgentLicenses => {
-  try {
-    const path = getLicensesPath()
-    if (!existsSync(path)) return {}
-    return JSON.parse(readFileSync(path, 'utf-8'))
-  } catch {
-    return {}
-  }
+export function getAgentList(): AgentMeta[] {
+  return AGENTS
 }
 
-const saveLicenses = (licenses: AgentLicenses): void => {
-  writeFileSync(getLicensesPath(), JSON.stringify(licenses, null, 2))
+export function getAgentStatus(_agentId: string): AgentStatus {
+  // TODO: Lemon Squeezy 라이선스 확인
+  return 'not_purchased'
 }
 
-export const getAgentList = (): AgentMeta[] => AGENTS
-
-export const getAgentStatus = (agentId: string): AgentStatus => {
-  const licenses = loadLicenses()
-  const license = licenses[agentId]
-  if (!license) return 'not_purchased'
-  return license.installed ? 'installed' : 'activated'
+export async function activateAgent(
+  _agentId: string,
+  _licenseKey: string
+): Promise<{ success: boolean; error?: string }> {
+  // TODO: Lemon Squeezy 라이선스 검증
+  return { success: false, error: '준비 중입니다' }
 }
 
-export const activateAgent = async (
-  agentId: string,
-  licenseKey: string
-): Promise<{ success: boolean; error?: string }> => {
-  try {
-    const resp = await fetch('https://api.lemonsqueezy.com/v1/licenses/validate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ license_key: licenseKey })
-    })
-
-    if (!resp.ok) return { success: false, error: '라이선스 서버에 연결할 수 없습니다' }
-
-    const data = await resp.json()
-    if (!data.valid)
-      return { success: false, error: data.error || '유효하지 않은 라이선스 키입니다' }
-
-    const licenses = loadLicenses()
-    licenses[agentId] = {
-      licenseKey,
-      activatedAt: new Date().toISOString(),
-      installed: false
-    }
-    saveLicenses(licenses)
-
-    return { success: true }
-  } catch {
-    return { success: false, error: '라이선스 검증 중 오류가 발생했습니다' }
-  }
-}
-
-export const installAgent = async (
-  agentId: string
-): Promise<{ success: boolean; error?: string }> => {
-  const licenses = loadLicenses()
-  if (!licenses[agentId]) return { success: false, error: '먼저 라이선스를 활성화해주세요' }
-
-  const srcDir = join(process.resourcesPath, 'agents', agentId)
-  if (!existsSync(srcDir)) return { success: false, error: '에이전트 파일을 찾을 수 없습니다' }
-
-  try {
-    if (platform() === 'win32') {
-      // WSL: /root/.openclaw/skills/{agent-id}/
-      const destDir = `/root/.openclaw/skills/${agentId}`
-      await runInWsl(`mkdir -p '${destDir}'`)
-
-      // WSL 경로로 복사: Windows 경로를 wslpath로 변환
-      const winPath = srcDir.replace(/\\/g, '/')
-      await runInWsl(`cp -r "$(wslpath '${winPath}')"/* '${destDir}/'`, 60000)
-    } else {
-      // macOS: ~/.openclaw/skills/{agent-id}/
-      const destDir = join(homedir(), '.openclaw', 'skills', agentId)
-      mkdirSync(destDir, { recursive: true })
-      cpSync(srcDir, destDir, { recursive: true })
-    }
-
-    licenses[agentId].installed = true
-    saveLicenses(licenses)
-
-    return { success: true }
-  } catch (e) {
-    return { success: false, error: e instanceof Error ? e.message : String(e) }
-  }
+export async function installAgent(
+  _agentId: string
+): Promise<{ success: boolean; error?: string }> {
+  // TODO: 에이전트 파일 설치
+  return { success: false, error: '준비 중입니다' }
 }
