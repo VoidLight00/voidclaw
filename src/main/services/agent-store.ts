@@ -34,7 +34,7 @@ const AGENTS: AgentMeta[] = [
     price: 29000,
     icon: 'blog',
     featured: true,
-    comingSoon: false
+    comingSoon: true
   },
   {
     id: 'coming-soon-1',
