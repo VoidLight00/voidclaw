@@ -142,6 +142,23 @@ const electronAPI = {
     get: (): Promise<{ enabled: boolean }> => ipcRenderer.invoke('autolaunch:get'),
     set: (enabled: boolean): Promise<{ success: boolean }> =>
       ipcRenderer.invoke('autolaunch:set', enabled)
+  },
+  uninstall: {
+    openclaw: (
+      opts: { removeConfig: boolean }
+    ): Promise<{ success: boolean; error?: string }> =>
+      ipcRenderer.invoke('uninstall:openclaw', opts),
+    onProgress: (cb: (msg: string) => void): (() => void) => {
+      const handler = (_: unknown, msg: string): void => cb(msg)
+      ipcRenderer.on('uninstall:progress', handler)
+      return () => ipcRenderer.removeListener('uninstall:progress', handler)
+    }
+  },
+  backup: {
+    export: (): Promise<{ success: boolean; error?: string }> =>
+      ipcRenderer.invoke('backup:export'),
+    import: (): Promise<{ success: boolean; error?: string }> =>
+      ipcRenderer.invoke('backup:import')
   }
 }
 

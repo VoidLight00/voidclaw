@@ -99,6 +99,14 @@ interface ElectronAPI {
     get: () => Promise<{ enabled: boolean }>
     set: (enabled: boolean) => Promise<{ success: boolean }>
   }
+  uninstall: {
+    openclaw: (opts: { removeConfig: boolean }) => Promise<{ success: boolean; error?: string }>
+    onProgress: (cb: (msg: string) => void) => () => void
+  }
+  backup: {
+    export: () => Promise<{ success: boolean; error?: string }>
+    import: () => Promise<{ success: boolean; error?: string }>
+  }
 }
 
 declare global {

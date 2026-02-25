@@ -158,6 +158,10 @@ function App(): React.JSX.Element {
               botUsername={botUsername}
               onTroubleshoot={() => goTo('troubleshoot')}
               onAgentStore={() => goTo('agentStore')}
+              onUninstallDone={() => {
+                window.electronAPI.wizard.clearState()
+                goTo('welcome')
+              }}
             />
           )}
           {currentStep === 'agentStore' && <AgentStoreStep onBack={prev} />}

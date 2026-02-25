@@ -22,6 +22,8 @@ import {
 import { checkWslState } from './services/wsl-utils'
 import { checkForUpdates, downloadUpdate, installUpdate } from './services/updater'
 import { getAgentList, getAgentStatus, activateAgent, installAgent } from './services/agent-store'
+import { uninstallOpenClaw } from './services/uninstaller'
+import { exportBackup, importBackup } from './services/backup'
 
 interface WizardPersistedState {
   step: string
@@ -252,4 +254,18 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
     })
     return { success: true }
   })
+
+  // OpenClaw 삭제
+  ipcMain.handle('uninstall:openclaw', async (_e, opts: { removeConfig: boolean }) => {
+    try {
+      await uninstallOpenClaw(win(), opts)
+      return { success: true }
+    } catch (e) {
+      return { success: false, error: e instanceof Error ? e.message : String(e) }
+    }
+  })
+
+  // 백업 / 복원
+  ipcMain.handle('backup:export', () => exportBackup(win()))
+  ipcMain.handle('backup:import', () => importBackup(win()))
 }

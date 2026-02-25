@@ -2,21 +2,27 @@ import { useState, useEffect, useCallback } from 'react'
 import LobsterLogo from '../components/LobsterLogo'
 import Button from '../components/Button'
 import LogViewer from '../components/LogViewer'
+import ManagementModal from '../components/ManagementModal'
+import { useManagement } from '../hooks/useManagement'
 
 export default function DoneStep({
   botUsername,
   onTroubleshoot,
-  onAgentStore
+  onAgentStore,
+  onUninstallDone
 }: {
   botUsername?: string
   onTroubleshoot?: () => void
   onAgentStore?: () => void
+  onUninstallDone?: () => void
 }): React.JSX.Element {
   const [status, setStatus] = useState<'starting' | 'running' | 'stopped'>('starting')
   const [hasError, setHasError] = useState(false)
   const [logs, setLogs] = useState<string[]>([])
   const [showLogs, setShowLogs] = useState(false)
   const [autoLaunch, setAutoLaunch] = useState(false)
+
+  const { uninstall, backup } = useManagement(setStatus)
 
   // 자동 시작 설정 로드
   useEffect(() => {
@@ -296,6 +302,113 @@ export default function DoneStep({
             <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>
+      )}
+
+      {/* ─── 관리 섹션 ─── */}
+      <div className="w-full max-w-sm border-t border-glass-border pt-4 mt-2 space-y-2">
+        <p className="text-[11px] text-text-muted/50 font-bold tracking-wide uppercase mb-2">
+          관리
+        </p>
+        <div className="flex gap-2">
+          <button
+            onClick={backup.execute}
+            className="glass-card flex-1 flex items-center gap-2 px-4 py-2.5 cursor-pointer hover:border-primary/40 transition-all duration-200"
+          >
+            <span className="text-sm">📦</span>
+            <span className="text-xs font-bold">백업</span>
+          </button>
+          <button
+            onClick={backup.openRestore}
+            className="glass-card flex-1 flex items-center gap-2 px-4 py-2.5 cursor-pointer hover:border-primary/40 transition-all duration-200"
+          >
+            <span className="text-sm">📥</span>
+            <span className="text-xs font-bold">복원</span>
+          </button>
+          <button
+            onClick={uninstall.open}
+            className="glass-card flex-1 flex items-center gap-2 px-4 py-2.5 cursor-pointer hover:border-error/40 transition-all duration-200"
+          >
+            <span className="text-sm">🗑️</span>
+            <span className="text-xs font-bold text-error/80">삭제</span>
+          </button>
+        </div>
+      </div>
+
+      {/* ─── 삭제 모달 ─── */}
+      {uninstall.modal && (
+        <ManagementModal
+          title="OpenClaw 삭제"
+          phase={uninstall.modal}
+          message={uninstall.progress}
+          errorMsg={uninstall.error}
+          onClose={() => {
+            const wasDone = uninstall.modal === 'done'
+            uninstall.close()
+            if (wasDone) onUninstallDone?.()
+          }}
+        >
+          <div className="space-y-3">
+            <p className="text-sm text-text-muted">
+              OpenClaw 패키지를 삭제합니다. 이 작업은 되돌릴 수 없습니다.
+            </p>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={uninstall.removeConfig}
+                onChange={(e) => uninstall.setRemoveConfig(e.target.checked)}
+                className="w-4 h-4 rounded border-glass-border accent-primary"
+              />
+              <span className="text-sm">설정 파일도 함께 삭제 (~/.openclaw)</span>
+            </label>
+            <div className="flex gap-2 pt-1">
+              <Button variant="secondary" size="sm" onClick={uninstall.close}>
+                취소
+              </Button>
+              <button
+                onClick={uninstall.execute}
+                className="px-5 py-2 text-sm font-bold rounded-xl bg-error/20 text-error border border-error/30 hover:bg-error/30 transition-all duration-200 cursor-pointer"
+              >
+                삭제
+              </button>
+            </div>
+          </div>
+        </ManagementModal>
+      )}
+
+      {/* ─── 복원 모달 ─── */}
+      {backup.restoreModal && (
+        <ManagementModal
+          title="백업 복원"
+          phase={backup.restoreModal}
+          message={backup.restoreMsg}
+          errorMsg={backup.restoreMsg}
+          onClose={backup.closeRestore}
+        >
+          <div className="space-y-3">
+            <p className="text-sm text-text-muted">
+              백업 파일에서 설정을 복원합니다. 기존 설정은 덮어쓰기됩니다.
+            </p>
+            <div className="flex gap-2 pt-1">
+              <Button variant="secondary" size="sm" onClick={backup.closeRestore}>
+                취소
+              </Button>
+              <Button variant="primary" size="sm" onClick={backup.executeRestore}>
+                파일 선택
+              </Button>
+            </div>
+          </div>
+        </ManagementModal>
+      )}
+
+      {/* ─── 백업 모달 ─── */}
+      {backup.backupModal && backup.backupModal !== 'confirm' && (
+        <ManagementModal
+          title="설정 백업"
+          phase={backup.backupModal}
+          message={backup.backupMsg}
+          errorMsg={backup.backupMsg}
+          onClose={backup.closeBackup}
+        />
       )}
     </div>
   )
