@@ -138,7 +138,7 @@ function App(): React.JSX.Element {
             <StepIndicator currentStep={currentStep} isWindows={isWindows} />
           )}
 
-        <div className="flex-1 flex flex-col min-h-0 step-enter" key={currentStep}>
+        <div className="flex-1 flex flex-col min-h-0 pb-10 step-enter" key={currentStep}>
           {currentStep === 'welcome' && <WelcomeStep onNext={next} />}
           {currentStep === 'envCheck' && (
             <EnvCheckStep onNext={() => goTo('apiKeyGuide')} onNeedInstall={handleEnvCheckDone} />
@@ -203,7 +203,7 @@ function App(): React.JSX.Element {
         {canGoBack && currentStep !== 'troubleshoot' && currentStep !== 'agentStore' && (
           <button
             onClick={prev}
-            className="absolute bottom-16 left-6 z-20 flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-text-muted hover:text-text bg-white/5 hover:bg-white/10 rounded-xl border border-glass-border transition-all duration-200"
+            className="absolute bottom-14 left-6 z-20 flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-text-muted hover:text-text bg-white/5 hover:bg-white/10 rounded-xl border border-glass-border transition-all duration-200"
           >
             <svg
               width="14"

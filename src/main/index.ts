@@ -18,8 +18,8 @@ function createWindow(): void {
     app.getLoginItemSettings().wasOpenedAsHidden || process.argv.includes('--hidden')
 
   mainWindow = new BrowserWindow({
-    width: 520,
-    height: 680,
+    width: 800,
+    height: 600,
     resizable: false,
     show: false,
     autoHideMenuBar: true,

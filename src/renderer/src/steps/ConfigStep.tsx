@@ -67,56 +67,58 @@ export default function ConfigStep({ provider, modelId, onDone }: Props): React.
   }
 
   return (
-    <div className="flex-1 relative px-8 pt-16 space-y-4">
-      <div className="flex items-center gap-3">
-        <LobsterLogo state={saving ? 'loading' : 'idle'} size={48} />
-        <div>
-          <h2 className="text-lg font-extrabold">API 키 설정</h2>
-          <p className="text-text-muted text-xs">발급받은 키를 입력해 주세요</p>
+    <div className="flex-1 flex flex-col min-h-0 px-8 pt-6">
+      <div className="flex-1 overflow-y-auto pb-2 space-y-4">
+        <div className="flex items-center gap-3">
+          <LobsterLogo state={saving ? 'loading' : 'idle'} size={48} />
+          <div>
+            <h2 className="text-lg font-extrabold">API 키 설정</h2>
+            <p className="text-text-muted text-xs">발급받은 키를 입력해 주세요</p>
+          </div>
         </div>
+
+        <div className="space-y-1.5">
+          <label className="text-sm font-bold">
+            {label} <span className="text-error text-xs">필수</span>
+          </label>
+          <input
+            type="password"
+            placeholder={placeholder}
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+            className={`w-full bg-bg-input rounded-xl px-4 py-2.5 text-sm font-mono outline-none border transition-all duration-200 placeholder:text-text-muted/30 ${
+              apiKey && !apiKeyValid
+                ? 'border-error/50 focus:border-error'
+                : 'border-glass-border focus:border-primary focus:shadow-[0_0_0_3px_var(--color-primary-glow)]'
+            }`}
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <label className="text-sm font-bold">
+            Telegram Bot Token <span className="text-error text-xs">필수</span>
+          </label>
+          <input
+            type="text"
+            placeholder="123456:ABCDEF..."
+            value={botToken}
+            onChange={(e) => setBotToken(e.target.value)}
+            className={`w-full bg-bg-input rounded-xl px-4 py-2.5 text-sm font-mono outline-none border transition-all duration-200 placeholder:text-text-muted/30 ${
+              botToken && !botTokenValid
+                ? 'border-error/50 focus:border-error'
+                : 'border-glass-border focus:border-primary focus:shadow-[0_0_0_3px_var(--color-primary-glow)]'
+            }`}
+          />
+          {botToken && !botTokenValid && (
+            <p className="text-error text-[11px] font-medium">올바른 형식: 123456:ABCDEF...</p>
+          )}
+        </div>
+
+        {logs.length > 0 && <LogViewer lines={logs} />}
+        {error && <p className="text-error text-xs font-medium">{error}</p>}
       </div>
 
-      <div className="space-y-1.5">
-        <label className="text-sm font-bold">
-          {label} <span className="text-error text-xs">필수</span>
-        </label>
-        <input
-          type="password"
-          placeholder={placeholder}
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
-          className={`w-full bg-bg-input rounded-xl px-4 py-2.5 text-sm font-mono outline-none border transition-all duration-200 placeholder:text-text-muted/30 ${
-            apiKey && !apiKeyValid
-              ? 'border-error/50 focus:border-error'
-              : 'border-glass-border focus:border-primary focus:shadow-[0_0_0_3px_var(--color-primary-glow)]'
-          }`}
-        />
-      </div>
-
-      <div className="space-y-1.5">
-        <label className="text-sm font-bold">
-          Telegram Bot Token <span className="text-error text-xs">필수</span>
-        </label>
-        <input
-          type="text"
-          placeholder="123456:ABCDEF..."
-          value={botToken}
-          onChange={(e) => setBotToken(e.target.value)}
-          className={`w-full bg-bg-input rounded-xl px-4 py-2.5 text-sm font-mono outline-none border transition-all duration-200 placeholder:text-text-muted/30 ${
-            botToken && !botTokenValid
-              ? 'border-error/50 focus:border-error'
-              : 'border-glass-border focus:border-primary focus:shadow-[0_0_0_3px_var(--color-primary-glow)]'
-          }`}
-        />
-        {botToken && !botTokenValid && (
-          <p className="text-error text-[11px] font-medium">올바른 형식: 123456:ABCDEF...</p>
-        )}
-      </div>
-
-      {logs.length > 0 && <LogViewer lines={logs} />}
-      {error && <p className="text-error text-xs font-medium">{error}</p>}
-
-      <div className="absolute bottom-16 right-6">
+      <div className="shrink-0 flex justify-end py-3">
         <Button
           variant="primary"
           size="lg"
