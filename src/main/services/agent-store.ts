@@ -6,7 +6,12 @@ import { spawnSync } from 'child_process'
 import https from 'https'
 import { runInWsl } from './wsl-utils'
 
-const VALID_AGENT_IDS = new Set(['naver-blogger', 'coming-soon-1', 'coming-soon-2'])
+const VALID_AGENT_IDS = new Set([
+  'naver-blogger',
+  'thread-writer',
+  'coming-soon-1',
+  'coming-soon-2'
+])
 
 const validateAgentId = (agentId: string): boolean => VALID_AGENT_IDS.has(agentId)
 
@@ -37,16 +42,20 @@ interface LicenseRecord {
 
 // LS variant ID 매핑 (LS 설정 후 채움, 0이면 variant 검증 건너뜀)
 const AGENT_VARIANT_IDS: Record<string, number> = {
-  'naver-blogger': 0
+  'naver-blogger': 0,
+  'thread-writer': 0
 }
 
 const AGENT_PURCHASE_URLS: Record<string, string> = {
-  'naver-blogger': 'https://easyclaw.lemonsqueezy.com/buy/naver-blogger'
+  'naver-blogger': 'https://easyclaw.lemonsqueezy.com/buy/naver-blogger',
+  'thread-writer': 'https://easyclaw.lemonsqueezy.com/buy/thread-writer'
 }
 
 const AGENT_DOWNLOAD_URLS: Record<string, string> = {
   'naver-blogger':
-    'https://github.com/ybgwon96/easyclaw-releases/releases/latest/download/agent-naver-blogger.tar.gz'
+    'https://github.com/ybgwon96/easyclaw-releases/releases/latest/download/agent-naver-blogger.tar.gz',
+  'thread-writer':
+    'https://github.com/ybgwon96/easyclaw-releases/releases/latest/download/agent-thread-writer.tar.gz'
 }
 
 const AGENTS: AgentMeta[] = [
@@ -69,6 +78,26 @@ const AGENTS: AgentMeta[] = [
     featured: true,
     comingSoon: true,
     purchaseUrl: AGENT_PURCHASE_URLS['naver-blogger']
+  },
+  {
+    id: 'thread-writer',
+    name: '스레드 에이전트',
+    tagline: 'URL, 텍스트, 키워드를 X 스레드로 변환',
+    description:
+      '블로그 글, 뉴스 기사, 텍스트를 X(트위터) 스레드로 자동 변환합니다. URL만 넣으면 핵심 내용을 추출하고, 훅 있는 첫 트윗부터 CTA까지 최적화된 스레드를 생성합니다.',
+    features: [
+      'URL → 스레드 자동 변환',
+      '텍스트 직접 입력 지원',
+      '키워드 기반 리서치 후 스레드 생성',
+      '바이럴 훅 + CTA 자동 최적화',
+      '스레드 길이 조절 (3~15개 트윗)'
+    ],
+    category: 'marketing',
+    price: 19000,
+    icon: 'thread',
+    featured: true,
+    comingSoon: false,
+    purchaseUrl: AGENT_PURCHASE_URLS['thread-writer']
   },
   {
     id: 'coming-soon-1',

@@ -20,12 +20,14 @@ interface AgentDetailProps {
 
 const iconGradients: Record<string, string> = {
   blog: 'from-green-400 to-emerald-600',
+  thread: 'from-sky-400 to-blue-600',
   camera: 'from-pink-400 to-rose-600',
   chart: 'from-blue-400 to-indigo-600'
 }
 
 const iconEmoji: Record<string, string> = {
   blog: '📝',
+  thread: '🧵',
   camera: '📸',
   chart: '📊'
 }
