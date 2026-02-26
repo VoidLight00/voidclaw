@@ -86,7 +86,13 @@ export default function DoneStep({
       const r = await window.electronAPI.gateway.start()
       if (!cancelled) {
         setStatus(r.success ? 'running' : 'stopped')
-        if (!r.success) setHasError(true)
+        if (!r.success) {
+          setHasError(true)
+          if (r.error) {
+            setLogs((prev) => [...prev, `[오류] ${r.error}`])
+            setShowLogs(true)
+          }
+        }
       }
     }
     poll()
@@ -107,7 +113,13 @@ export default function DoneStep({
     setHasError(false)
     const r = await window.electronAPI.gateway.start()
     setStatus(r.success ? 'running' : 'stopped')
-    if (!r.success) setHasError(true)
+    if (!r.success) {
+      setHasError(true)
+      if (r.error) {
+        setLogs((prev) => [...prev, `[오류] ${r.error}`])
+        setShowLogs(true)
+      }
+    }
   }
 
   const handleRestart = useCallback(async (): Promise<void> => {
@@ -116,7 +128,13 @@ export default function DoneStep({
     setHasError(false)
     const r = await window.electronAPI.gateway.restart()
     setStatus(r.success ? 'running' : 'stopped')
-    if (!r.success) setHasError(true)
+    if (!r.success) {
+      setHasError(true)
+      if (r.error) {
+        setLogs((prev) => [...prev, `[오류] ${r.error}`])
+        setShowLogs(true)
+      }
+    }
   }, [])
 
   return (

@@ -210,8 +210,9 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
 
   ipcMain.handle('gateway:start', async () => {
     try {
-      await startGateway()
-      return { success: true }
+      const result = await startGateway()
+      const success = result.status === 'started'
+      return { success, error: result.error }
     } catch (e) {
       return { success: false, error: e instanceof Error ? e.message : String(e) }
     }
@@ -228,8 +229,9 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
 
   ipcMain.handle('gateway:restart', async () => {
     try {
-      await restartGateway()
-      return { success: true }
+      const result = await restartGateway()
+      const success = result.status === 'started'
+      return { success, error: result.error }
     } catch (e) {
       return { success: false, error: e instanceof Error ? e.message : String(e) }
     }

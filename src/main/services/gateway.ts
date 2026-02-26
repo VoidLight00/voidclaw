@@ -3,6 +3,11 @@ import { platform } from 'os'
 import { getPathEnv, findBin } from './path-utils'
 import { checkPort } from './troubleshooter'
 
+export interface GatewayResult {
+  status: string
+  error?: string
+}
+
 // Windows WSL: gateway를 포그라운드 프로세스로 유지
 let wslGatewayProcess: ChildProcess | null = null
 
@@ -39,7 +44,7 @@ const runGateway = (args: string[]): Promise<string> => {
   })
 }
 
-const startGatewayWsl = async (): Promise<string> => {
+const startGatewayWsl = async (): Promise<GatewayResult> => {
   if (wslGatewayProcess) {
     wslGatewayProcess.kill()
     wslGatewayProcess = null
@@ -66,31 +71,42 @@ const startGatewayWsl = async (): Promise<string> => {
     wslGatewayProcess = child
 
     let resolved = false
+    let stderrBuffer = ''
 
     child.stdout.on('data', (d) => {
       const msg = d.toString().trim()
       if (msg) emitLog(msg)
       if (!resolved) {
         resolved = true
-        resolve('started')
+        resolve({ status: 'started' })
       }
     })
 
     child.stderr.on('data', (d) => {
       const msg = d.toString().trim()
-      if (msg) emitLog(msg)
+      if (msg) {
+        emitLog(msg)
+        stderrBuffer += msg + '\n'
+      }
       if (!resolved) {
         resolved = true
-        resolve('started')
+        resolve({ status: 'started' })
       }
     })
 
     child.on('close', (code) => {
       wslGatewayProcess = null
       emitLog(`[gateway] 프로세스 종료 (code: ${code})`)
+      if (code !== 0 && stderrBuffer) {
+        emitLog(`[gateway] 오류 상세:\n${stderrBuffer.trim()}`)
+      }
       if (!resolved) {
         resolved = true
-        resolve('stopped')
+        if (code !== 0) {
+          resolve({ status: 'stopped', error: stderrBuffer.trim() || `exit code ${code}` })
+        } else {
+          resolve({ status: 'stopped' })
+        }
       }
     })
 
@@ -99,14 +115,14 @@ const startGatewayWsl = async (): Promise<string> => {
       emitLog(`[gateway] 오류: ${err.message}`)
       if (!resolved) {
         resolved = true
-        resolve('error')
+        resolve({ status: 'error', error: err.message })
       }
     })
 
     setTimeout(() => {
       if (!resolved) {
         resolved = true
-        resolve('started')
+        resolve({ status: 'started' })
       }
     }, 3000)
   })
@@ -181,32 +197,37 @@ export const waitUntilStopped = async (timeoutMs = 5000): Promise<void> => {
   }
 }
 
-export const startGateway = async (): Promise<string> => {
+export const startGateway = async (): Promise<GatewayResult> => {
   const isWin = platform() === 'win32'
   if (isWin) {
     const result = await startGatewayWsl()
-    if (result === 'started') {
+    if (result.status === 'started') {
       await runDoctorFix()
     }
     return result
   }
 
   try {
-    const result = await runGateway(['start'])
+    await runGateway(['start'])
     await runDoctorFix()
-    return result
+    return { status: 'started' }
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
     const isServiceMissing =
       msg.includes('not loaded') || msg.includes('not installed') || msg.includes('bootstrap')
-    if (!isServiceMissing) throw err
+    if (!isServiceMissing) return { status: 'error', error: msg }
 
     // launchd 서비스 미설치 시 자동 설치 후 재시도
     emitLog('[gateway] 서비스 미설치 감지, install 후 재시도')
-    await runGateway(['install'])
-    const result = await runGateway(['start'])
-    await runDoctorFix()
-    return result
+    try {
+      await runGateway(['install'])
+      await runGateway(['start'])
+      await runDoctorFix()
+      return { status: 'started' }
+    } catch (retryErr) {
+      const retryMsg = retryErr instanceof Error ? retryErr.message : String(retryErr)
+      return { status: 'error', error: retryMsg }
+    }
   }
 }
 
@@ -216,7 +237,7 @@ export const stopGateway = (): Promise<string> => {
   return runGateway(['stop'])
 }
 
-export const restartGateway = async (): Promise<string> => {
+export const restartGateway = async (): Promise<GatewayResult> => {
   try {
     await stopGateway()
   } catch {
