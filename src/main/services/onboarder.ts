@@ -207,20 +207,7 @@ export const runOnboard = async (
     anthropic: ['--auth-choice', 'apiKey', '--anthropic-api-key', config.apiKey],
     google: ['--auth-choice', 'gemini-api-key', '--gemini-api-key', config.apiKey],
     openai: ['--auth-choice', 'openai-api-key', '--openai-api-key', config.apiKey],
-    minimax: [
-      '--auth-choice',
-      'custom-api-key',
-      '--custom-base-url',
-      'https://api.minimax.io/v1',
-      '--custom-model-id',
-      'MiniMax-M2.5',
-      '--custom-api-key',
-      config.apiKey,
-      '--custom-provider-id',
-      'minimax',
-      '--custom-compatibility',
-      'openai'
-    ],
+    minimax: ['--auth-choice', 'minimax-api', '--minimax-api-key', config.apiKey],
     glm: ['--auth-choice', 'zai-api-key', '--zai-api-key', config.apiKey]
   }
 
@@ -328,7 +315,7 @@ export const runOnboard = async (
     if (existsSync(modelConfigPath)) {
       const ocConfig = JSON.parse(readFileSync(modelConfigPath, 'utf-8'))
       patchConfig(ocConfig)
-      writeFileSync(modelConfigPath, JSON.stringify(ocConfig, null, 2))
+      writeFileSync(modelConfigPath, JSON.stringify(ocConfig, null, 2), { mode: 0o600 })
     }
   }
   log('기본 설정 완료!')
@@ -382,7 +369,7 @@ export const runOnboard = async (
       if (existsSync(configPath)) {
         const ocConfig = JSON.parse(readFileSync(configPath, 'utf-8'))
         ocConfig.channels = { ...ocConfig.channels, telegram: telegramChannel }
-        writeFileSync(configPath, JSON.stringify(ocConfig, null, 2))
+        writeFileSync(configPath, JSON.stringify(ocConfig, null, 2), { mode: 0o600 })
         log('텔레그램 채널 추가 완료!')
       } else {
         log('OpenClaw 설정 파일을 찾을 수 없습니다')
@@ -538,20 +525,7 @@ export const switchProvider = async (
     anthropic: ['--auth-choice', 'apiKey', '--anthropic-api-key', config.apiKey],
     google: ['--auth-choice', 'gemini-api-key', '--gemini-api-key', config.apiKey],
     openai: ['--auth-choice', 'openai-api-key', '--openai-api-key', config.apiKey],
-    minimax: [
-      '--auth-choice',
-      'custom-api-key',
-      '--custom-base-url',
-      'https://api.minimax.io/v1',
-      '--custom-model-id',
-      'MiniMax-M2.5',
-      '--custom-api-key',
-      config.apiKey,
-      '--custom-provider-id',
-      'minimax',
-      '--custom-compatibility',
-      'openai'
-    ],
+    minimax: ['--auth-choice', 'minimax-api', '--minimax-api-key', config.apiKey],
     glm: ['--auth-choice', 'zai-api-key', '--zai-api-key', config.apiKey]
   }
 
@@ -661,7 +635,7 @@ export const switchProvider = async (
     if (existsSync(configPath)) {
       const ocConfig = JSON.parse(readFileSync(configPath, 'utf-8'))
       patchSwitchConfig(ocConfig, savedTelegram)
-      writeFileSync(configPath, JSON.stringify(ocConfig, null, 2))
+      writeFileSync(configPath, JSON.stringify(ocConfig, null, 2), { mode: 0o600 })
     }
   }
 
