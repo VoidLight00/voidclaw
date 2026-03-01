@@ -43,13 +43,7 @@ run(`git commit -m "chore: bump version to ${tag}"`)
 run('git push origin main')
 console.log('>> 커밋 & 푸시 완료')
 
-// 4. GitHub 릴리즈 생성
+// 4. GitHub 릴리즈 생성 → Actions가 자동 빌드 & 업로드
 run(`gh release create ${tag} --title "${tag}" --notes "Release ${tag}"`)
-console.log('>> GitHub 릴리즈 생성 완료')
-
-// 5. easyclaw-releases 빌드 트리거
-run(`gh workflow run build.yml --repo ybgwon96/easyclaw-releases -f tag="${tag}"`)
-console.log(`>> easyclaw-releases 빌드 트리거 완료`)
-
-console.log(`\n릴리즈 ${tag} 완료! 빌드 상태:`)
-console.log('  gh run list --repo ybgwon96/easyclaw-releases --limit 3')
+console.log(`\n릴리즈 ${tag} 완료! Actions에서 빌드 진행 중:`)
+console.log('  gh run list --limit 3')

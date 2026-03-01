@@ -53,9 +53,9 @@ const AGENT_PURCHASE_URLS: Record<string, string> = {
 
 const AGENT_DOWNLOAD_URLS: Record<string, string> = {
   'naver-blogger':
-    'https://github.com/ybgwon96/easyclaw-releases/releases/latest/download/agent-naver-blogger.tar.gz',
+    'https://github.com/ybgwon96/easyclaw/releases/latest/download/agent-naver-blogger.tar.gz',
   'thread-writer':
-    'https://github.com/ybgwon96/easyclaw-releases/releases/latest/download/agent-thread-writer.tar.gz'
+    'https://github.com/ybgwon96/easyclaw/releases/latest/download/agent-thread-writer.tar.gz'
 }
 
 const AGENTS: AgentMeta[] = [

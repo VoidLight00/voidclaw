@@ -98,27 +98,28 @@ Windows에서는 WSL(Windows Subsystem for Linux) Ubuntu 내에서 Node.js/OpenC
 
 ### 릴리즈 배포
 
-코드는 `ybgwon96/easyclaw` (private), 바이너리는 `ybgwon96/easyclaw-releases` (public)에 분리.
+소스코드와 바이너리 모두 `ybgwon96/easyclaw` 단일 저장소에서 관리.
 
 **릴리즈 절차** (`npm run release` = `scripts/release.mjs`):
 
-1. 클린 워킹 트리 확인
-2. `npm version {bump} --no-git-tag-version` (patch/minor/major)
-3. 커밋 & 푸시 (`chore: bump version to vX.Y.Z`)
-4. `gh release create vX.Y.Z` (easyclaw 저장소에 릴리즈 생성)
-5. `gh workflow run build.yml --repo ybgwon96/easyclaw-releases -f tag=vX.Y.Z` (빌드 트리거)
+1. `npm run release` (또는 `npm run release -- minor/major`)
+2. 스크립트가 버전 bump → 커밋 & 푸시 → GitHub 릴리즈 생성
+3. GitHub Actions가 자동으로: macOS/Windows 빌드 → 동일 릴리즈에 바이너리 업로드
 
 **워크플로우 구조**:
 
-- `.github/workflows/release.yml` (easyclaw): 릴리즈 발행 시 `easyclaw-releases`의 `build.yml` 트리거만 수행
-- 실제 빌드는 `easyclaw-releases` 저장소의 GitHub Actions에서 macOS/Windows 빌드 + 바이너리 업로드
+- `build-mac` (macos-latest): `build:mac-local` → `gh release upload`
+- `build-win` (windows-latest): `build:win-local` → `gh release upload`
 
-**시크릿**: `RELEASE_TOKEN` (fine-grained PAT, `easyclaw-releases` 저장소 Contents Read/Write 권한)
+**시크릿** (GitHub Actions Secrets):
+
+- macOS 코드 서명: `CSC_LINK`, `CSC_KEY_PASSWORD`
+- macOS 공증: `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`, `APPLE_TEAM_ID`
 
 **다운로드 URL** (버전 무관, 항상 최신):
 
-- macOS: `https://github.com/ybgwon96/easyclaw-releases/releases/latest/download/easy-claw.dmg`
-- Windows: `https://github.com/ybgwon96/easyclaw-releases/releases/latest/download/easy-claw-setup.exe`
+- macOS: `https://github.com/ybgwon96/easyclaw/releases/latest/download/easy-claw.dmg`
+- Windows: `https://github.com/ybgwon96/easyclaw/releases/latest/download/easy-claw-setup.exe`
 
 **빌드 파일명**: `electron-builder.yml`에서 버전 없이 고정 (`easy-claw.dmg`, `easy-claw-setup.exe`)
 

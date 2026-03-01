@@ -9,14 +9,14 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ybgwon96/easy-claw/releases/latest"><img src="https://img.shields.io/github/v/release/ybgwon96/easy-claw?color=f97316&style=flat-square" alt="Release"></a>
-  <a href="https://github.com/ybgwon96/easy-claw/releases"><img src="https://img.shields.io/github/downloads/ybgwon96/easy-claw/total?color=34d399&style=flat-square" alt="Downloads"></a>
+  <a href="https://github.com/ybgwon96/easyclaw/releases/latest"><img src="https://img.shields.io/github/v/release/ybgwon96/easyclaw?color=f97316&style=flat-square" alt="Release"></a>
+  <a href="https://github.com/ybgwon96/easyclaw/releases"><img src="https://img.shields.io/github/downloads/ybgwon96/easyclaw/total?color=34d399&style=flat-square" alt="Downloads"></a>
   <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows-blue?style=flat-square" alt="Platform">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-8b5cf6?style=flat-square" alt="License"></a>
 </p>
 
 <p align="center">
-  <a href="https://easyclaw.kr">홈페이지</a> · <a href="https://github.com/ybgwon96/easy-claw/releases/latest">다운로드</a> · <a href="https://open.kakao.com/o/gbBkPehi">커뮤니티</a> · <a href="https://github.com/openclaw/openclaw">OpenClaw</a>
+  <a href="https://easyclaw.kr">홈페이지</a> · <a href="https://github.com/ybgwon96/easyclaw/releases/latest">다운로드</a> · <a href="https://open.kakao.com/o/gbBkPehi">커뮤니티</a> · <a href="https://github.com/openclaw/openclaw">OpenClaw</a>
 </p>
 
 ---
@@ -44,10 +44,10 @@
 
 ## 다운로드
 
-| OS      | 파일   | 링크                                                              |
-| ------- | ------ | ----------------------------------------------------------------- |
-| macOS   | `.dmg` | [다운로드](https://github.com/ybgwon96/easy-claw/releases/latest) |
-| Windows | `.exe` | [다운로드](https://github.com/ybgwon96/easy-claw/releases/latest) |
+| OS      | 파일   | 링크                                                          |
+| ------- | ------ | ------------------------------------------------------------- |
+| macOS   | `.dmg` | [다운로드](https://github.com/ybgwon96/easyclaw/releases/latest) |
+| Windows | `.exe` | [다운로드](https://github.com/ybgwon96/easyclaw/releases/latest) |
 
 [easyclaw.kr](https://easyclaw.kr)에서도 OS에 맞는 파일이 자동으로 선택됩니다.
 
@@ -56,7 +56,7 @@
 Windows 코드 서명 인증서 발급을 진행 중입니다. 현재는 설치 시 보안 경고가 나타날 수 있습니다.
 
 > - 🔍 [VirusTotal 검사 결과](https://www.virustotal.com/gui/url/800de679ba1d63c29023776989a531d27c4510666a320ae3b440c7785b2ab149) — 94개 백신 엔진에서 탐지 0건
-> - 📂 [소스코드 전체 공개](https://github.com/ybgwon96/easy-claw) — 누구나 코드를 직접 검증 가능
+> - 📂 소스코드 전체 공개 — 누구나 코드를 직접 검증 가능
 > - 🔨 GitHub Actions CI/CD로 빌드 — 빌드 과정이 투명하게 공개
 
 <details>
@@ -93,6 +93,8 @@ npm run format # Prettier
 npm run build:mac-local  # macOS 로컬 빌드
 npm run build:win-local  # Windows 로컬 빌드
 ```
+
+> **참고**: macOS 코드 서명/공증을 위해 `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`, `APPLE_TEAM_ID`, `CSC_LINK`, `CSC_KEY_PASSWORD` 환경변수가 필요합니다. 없으면 서명 없이 빌드됩니다.
 
 ## 프로젝트 구조
 

@@ -62,6 +62,6 @@ dmg:
 publish:
   provider: github
   owner: ybgwon96
-  repo: easyclaw-releases
+  repo: easyclaw
   releaseType: release
 npmRebuild: false
