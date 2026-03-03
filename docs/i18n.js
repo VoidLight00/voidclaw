@@ -43,7 +43,45 @@ const translations = {
     'contact.heading': '문의 사항이 있으시면 편하게 연락해 주세요',
     'contact.openChat': '오픈채팅방',
     'footer.privacy': '개인정보처리방침',
-    'footer.copyright': '© 2026 오르비스(ORBIS) | 사업자등록번호: 825-16-02771'
+    'footer.copyright': '© 2026 오르비스(ORBIS) | 사업자등록번호: 825-16-02771',
+    'nav.tab.claw': 'Claw',
+    'nav.tab.code': 'Code',
+    'easycode.meta.title': 'EasyCode — Claude Code 원클릭 설치 프로그램',
+    'easycode.meta.description':
+      'EasyCode로 Claude Code를 원클릭 설치하세요. macOS & Windows 지원.',
+    'easycode.hero.tagline':
+      '복잡한 설정은 잊으세요.<br /><strong>Claude Code</strong>를 원클릭으로 설치하고 바로 바이브 코딩하세요.',
+    'easycode.hero.downloadMac': 'macOS 다운로드',
+    'easycode.hero.downloadWin': 'Windows 다운로드',
+    'easycode.hero.starGithub': 'Star on GitHub',
+    'easycode.hero.openChat': '오픈채팅방 참여하기',
+    'easycode.features.title': '왜 EasyCode인가요?',
+    'easycode.features.sub': 'Claude Code 설치의 모든 과정을 간단하게.',
+    'easycode.features.oneclick.title': '원클릭 설치',
+    'easycode.features.oneclick.desc':
+      'Claude Code와 필요한 환경을 자동으로 감지하고 한 번에 설치합니다.',
+    'easycode.features.envcheck.title': '환경 자동 체크',
+    'easycode.features.envcheck.desc':
+      'Git, Node.js 등 필요한 도구를 자동 감지하여 누락된 것만 설치합니다.',
+    'easycode.features.i18n.title': '다국어 지원',
+    'easycode.features.i18n.desc':
+      '한국어, 영어, 일본어, 중국어 4개 언어로 편리하게 사용하세요.',
+    'easycode.steps.title': '3단계면 끝',
+    'easycode.steps.sub': '설치 파일을 받고, 실행하고, 코딩하세요.',
+    'easycode.steps.download.title': '다운로드',
+    'easycode.steps.download.desc': 'OS에 맞는 설치 파일을<br />한 번에 다운로드',
+    'easycode.steps.install.title': '설치 & 설정',
+    'easycode.steps.install.desc': 'EasyCode가 환경을 감지하고<br />필요한 것만 자동 설치',
+    'easycode.steps.start.title': '코딩 시작',
+    'easycode.steps.start.desc': '터미널에서 claude를 입력하면<br />바로 바이브 코딩 시작',
+    'easycode.cta.title': '지금 바로 시작하세요',
+    'easycode.cta.desc': '복잡한 터미널 작업 없이, 클릭 한 번으로 Claude Code를 설치하세요.',
+    'crossBanner.code.title': 'EasyCode',
+    'crossBanner.code.desc': 'Claude Code도 원클릭으로 설치해보세요',
+    'crossBanner.code.btn': 'EasyCode 보기',
+    'crossBanner.claw.title': 'EasyClaw',
+    'crossBanner.claw.desc': 'OpenClaw AI 에이전트도 원클릭으로 설치해보세요',
+    'crossBanner.claw.btn': 'EasyClaw 보기'
   },
   en: {
     'meta.title': 'EasyClaw — One-Click OpenClaw Installer',
@@ -89,7 +127,45 @@ const translations = {
     'contact.heading': 'Feel free to contact us with any questions',
     'contact.openChat': 'Open Chat',
     'footer.privacy': 'Privacy Policy',
-    'footer.copyright': '© 2026 ORBIS | Business Registration: 825-16-02771'
+    'footer.copyright': '© 2026 ORBIS | Business Registration: 825-16-02771',
+    'nav.tab.claw': 'Claw',
+    'nav.tab.code': 'Code',
+    'easycode.meta.title': 'EasyCode — One-Click Claude Code Installer',
+    'easycode.meta.description':
+      'Install Claude Code with one click using EasyCode. Supports macOS & Windows.',
+    'easycode.hero.tagline':
+      'Forget complicated setup.<br /><strong>Install Claude Code</strong> with one click and start vibe coding right away.',
+    'easycode.hero.downloadMac': 'macOS Download',
+    'easycode.hero.downloadWin': 'Windows Download',
+    'easycode.hero.starGithub': 'Star on GitHub',
+    'easycode.hero.openChat': 'Join Open Chat',
+    'easycode.features.title': 'Why EasyCode?',
+    'easycode.features.sub': 'Every step of Claude Code installation, simplified.',
+    'easycode.features.oneclick.title': 'One-Click Install',
+    'easycode.features.oneclick.desc':
+      'Automatically detects and installs Claude Code and all required dependencies at once.',
+    'easycode.features.envcheck.title': 'Auto Environment Check',
+    'easycode.features.envcheck.desc':
+      'Automatically detects required tools like Git and Node.js, installing only what is missing.',
+    'easycode.features.i18n.title': 'Multi-Language',
+    'easycode.features.i18n.desc':
+      'Available in 4 languages: Korean, English, Japanese, and Chinese.',
+    'easycode.steps.title': 'Done in 3 Steps',
+    'easycode.steps.sub': 'Download, install, and start coding.',
+    'easycode.steps.download.title': 'Download',
+    'easycode.steps.download.desc': 'Download the installer<br />for your OS',
+    'easycode.steps.install.title': 'Install & Configure',
+    'easycode.steps.install.desc': 'EasyCode detects your environment<br />and auto-installs what you need',
+    'easycode.steps.start.title': 'Start Coding',
+    'easycode.steps.start.desc': 'Type claude in the terminal<br />and start vibe coding',
+    'easycode.cta.title': 'Get Started Now',
+    'easycode.cta.desc': 'Install Claude Code with a single click — no terminal needed.',
+    'crossBanner.code.title': 'EasyCode',
+    'crossBanner.code.desc': 'Install Claude Code with one click too',
+    'crossBanner.code.btn': 'View EasyCode',
+    'crossBanner.claw.title': 'EasyClaw',
+    'crossBanner.claw.desc': 'Install OpenClaw AI agent with one click too',
+    'crossBanner.claw.btn': 'View EasyClaw'
   },
   ja: {
     'meta.title': 'EasyClaw — OpenClaw ワンクリックインストーラー',
@@ -136,7 +212,45 @@ const translations = {
     'contact.heading': 'ご質問がありましたらお気軽にお問い合わせください',
     'contact.openChat': 'オープンチャット',
     'footer.privacy': 'プライバシーポリシー',
-    'footer.copyright': '© 2026 ORBIS | 事業者登録番号: 825-16-02771'
+    'footer.copyright': '© 2026 ORBIS | 事業者登録番号: 825-16-02771',
+    'nav.tab.claw': 'Claw',
+    'nav.tab.code': 'Code',
+    'easycode.meta.title': 'EasyCode — Claude Code ワンクリックインストーラー',
+    'easycode.meta.description':
+      'EasyCodeでClaude Codeをワンクリックインストール。macOS & Windows対応。',
+    'easycode.hero.tagline':
+      '複雑な設定は忘れてください。<br /><strong>Claude Code</strong>をワンクリックでインストールしてすぐにバイブコーディングを始めましょう。',
+    'easycode.hero.downloadMac': 'macOS ダウンロード',
+    'easycode.hero.downloadWin': 'Windows ダウンロード',
+    'easycode.hero.starGithub': 'Star on GitHub',
+    'easycode.hero.openChat': 'オープンチャットに参加',
+    'easycode.features.title': 'なぜEasyCodeなのか？',
+    'easycode.features.sub': 'Claude Codeインストールのすべてをシンプルに。',
+    'easycode.features.oneclick.title': 'ワンクリックインストール',
+    'easycode.features.oneclick.desc':
+      'Claude Codeと必要な環境を自動で検出し、一度にインストールします。',
+    'easycode.features.envcheck.title': '環境自動チェック',
+    'easycode.features.envcheck.desc':
+      'Git、Node.jsなど必要なツールを自動検出し、不足分だけインストールします。',
+    'easycode.features.i18n.title': '多言語対応',
+    'easycode.features.i18n.desc':
+      '韓国語、英語、日本語、中国語の4言語で快適にご利用ください。',
+    'easycode.steps.title': '3ステップで完了',
+    'easycode.steps.sub': 'インストーラーをダウンロードして、実行して、コーディング開始。',
+    'easycode.steps.download.title': 'ダウンロード',
+    'easycode.steps.download.desc': 'お使いのOSに合った<br />インストーラーをダウンロード',
+    'easycode.steps.install.title': 'インストール＆設定',
+    'easycode.steps.install.desc': 'EasyCodeが環境を検出し<br />必要なものだけ自動インストール',
+    'easycode.steps.start.title': 'コーディング開始',
+    'easycode.steps.start.desc': 'ターミナルでclaudeと入力すれば<br />すぐにバイブコーディング開始',
+    'easycode.cta.title': '今すぐ始めましょう',
+    'easycode.cta.desc': '複雑なターミナル操作なしで、ワンクリックでClaude Codeをインストール。',
+    'crossBanner.code.title': 'EasyCode',
+    'crossBanner.code.desc': 'Claude Codeもワンクリックでインストール',
+    'crossBanner.code.btn': 'EasyCodeを見る',
+    'crossBanner.claw.title': 'EasyClaw',
+    'crossBanner.claw.desc': 'OpenClaw AIエージェントもワンクリックでインストール',
+    'crossBanner.claw.btn': 'EasyClawを見る'
   },
   zh: {
     'meta.title': 'EasyClaw — OpenClaw 一键安装程序',
@@ -180,7 +294,43 @@ const translations = {
     'contact.heading': '如有任何问题，请随时联系我们',
     'contact.openChat': '开放聊天',
     'footer.privacy': '隐私政策',
-    'footer.copyright': '© 2026 ORBIS | 营业执照号: 825-16-02771'
+    'footer.copyright': '© 2026 ORBIS | 营业执照号: 825-16-02771',
+    'nav.tab.claw': 'Claw',
+    'nav.tab.code': 'Code',
+    'easycode.meta.title': 'EasyCode — Claude Code 一键安装程序',
+    'easycode.meta.description': '使用EasyCode一键安装Claude Code。支持macOS和Windows。',
+    'easycode.hero.tagline':
+      '忘掉复杂的配置吧。<br /><strong>一键安装Claude Code</strong>，立即开始氛围编程。',
+    'easycode.hero.downloadMac': 'macOS 下载',
+    'easycode.hero.downloadWin': 'Windows 下载',
+    'easycode.hero.starGithub': 'Star on GitHub',
+    'easycode.hero.openChat': '加入开放聊天',
+    'easycode.features.title': '为什么选择EasyCode？',
+    'easycode.features.sub': 'Claude Code安装的每一步都变得简单。',
+    'easycode.features.oneclick.title': '一键安装',
+    'easycode.features.oneclick.desc':
+      '自动检测并一次性安装Claude Code及所有必需环境。',
+    'easycode.features.envcheck.title': '环境自动检测',
+    'easycode.features.envcheck.desc':
+      '自动检测Git、Node.js等必需工具，仅安装缺失的部分。',
+    'easycode.features.i18n.title': '多语言支持',
+    'easycode.features.i18n.desc': '支持韩语、英语、日语、中文4种语言，使用更方便。',
+    'easycode.steps.title': '3步即可完成',
+    'easycode.steps.sub': '下载安装文件，运行，开始编程。',
+    'easycode.steps.download.title': '下载',
+    'easycode.steps.download.desc': '下载适合您操作系统的<br />安装文件',
+    'easycode.steps.install.title': '安装和配置',
+    'easycode.steps.install.desc': 'EasyCode检测环境<br />自动安装所需组件',
+    'easycode.steps.start.title': '开始编程',
+    'easycode.steps.start.desc': '在终端输入claude<br />即可开始氛围编程',
+    'easycode.cta.title': '立即开始',
+    'easycode.cta.desc': '无需复杂的终端操作，一键安装Claude Code。',
+    'crossBanner.code.title': 'EasyCode',
+    'crossBanner.code.desc': '也来一键安装Claude Code吧',
+    'crossBanner.code.btn': '查看EasyCode',
+    'crossBanner.claw.title': 'EasyClaw',
+    'crossBanner.claw.desc': '也来一键安装OpenClaw AI代理吧',
+    'crossBanner.claw.btn': '查看EasyClaw'
   }
 }
 
@@ -234,6 +384,8 @@ function applyLang(lang) {
 
   var selector = document.getElementById('lang-selector')
   if (selector) selector.value = lang
+
+  if (typeof refreshProduct === 'function') refreshProduct()
 }
 
 function getCurrentLang() {

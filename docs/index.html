@@ -204,11 +204,43 @@
       .nav-logo .easy {
         color: var(--text);
       }
-      .nav-logo .claw {
+      .nav-logo .brand-part {
         background: linear-gradient(135deg, var(--primary), var(--primary-light));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+      }
+      .nav-tabs {
+        display: flex;
+        gap: 0.25rem;
+        padding: 0.2rem;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--glass-border);
+      }
+      .nav-tab {
+        padding: 0.35rem 0.9rem;
+        border-radius: 8px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.25s ease;
+        border: none;
+        background: transparent;
+        font-family: inherit;
+      }
+      .nav-tab:hover {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .nav-tab--active {
+        color: #fff;
+        background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+        box-shadow: 0 0 12px var(--primary-glow);
+      }
+      .nav-tab--active:hover {
+        background: linear-gradient(135deg, var(--primary), var(--primary-hover));
       }
       .nav-download {
         display: inline-flex;
@@ -393,7 +425,7 @@
       .logo .easy {
         color: var(--text);
       }
-      .logo .claw {
+      .logo .brand-part {
         background: linear-gradient(135deg, var(--primary), var(--primary-light));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -734,6 +766,71 @@
         margin-bottom: 2rem;
       }
 
+      /* ── Cross Banner ── */
+      .cross-banner {
+        text-align: center;
+        padding: 0 1.5rem 2rem;
+      }
+      .cross-banner-card {
+        position: relative;
+        overflow: hidden;
+        padding: 2.5rem 2rem;
+        border-radius: 20px;
+        background: var(--bg-card);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        transition: border-color 0.3s;
+      }
+      .cross-banner-card::before {
+        content: '';
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: radial-gradient(circle, var(--primary-glow), transparent 70%);
+        pointer-events: none;
+        opacity: 0.4;
+      }
+      .cross-banner-card h3 {
+        font-size: 1.2rem;
+        font-weight: 800;
+        margin-bottom: 0.4rem;
+        letter-spacing: -0.02em;
+      }
+      .cross-banner-card p {
+        color: var(--text-muted);
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+      }
+      .btn-cross {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.7rem 1.6rem;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        border: 1px solid var(--glass-border);
+        background: var(--bg-card);
+        color: var(--text);
+        transition: all 0.25s ease;
+      }
+      .btn-cross:hover {
+        background: var(--bg-card-hover);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      }
+      .btn-cross svg {
+        width: 16px;
+        height: 16px;
+      }
+
       /* ── Community ── */
       .community {
         text-align: center;
@@ -1056,6 +1153,14 @@
         .nav-download {
           display: none;
         }
+        .nav-tabs {
+          gap: 0.15rem;
+          padding: 0.15rem;
+        }
+        .nav-tab {
+          padding: 0.3rem 0.65rem;
+          font-size: 0.72rem;
+        }
         .orb--orange {
           width: 220px;
           height: 220px;
@@ -1083,11 +1188,67 @@
       <div class="orb orb--cyan"></div>
     </div>
 
+    <!-- SVG Icon Templates -->
+    <template id="icon-claw">
+      <svg width="140" height="140" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="mg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#fb923c" />
+            <stop offset="100%" stop-color="#c2410c" />
+          </linearGradient>
+          <radialGradient id="gw" cx="50%" cy="45%">
+            <stop offset="0%" stop-color="#f97316" stop-opacity=".2" />
+            <stop offset="100%" stop-color="#f97316" stop-opacity="0" />
+          </radialGradient>
+        </defs>
+        <ellipse cx="60" cy="55" rx="48" ry="46" fill="url(#gw)" />
+        <path d="M45 15 Q36 4 29 7" stroke="#fb923c" stroke-width="2.5" stroke-linecap="round" fill="none" />
+        <path d="M75 15 Q84 4 91 7" stroke="#fb923c" stroke-width="2.5" stroke-linecap="round" fill="none" />
+        <path d="M60 12 C32 12 16 35 16 55 C16 74 30 93 44 98 L44 108 L53 108 L53 98 C56 99 60 100 60 100 C60 100 64 99 67 98 L67 108 L76 108 L76 98 C90 93 104 74 104 55 C104 35 88 12 60 12Z" fill="url(#mg)" />
+        <path d="M20 44 C6 39 1 49 5 58 C9 67 19 63 24 54 C27 48 24 44 20 44Z" fill="url(#mg)" />
+        <path d="M100 44 C114 39 119 49 115 58 C111 67 101 63 96 54 C93 48 96 44 100 44Z" fill="url(#mg)" />
+        <circle cx="45" cy="40" r="7" fill="#050810" />
+        <circle cx="75" cy="40" r="7" fill="#050810" />
+        <circle cx="47" cy="38" r="3" fill="#34d4b0" />
+        <circle cx="77" cy="38" r="3" fill="#34d4b0" />
+      </svg>
+    </template>
+    <template id="icon-code">
+      <svg width="140" height="140" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="cw" cx="50%" cy="45%">
+            <stop offset="0%" stop-color="#da7756" stop-opacity=".18" />
+            <stop offset="100%" stop-color="#da7756" stop-opacity="0" />
+          </radialGradient>
+        </defs>
+        <ellipse cx="60" cy="60" rx="52" ry="52" fill="url(#cw)" />
+        <!-- Terminal body -->
+        <rect x="15" y="15" width="90" height="90" rx="14" fill="#141210" />
+        <!-- Title bar -->
+        <rect x="15" y="15" width="90" height="17" rx="14" fill="#e8e4e0" />
+        <rect x="15" y="24" width="90" height="8" fill="#e8e4e0" />
+        <!-- Window dots -->
+        <circle cx="28" cy="23.5" r="3.2" fill="#fb7185" />
+        <circle cx="37.5" cy="23.5" r="3.2" fill="#fbbf24" />
+        <circle cx="47" cy="23.5" r="3.2" fill="#34d399" />
+        <!-- > prompt -->
+        <path d="M33 48 L46 60 L33 72" fill="none" stroke="#f5ede6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+        <!-- _ cursor -->
+        <line x1="53" y1="86" x2="76" y2="86" stroke="#f5ede6" stroke-width="4.2" stroke-linecap="round" />
+      </svg>
+    </template>
+
     <!-- Floating Navigation -->
     <nav class="floating-nav" id="floating-nav">
-      <a href="/" class="nav-logo">
-        <span class="easy">Easy</span><span class="claw">Claw</span>
-      </a>
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <a href="/" class="nav-logo">
+          <span class="easy">Easy</span><span class="brand-part" id="nav-brand">Claw</span>
+        </a>
+        <div class="nav-tabs">
+          <button class="nav-tab nav-tab--active" data-product="claw" data-i18n="nav.tab.claw">Claw</button>
+          <button class="nav-tab" data-product="code" data-i18n="nav.tab.code">Code</button>
+        </div>
+      </div>
       <div class="nav-right">
         <select id="lang-selector" class="lang-selector" aria-label="Language">
           <option value="ko">한국어</option>
@@ -1122,60 +1283,12 @@
         <div class="hero-inner">
           <div class="hero-anim hero-anim-d1">
             <div class="lobster-wrap">
-              <svg
-                width="140"
-                height="140"
-                viewBox="0 0 120 120"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <defs>
-                  <linearGradient id="mg" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#fb923c" />
-                    <stop offset="100%" stop-color="#c2410c" />
-                  </linearGradient>
-                  <radialGradient id="gw" cx="50%" cy="45%">
-                    <stop offset="0%" stop-color="#f97316" stop-opacity=".2" />
-                    <stop offset="100%" stop-color="#f97316" stop-opacity="0" />
-                  </radialGradient>
-                </defs>
-                <ellipse cx="60" cy="55" rx="48" ry="46" fill="url(#gw)" />
-                <path
-                  d="M45 15 Q36 4 29 7"
-                  stroke="#fb923c"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  fill="none"
-                />
-                <path
-                  d="M75 15 Q84 4 91 7"
-                  stroke="#fb923c"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  fill="none"
-                />
-                <path
-                  d="M60 12 C32 12 16 35 16 55 C16 74 30 93 44 98 L44 108 L53 108 L53 98 C56 99 60 100 60 100 C60 100 64 99 67 98 L67 108 L76 108 L76 98 C90 93 104 74 104 55 C104 35 88 12 60 12Z"
-                  fill="url(#mg)"
-                />
-                <path
-                  d="M20 44 C6 39 1 49 5 58 C9 67 19 63 24 54 C27 48 24 44 20 44Z"
-                  fill="url(#mg)"
-                />
-                <path
-                  d="M100 44 C114 39 119 49 115 58 C111 67 101 63 96 54 C93 48 96 44 100 44Z"
-                  fill="url(#mg)"
-                />
-                <circle cx="45" cy="40" r="7" fill="#050810" />
-                <circle cx="75" cy="40" r="7" fill="#050810" />
-                <circle cx="47" cy="38" r="3" fill="#34d4b0" />
-                <circle cx="77" cy="38" r="3" fill="#34d4b0" />
-              </svg>
+              <!-- Icon injected by router.js -->
             </div>
           </div>
 
-          <h1 class="logo hero-anim hero-anim-d2">
-            <span class="easy">Easy</span><span class="claw">Claw</span>
+          <h1 class="logo hero-anim hero-anim-d2" id="hero-logo">
+            <span class="easy">Easy</span><span class="brand-part">Claw</span>
           </h1>
           <p class="tagline hero-anim hero-anim-d3" data-i18n-html="hero.tagline">
             복잡한 설정은 잊으세요.<br />
@@ -1196,25 +1309,27 @@
               href="https://github.com/ybgwon96/easyclaw/releases/latest/download/easy-claw.dmg"
               class="btn btn-primary"
               style="justify-content: center"
+              data-link="mac"
             >
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path
                   d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"
                 />
               </svg>
-              <span data-i18n="hero.downloadMac">macOS 다운로드</span>
+              <span data-label="downloadMac" data-i18n="hero.downloadMac">macOS 다운로드</span>
             </a>
             <a
               href="https://github.com/ybgwon96/easyclaw/releases/latest/download/easy-claw-setup.exe"
               class="btn btn-primary"
               style="justify-content: center"
+              data-link="win"
             >
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path
                   d="M3 12V6.75l8-1.25V12H3zm0 .5h8v6.5l-8-1.25V12.5zM11.5 12V5.35l9.5-1.6V12H11.5zm0 .5H21v8.25l-9.5-1.6V12.5z"
                 />
               </svg>
-              <span data-i18n="hero.downloadWin">Windows 다운로드</span>
+              <span data-label="downloadWin" data-i18n="hero.downloadWin">Windows 다운로드</span>
             </a>
             <a
               href="https://github.com/ybgwon96/easyclaw"
@@ -1222,13 +1337,14 @@
               rel="noopener"
               class="btn btn-ghost"
               style="justify-content: center"
+              data-link="github"
             >
               <svg viewBox="0 0 24 24" fill="currentColor" style="color: #fbbf24">
                 <path
                   d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
                 />
               </svg>
-              <span data-i18n="hero.starGithub">Star on GitHub</span>
+              <span data-label="starGithub" data-i18n="hero.starGithub">Star on GitHub</span>
             </a>
             <a
               href="https://open.kakao.com/o/gbBkPehi"
@@ -1236,19 +1352,20 @@
               rel="noopener"
               class="btn btn-ghost"
               style="justify-content: center"
+              data-link="chat"
             >
               <svg viewBox="0 0 24 24" fill="currentColor" style="color: #fee500">
                 <path
                   d="M12 3C6.48 3 2 6.58 2 10.94c0 2.8 1.86 5.27 4.66 6.67-.15.53-.96 3.4-.99 3.62 0 0-.02.17.09.24.11.06.24.01.24.01.32-.04 3.7-2.44 4.28-2.85.55.08 1.13.12 1.72.12 5.52 0 10-3.58 10-7.81C22 6.58 17.52 3 12 3z"
                 />
               </svg>
-              <span data-i18n="hero.openChat">오픈채팅방 참여하기</span>
+              <span data-label="openChat" data-i18n="hero.openChat">오픈채팅방 참여하기</span>
             </a>
           </div>
-          <div class="hero-anim hero-anim-d6" style="margin-top: 2rem; width: 100%; max-width: 640px;">
+          <div class="hero-anim hero-anim-d6" id="hero-demo" style="margin-top: 2rem; width: 100%; max-width: 640px;">
             <img src="demo.gif" width="100%" style="border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);" alt="EasyClaw Demo" loading="lazy">
           </div>
-          <div class="hero-anim hero-anim-d6" style="margin-top: 1.5rem;">
+          <div class="hero-anim hero-anim-d6" id="hero-producthunt" style="margin-top: 1.5rem;">
             <a href="https://www.producthunt.com/products/easyclaw-3?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-easyclaw-4" target="_blank" rel="noopener noreferrer"><img alt="EasyClaw - Install OpenClaw AI agent with one click | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1088478&theme=light&t=1772460170834"></a>
           </div>
         </div>
@@ -1258,8 +1375,8 @@
       <section id="features">
         <div class="container" style="text-align: center">
           <span class="section-label reveal" data-i18n="features.label">Features</span>
-          <h2 class="section-title reveal" data-i18n="features.title">왜 EasyClaw인가요?</h2>
-          <p class="section-sub reveal" data-i18n="features.sub">
+          <h2 class="section-title reveal" id="features-title" data-i18n="features.title">왜 EasyClaw인가요?</h2>
+          <p class="section-sub reveal" id="features-sub" data-i18n="features.sub">
             설치부터 실행까지, 모든 과정을 간단하게.
           </p>
 
@@ -1331,8 +1448,8 @@
       <section id="steps">
         <div class="container" style="text-align: center">
           <span class="section-label reveal" data-i18n="steps.label">How it works</span>
-          <h2 class="section-title reveal" data-i18n="steps.title">3단계면 끝</h2>
-          <p class="section-sub reveal" data-i18n="steps.sub">
+          <h2 class="section-title reveal" id="steps-title" data-i18n="steps.title">3단계면 끝</h2>
+          <p class="section-sub reveal" id="steps-sub" data-i18n="steps.sub">
             설치 파일을 받고, 실행하고, 대화하세요.
           </p>
 
@@ -1367,14 +1484,16 @@
       <section class="cta">
         <div class="container">
           <div class="cta-card reveal">
-            <h2 data-i18n="cta.title">지금 바로 시작하세요</h2>
-            <p data-i18n="cta.desc">
+            <h2 id="cta-title" data-i18n="cta.title">지금 바로 시작하세요</h2>
+            <p id="cta-desc" data-i18n="cta.desc">
               복잡한 터미널 작업 없이, 클릭 한 번으로 AI 에이전트를 설치하세요.
             </p>
             <div class="btn-group" style="justify-content: center">
               <a
+                id="cta-mac"
                 href="https://github.com/ybgwon96/easyclaw/releases/latest/download/easy-claw.dmg"
                 class="btn btn-primary"
+                data-link="mac"
               >
                 <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
                   <path
@@ -1384,8 +1503,10 @@
                 <span data-i18n="cta.downloadMac">macOS 다운로드</span>
               </a>
               <a
+                id="cta-win"
                 href="https://github.com/ybgwon96/easyclaw/releases/latest/download/easy-claw-setup.exe"
                 class="btn btn-primary"
+                data-link="win"
               >
                 <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
                   <path
@@ -1395,6 +1516,23 @@
                 <span data-i18n="cta.downloadWin">Windows 다운로드</span>
               </a>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Cross Banner -->
+      <section class="cross-banner">
+        <div class="container">
+          <div class="cross-banner-card reveal">
+            <h3 id="cross-banner-title">EasyCode</h3>
+            <p id="cross-banner-desc">Claude Code도 원클릭으로 설치해보세요</p>
+            <button class="btn-cross" id="cross-banner-btn" data-product="code">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
+              EasyCode 보기
+            </button>
           </div>
         </div>
       </section>
@@ -1594,25 +1732,8 @@
     </script>
 
     <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
+    <script src="products.js"></script>
     <script src="i18n.js"></script>
-    <script>
-      fetch('https://api.github.com/repos/ybgwon96/easyclaw/releases/latest')
-        .then(function (r) {
-          return r.json()
-        })
-        .then(function (d) {
-          if (d.tag_name) {
-            var lang = getCurrentLang()
-            var t = translations[lang] || translations.ko
-            document.getElementById('version-badge').textContent =
-              d.tag_name + ' ' + t['hero.versionRelease']
-          }
-        })
-        .catch(function () {
-          var lang = getCurrentLang()
-          var t = translations[lang] || translations.ko
-          document.getElementById('version-badge').textContent = t['hero.versionFallback']
-        })
-    </script>
+    <script src="router.js"></script>
   </body>
 </html>

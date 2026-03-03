@@ -1,4 +1,7 @@
 {
   "buildCommand": "",
-  "outputDirectory": "docs"
+  "outputDirectory": "docs",
+  "rewrites": [
+    { "source": "/easycode", "destination": "/index.html" }
+  ]
 }
