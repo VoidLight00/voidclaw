@@ -4,7 +4,8 @@ import { platform } from 'os'
 import { StringDecoder } from 'string_decoder'
 import { findBin } from './path-utils'
 
-const AUTH_URL_PATTERN = /https:\/\/auth\.openai\.com\/[^\s]+/
+// Match any https URL from OpenAI auth domains
+const AUTH_URL_PATTERN = /https:\/\/(?:auth|login|accounts)\.openai\.com\/[^\s]+/
 
 const parseAuthUrl = (output: string): string | null => {
   const match = output.match(AUTH_URL_PATTERN)
@@ -43,8 +44,12 @@ export const loginOpenAICodex = async (win: BrowserWindow): Promise<void> => {
       }
     }, 60_000)
 
+    let allOutput = ''
+
     const handleOutput = (data: Buffer): void => {
       const text = decoder.write(data)
+      allOutput += text
+      console.log('[OAuth] CLI output:', text.trim())
       if (urlFound) return
 
       const url = parseAuthUrl(text)
@@ -95,7 +100,8 @@ export const loginOpenAICodex = async (win: BrowserWindow): Promise<void> => {
       if (code === 0) {
         resolve()
       } else {
-        reject(new Error(`OAuth login failed with exit code ${code}`))
+        console.error('[OAuth] CLI exited with code', code, '| output:', allOutput.trim())
+        reject(new Error(`OAuth login failed (exit ${code}): ${allOutput.slice(0, 200)}`))
       }
     })
 
@@ -104,6 +110,7 @@ export const loginOpenAICodex = async (win: BrowserWindow): Promise<void> => {
       resolved = true
       clearTimeout(timeout)
       authWindow?.close()
+      console.error('[OAuth] spawn error:', err.message)
       reject(err)
     })
   })

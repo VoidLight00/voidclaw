@@ -66,7 +66,11 @@ export default function ConfigStep({
       if (result.success) {
         setOauthDone(true)
       } else {
-        setError(result.error === 'cancelled' ? t('config.oauthCancelled') : t('config.oauthError'))
+        setError(
+          result.error === 'cancelled'
+            ? t('config.oauthCancelled')
+            : result.error || t('config.oauthError')
+        )
       }
     } catch {
       setError(t('config.oauthError'))
