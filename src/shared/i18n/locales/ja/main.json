@@ -2,11 +2,11 @@
   "installer": {
     "wslInstalling": "WSLをインストール中... (管理者権限が必要)",
     "wslAdminPrompt": "管理者ウィンドウが開きます。インストールが完了するまでお待ちください。",
-    "ubuntuAlreadyRegistered": "Ubuntuは既に登録されています。初期化を試みます...",
-    "ubuntuInitDone": "Ubuntuの初期化が完了しました!",
     "adminRequired": "管理者権限が必要です。UACプロンプトで「はい」を選択してください。",
     "windowsVersionError": "WSLを使用できないWindowsバージョンです。Windows 10バージョン2004以降が必要です。",
     "biosVirtualization": "BIOSで仮想化(Virtualization)を有効にする必要があります。PCを再起動してBIOS設定でVT-x/AMD-Vを有効にしてください。",
+    "wslCheckingState": "WSL状態を確認中...",
+    "wslInstallFailed": "WSLのインストールに失敗しました。PowerShell（管理者として実行）で 'wsl --install' を手動で実行してください。",
     "wslDone": "WSLのインストールが完了しました! 再起動が必要です。",
     "wslPackages": "WSL内部に必須パッケージをインストール中...",
     "aptFailed": "apt-getが失敗しました — 必須パッケージは既にインストールされている可能性があります",

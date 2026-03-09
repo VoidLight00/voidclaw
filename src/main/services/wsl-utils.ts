@@ -8,6 +8,16 @@ export type WslState =
   | 'not_initialized'
   | 'ready'
 
+/** Progression order of WSL states (used for before/after comparison) */
+export const WSL_STATE_ORDER: readonly WslState[] = [
+  'not_available',
+  'not_installed',
+  'needs_reboot',
+  'no_distro',
+  'not_initialized',
+  'ready'
+] as const
+
 const WSL_DISTRO = 'Ubuntu'
 const WSL_USER = 'root'
 

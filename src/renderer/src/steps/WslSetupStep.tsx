@@ -37,9 +37,9 @@ export default function WslSetupStep({ wslState, onReady }: WslSetupStepProps): 
     setInstalling(true)
     setError(null)
     try {
-      const result = await window.electronAPI.wsl.install()
+      const result = await window.electronAPI.wsl.install(currentState)
       if (result.success && result.needsReboot) {
-        setCurrentState('needs_reboot')
+        setCurrentState(result.state ?? 'needs_reboot')
         // Save state before reboot
         await window.electronAPI.wizard.saveState({
           step: 'wslSetup',
@@ -60,18 +60,16 @@ export default function WslSetupStep({ wslState, onReady }: WslSetupStepProps): 
     setInstalling(true)
     setError(null)
     try {
-      const result = await window.electronAPI.wsl.install()
+      const result = await window.electronAPI.wsl.install(currentState)
       if (result.success && result.needsReboot) {
-        setCurrentState('needs_reboot')
+        setCurrentState(result.state ?? 'needs_reboot')
         await window.electronAPI.wizard.saveState({
           step: 'wslSetup',
           wslInstalled: true,
           timestamp: Date.now()
         })
       } else if (result.success) {
-        // No reboot needed → re-check state
-        const state = await window.electronAPI.wsl.check()
-        setCurrentState(state)
+        setCurrentState(result.state ?? currentState)
       } else {
         setError(result.error ?? t('wslSetup.ubuntuFailed'))
       }

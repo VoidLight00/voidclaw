@@ -2,11 +2,11 @@
   "installer": {
     "wslInstalling": "WSL 설치 중... (관리자 권한 필요)",
     "wslAdminPrompt": "관리자 창이 열립니다. 설치가 완료될 때까지 기다려 주세요.",
-    "ubuntuAlreadyRegistered": "Ubuntu가 이미 등록되어 있습니다. 초기화를 시도합니다...",
-    "ubuntuInitDone": "Ubuntu 초기화 완료!",
     "adminRequired": "관리자 권한이 필요합니다. UAC 프롬프트에서 \"예\"를 선택해 주세요.",
     "windowsVersionError": "WSL을 사용할 수 없는 Windows 버전입니다. Windows 10 버전 2004 이상이 필요합니다.",
     "biosVirtualization": "BIOS에서 가상화(Virtualization)를 활성화해야 합니다. PC 재시작 후 BIOS 설정에서 VT-x/AMD-V를 켜 주세요.",
+    "wslCheckingState": "WSL 상태 확인 중...",
+    "wslInstallFailed": "WSL 설치에 실패했습니다. PowerShell(관리자 권한)에서 'wsl --install'을 직접 실행해 보세요.",
     "wslDone": "WSL 설치 완료! 재부팅이 필요합니다.",
     "wslPackages": "WSL 내부에 필수 패키지 설치 중...",
     "aptFailed": "apt-get 실패 — 필수 패키지가 이미 설치되어 있을 수 있습니다",

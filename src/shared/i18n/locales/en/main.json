@@ -2,11 +2,11 @@
   "installer": {
     "wslInstalling": "Installing WSL... (administrator privileges required)",
     "wslAdminPrompt": "An administrator window will open. Please wait until the installation is complete.",
-    "ubuntuAlreadyRegistered": "Ubuntu is already registered. Attempting initialization...",
-    "ubuntuInitDone": "Ubuntu initialization complete!",
     "adminRequired": "Administrator privileges are required. Please select \"Yes\" in the UAC prompt.",
     "windowsVersionError": "Your Windows version does not support WSL. Windows 10 version 2004 or later is required.",
     "biosVirtualization": "Virtualization must be enabled in BIOS. Restart your PC and enable VT-x/AMD-V in the BIOS settings.",
+    "wslCheckingState": "Checking WSL status...",
+    "wslInstallFailed": "WSL installation failed. Please try running 'wsl --install' manually in PowerShell (Run as Administrator).",
     "wslDone": "WSL installation complete! A reboot is required.",
     "wslPackages": "Installing required packages inside WSL...",
     "aptFailed": "apt-get failed -- required packages may already be installed",

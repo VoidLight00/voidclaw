@@ -59,7 +59,9 @@ interface ElectronAPI {
   }
   wsl: {
     check: () => Promise<WslState>
-    install: () => Promise<{ success: boolean; needsReboot?: boolean; error?: string }>
+    install: (
+      prevState?: WslState
+    ) => Promise<{ success: boolean; needsReboot?: boolean; state?: WslState; error?: string }>
   }
   wizard: {
     saveState: (state: WizardPersistedState) => Promise<{ success: boolean }>

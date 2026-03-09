@@ -76,8 +76,10 @@ const electronAPI = {
     check: (): Promise<
       'not_available' | 'not_installed' | 'needs_reboot' | 'no_distro' | 'not_initialized' | 'ready'
     > => ipcRenderer.invoke('wsl:check'),
-    install: (): Promise<{ success: boolean; needsReboot?: boolean; error?: string }> =>
-      ipcRenderer.invoke('wsl:install')
+    install: (
+      prevState?: string
+    ): Promise<{ success: boolean; needsReboot?: boolean; state?: string; error?: string }> =>
+      ipcRenderer.invoke('wsl:install', prevState)
   },
   wizard: {
     saveState: (state: {

@@ -5,7 +5,7 @@ import { tmpdir, homedir } from 'os'
 import { join } from 'path'
 import https from 'https'
 import { BrowserWindow } from 'electron'
-import { runInWsl } from './wsl-utils'
+import { checkWslState, runInWsl, WSL_STATE_ORDER, type WslState } from './wsl-utils'
 import { getPathEnv } from './path-utils'
 import { t } from '../../shared/i18n/main'
 
@@ -107,11 +107,17 @@ const runWithLog = (
 // ─── WSL installation functions (Windows) ───
 
 /** Install WSL itself (wsl --install -d Ubuntu --no-launch) — UAC elevation */
-export const installWsl = async (win: BrowserWindow): Promise<{ needsReboot: boolean }> => {
+export const installWsl = async (
+  win: BrowserWindow,
+  prevState?: WslState
+): Promise<{ needsReboot: boolean; state: WslState }> => {
   const log = (msg: string): void => sendProgress(win, msg)
+  const baseline = prevState ?? (await checkWslState())
 
   log(t('installer.wslInstalling'))
   log(t('installer.wslAdminPrompt'))
+
+  let installError: Error | null = null
   try {
     const psCommand = [
       'try {',
@@ -126,22 +132,9 @@ export const installWsl = async (win: BrowserWindow): Promise<{ needsReboot: boo
   } catch (err) {
     const errMsg = err instanceof Error ? err.message : ''
     const errLines = ((err as RunError).lines ?? []).join('\n')
-    const combined = errMsg + '\n' + errLines
+    const lower = (errMsg + '\n' + errLines).toLowerCase()
 
-    // exit 4294967295 = ERROR_ALREADY_EXISTS: Ubuntu already registered
-    if (combined.includes('4294967295')) {
-      log(t('installer.ubuntuAlreadyRegistered'))
-      try {
-        await runInWsl('echo initialized', 30000)
-        log(t('installer.ubuntuInitDone'))
-        return { needsReboot: false }
-      } catch {
-        throw err
-      }
-    }
-    const lower = combined.toLowerCase()
-
-    // User denied UAC or permission error
+    // Definite failures — throw immediately
     if (
       lower.includes('canceled') ||
       lower.includes('cancelled') ||
@@ -151,18 +144,34 @@ export const installWsl = async (win: BrowserWindow): Promise<{ needsReboot: boo
     ) {
       throw new Error(t('installer.adminRequired'))
     }
-    // wsl command not found (unsupported Windows version)
     if (lower.includes('not recognized') || lower.includes('not found')) {
       throw new Error(t('installer.windowsVersionError'))
     }
-    // Virtualization disabled
     if (lower.includes('virtualization') || lower.includes('hyper-v')) {
       throw new Error(t('installer.biosVirtualization'))
     }
-    throw err
+    // Ambiguous errors (exit -1 / 4294967295 etc.) — fall through to state check
+    installError = err instanceof Error ? err : new Error(String(err))
   }
-  log(t('installer.wslDone'))
-  return { needsReboot: true }
+
+  // Verify actual WSL state regardless of exit code
+  log(t('installer.wslCheckingState'))
+  const newState = await checkWslState()
+
+  if (newState === 'ready') {
+    log(t('installer.wslDone'))
+    return { needsReboot: false, state: newState }
+  }
+
+  const improved = WSL_STATE_ORDER.indexOf(newState) > WSL_STATE_ORDER.indexOf(baseline)
+
+  if (newState === 'needs_reboot' || improved) {
+    log(t('installer.wslDone'))
+    return { needsReboot: newState === 'needs_reboot', state: newState }
+  }
+
+  // No state change — actual failure
+  throw installError ?? new Error(t('installer.wslInstallFailed'))
 }
 
 /** Install Node.js 22 LTS inside WSL Ubuntu (NodeSource apt repo) */

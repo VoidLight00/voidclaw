@@ -2,11 +2,11 @@
   "installer": {
     "wslInstalling": "正在安装 WSL...（需要管理员权限）",
     "wslAdminPrompt": "将打开管理员窗口，请等待安装完成。",
-    "ubuntuAlreadyRegistered": "Ubuntu 已注册。正在尝试初始化...",
-    "ubuntuInitDone": "Ubuntu 初始化完成！",
     "adminRequired": "需要管理员权限。请在 UAC 提示中选择\"是\"。",
     "windowsVersionError": "当前 Windows 版本不支持 WSL。需要 Windows 10 版本 2004 或更高版本。",
     "biosVirtualization": "需要在 BIOS 中启用虚拟化（Virtualization）。请重启电脑并在 BIOS 设置中开启 VT-x/AMD-V。",
+    "wslCheckingState": "正在检查 WSL 状态...",
+    "wslInstallFailed": "WSL 安装失败。请在 PowerShell（以管理员身份运行）中手动执行 'wsl --install'。",
     "wslDone": "WSL 安装完成！需要重启。",
     "wslPackages": "正在安装 WSL 内部必要软件包...",
     "aptFailed": "apt-get 失败 — 必要软件包可能已安装",

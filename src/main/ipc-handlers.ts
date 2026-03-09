@@ -77,10 +77,10 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
   // WSL-related IPC
   ipcMain.handle('wsl:check', () => checkWslState())
 
-  ipcMain.handle('wsl:install', async () => {
+  ipcMain.handle('wsl:install', async (_e, prevState?: string) => {
     try {
-      const result = await installWsl(win())
-      return { success: true, needsReboot: result.needsReboot }
+      const result = await installWsl(win(), prevState as Parameters<typeof installWsl>[1])
+      return { success: true, needsReboot: result.needsReboot, state: result.state }
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e)
       try {
