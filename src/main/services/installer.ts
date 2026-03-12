@@ -117,7 +117,6 @@ export const installWsl = async (
   log(t('installer.wslInstalling'))
   log(t('installer.wslAdminPrompt'))
 
-  let installError: Error | null = null
   try {
     const psCommand = [
       'try {',
@@ -150,8 +149,12 @@ export const installWsl = async (
     if (lower.includes('virtualization') || lower.includes('hyper-v')) {
       throw new Error(t('installer.biosVirtualization'))
     }
-    // Ambiguous errors (exit -1 / 4294967295 etc.) — fall through to state check
-    installError = err instanceof Error ? err : new Error(String(err))
+    // exit -1 (4294967295) is WSL's signal that a reboot is required
+    if (errMsg.includes('exit -1') || errMsg.includes('exit 4294967295')) {
+      log(t('installer.wslDone'))
+      return { needsReboot: true, state: 'needs_reboot' }
+    }
+    // Other ambiguous errors — fall through to state check
   }
 
   // Verify actual WSL state regardless of exit code
@@ -170,8 +173,8 @@ export const installWsl = async (
     return { needsReboot: newState === 'needs_reboot', state: newState }
   }
 
-  // No state change — actual failure
-  throw installError ?? new Error(t('installer.wslInstallFailed'))
+  // No state change — actual failure; show user-friendly message
+  throw new Error(t('installer.wslInstallFailed'))
 }
 
 /** Install Node.js 22 LTS inside WSL Ubuntu (NodeSource apt repo) */
