@@ -82,7 +82,9 @@
       "openai": "Platform에서 API 키 발급",
       "anthropic": "콘솔에서 API 키 발급",
       "minimax": "Platform에서 API 키 발급",
-      "glm": "Z.AI에서 API 키 발급"
+      "glm": "Z.AI에서 API 키 발급",
+      "deepseek": "DeepSeek에서 API 키 발급",
+      "ollama": "Ollama 다운로드"
     },
     "keyReady": "키 준비 완료!",
     "authMethod": {
@@ -127,8 +129,11 @@
       "google": "Gemini API 키",
       "openai": "OpenAI API 키",
       "minimax": "MiniMax API 키",
-      "glm": "Z.AI API 키"
+      "glm": "Z.AI API 키",
+      "deepseek": "DeepSeek API 키",
+      "ollama": "Ollama"
     },
+    "ollamaInfo": "Ollama가 설치되어 있고 실행 중이어야 합니다",
     "required": "필수",
     "telegramToken": "Telegram Bot Token",
     "telegramHint": "올바른 형식: 123456:ABCDEF...",

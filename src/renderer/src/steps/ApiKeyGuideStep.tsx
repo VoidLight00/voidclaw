@@ -22,10 +22,26 @@ const providerMeta: Record<Provider, { name: string; consoleUrl: string }> = {
   glm: {
     name: 'Z.AI (智谱)',
     consoleUrl: 'https://z.ai/manage-apikey/apikey-list'
+  },
+  deepseek: {
+    name: 'DeepSeek',
+    consoleUrl: 'https://platform.deepseek.com/api_keys'
+  },
+  ollama: {
+    name: 'Ollama',
+    consoleUrl: 'https://ollama.com/download'
   }
 }
 
-const providerOrder: Provider[] = ['google', 'openai', 'anthropic', 'minimax', 'glm']
+const providerOrder: Provider[] = [
+  'google',
+  'openai',
+  'anthropic',
+  'deepseek',
+  'minimax',
+  'glm',
+  'ollama'
+]
 
 interface Props {
   provider: Provider
@@ -142,7 +158,7 @@ export default function ApiKeyGuideStep({
               </div>
             </button>
           ))}
-          {!(provider === 'openai' && authMethod === 'oauth') && (
+          {provider !== 'ollama' && !(provider === 'openai' && authMethod === 'oauth') && (
             <a
               href={meta.consoleUrl}
               target="_blank"
@@ -150,6 +166,16 @@ export default function ApiKeyGuideStep({
               className="block text-center text-primary text-xs font-semibold hover:text-primary-light transition-colors py-2"
             >
               {t(`apiKeyGuide.getApiKey.${provider}`)} &rarr;
+            </a>
+          )}
+          {provider === 'ollama' && (
+            <a
+              href={meta.consoleUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="block text-center text-primary text-xs font-semibold hover:text-primary-light transition-colors py-2"
+            >
+              {t('apiKeyGuide.getApiKey.ollama')} &rarr;
             </a>
           )}
         </div>

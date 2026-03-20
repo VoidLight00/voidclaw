@@ -8,23 +8,31 @@
     "google/gemini-3.1-pro-preview": "最新高性能 (推奨)",
     "google/gemini-3-pro-preview": "高性能",
     "google/gemini-3-flash-preview": "最新高速",
+    "google/gemini-3.1-flash-lite-preview": "超高速・低コスト",
     "google/gemini-2.5-pro": "安定・高性能",
     "google/gemini-2.5-flash": "安定・バランス型",
-    "openai/gpt-5.2": "最新 (推奨)",
-    "openai/gpt-5.2-codex": "コーディング特化",
-    "openai/gpt-5": "汎用",
-    "openai/gpt-5-mini": "軽量",
-    "openai/o4-mini": "推論・最新",
-    "openai-codex/gpt-5.3-codex": "最新コーディング（推奨）",
-    "openai-codex/gpt-5.2-codex": "安定コーディング",
-    "openai-codex/gpt-5.1-codex": "レガシー",
-    "minimax/MiniMax-M2.5": "コーディング/エージェント SOTA (推奨)",
+    "openai/gpt-5.4": "最新最高性能（推奨）",
+    "openai/gpt-5.4-mini": "最新高速・低コスト",
+    "openai/gpt-5.4-nano": "超軽量",
+    "openai/gpt-5.2": "安定",
+    "openai/o4-mini": "推論",
+    "openai-codex/gpt-5.4": "最新コーディング（推奨）",
+    "openai-codex/gpt-5.3-codex": "安定コーディング",
+    "openai-codex/gpt-5.2-codex": "レガシー",
+    "minimax/MiniMax-M2.7": "最新（推奨）",
+    "minimax/MiniMax-M2.7-highspeed": "最新高速",
+    "minimax/MiniMax-M2.5": "コーディング/エージェント SOTA",
     "minimax/MiniMax-M2.5-highspeed": "高速",
-    "minimax/MiniMax-M2.1": "コーディング特化",
     "zai/glm-5": "最新最高性能 (推奨)",
+    "zai/glm-5-turbo": "高速・最高性能",
     "zai/glm-4.7": "高性能",
     "zai/glm-4.7-flashx": "高速",
-    "zai/glm-4.7-flash": "無料"
+    "zai/glm-4.7-flash": "無料",
+    "deepseek/deepseek-chat": "最新（推奨）",
+    "deepseek/deepseek-reasoner": "推論",
+    "ollama/llama3.3": "汎用（推奨）",
+    "ollama/qwen3": "多言語",
+    "ollama/gemma3": "軽量"
   },
   "apiKeyPlaceholder": {
     "glm": "APIキーを入力"
@@ -34,6 +42,8 @@
     "openai": "PlatformでAPIキーを取得",
     "anthropic": "コンソールでAPIキーを取得",
     "minimax": "PlatformでAPIキーを取得",
-    "glm": "Z.AIでAPIキーを取得"
+    "glm": "Z.AIでAPIキーを取得",
+    "deepseek": "DeepSeekでAPIキーを取得",
+    "ollama": "Ollamaをダウンロード"
   }
 }

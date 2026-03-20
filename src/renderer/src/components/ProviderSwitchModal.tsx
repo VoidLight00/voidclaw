@@ -51,6 +51,7 @@ export default function ProviderSwitchModal({
   }
 
   const isOAuth = provider === 'openai' && authMethod === 'oauth'
+  const isOllama = provider === 'ollama'
   const activeModels = isOAuth ? (selected.oauthModels ?? selected.models) : selected.models
 
   const handleOAuthLogin = async (): Promise<void> => {
@@ -76,7 +77,7 @@ export default function ProviderSwitchModal({
     try {
       const result = await window.electronAPI.config.switchProvider({
         provider,
-        ...(isOAuth ? {} : { apiKey }),
+        ...(isOAuth || isOllama ? {} : { apiKey }),
         authMethod,
         modelId
       })
@@ -179,7 +180,11 @@ export default function ProviderSwitchModal({
               </div>
             </div>
 
-            {isOAuth ? (
+            {isOllama ? (
+              <div className="space-y-1.5">
+                <p className="text-xs text-text-muted">{t('providerSwitch.ollamaInfo')}</p>
+              </div>
+            ) : isOAuth ? (
               <div className="space-y-1.5">
                 {oauthDone ? (
                   <div className="flex items-center gap-2 px-3 py-2 bg-success/10 border border-success/30 rounded-lg">
@@ -226,7 +231,7 @@ export default function ProviderSwitchModal({
                 variant="primary"
                 size="sm"
                 onClick={handleSwitch}
-                disabled={isOAuth ? !oauthDone : !apiKeyValid}
+                disabled={isOAuth ? !oauthDone : isOllama ? false : !apiKeyValid}
               >
                 {t('providerSwitch.change')}
               </Button>

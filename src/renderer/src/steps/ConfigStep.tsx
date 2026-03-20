@@ -4,15 +4,16 @@ import LobsterLogo from '../components/LobsterLogo'
 import Button from '../components/Button'
 import LogViewer from '../components/LogViewer'
 import { useInstallLogs } from '../hooks/useIpc'
-
-type Provider = 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm'
+import type { Provider } from '../constants/providers'
 
 const providerPatterns: Record<Provider, RegExp> = {
   anthropic: /^sk-ant-/,
   google: /^AIza/,
   openai: /^sk-(?!ant-)/,
   minimax: /^sk-/,
-  glm: /^.{8,}$/
+  glm: /^.{8,}$/,
+  deepseek: /^sk-/,
+  ollama: /^$/
 }
 
 const providerPlaceholders: Record<Provider, string> = {
@@ -20,7 +21,9 @@ const providerPlaceholders: Record<Provider, string> = {
   google: 'AIza...',
   openai: 'sk-...',
   minimax: 'sk-...',
-  glm: 'API Key'
+  glm: 'API Key',
+  deepseek: 'sk-...',
+  ollama: ''
 }
 
 const BOT_TOKEN_PATTERN = /^\d+:[A-Za-z0-9_-]+$/
@@ -48,6 +51,7 @@ export default function ConfigStep({
   const [oauthLoading, setOauthLoading] = useState(false)
   const { logs, clearLogs } = useInstallLogs()
   const isOAuth = authMethod === 'oauth'
+  const isOllama = provider === 'ollama'
 
   const pattern = providerPatterns[provider]
   const label = t(`config.apiKeyLabel.${provider}`)
@@ -56,7 +60,9 @@ export default function ConfigStep({
   const botTokenValid = BOT_TOKEN_PATTERN.test(botToken)
   const canSave = isOAuth
     ? oauthDone && botTokenValid && !saving
-    : apiKeyValid && botTokenValid && !saving
+    : isOllama
+      ? botTokenValid && !saving
+      : apiKeyValid && botTokenValid && !saving
 
   const handleOAuthLogin = async (): Promise<void> => {
     setOauthLoading(true)
@@ -86,7 +92,7 @@ export default function ConfigStep({
     try {
       const result = await window.electronAPI.onboard.run({
         provider,
-        ...(isOAuth ? {} : { apiKey }),
+        ...(isOAuth || isOllama ? {} : { apiKey }),
         authMethod: authMethod ?? 'api-key',
         telegramBotToken: botToken || undefined,
         modelId
@@ -114,7 +120,12 @@ export default function ConfigStep({
           </div>
         </div>
 
-        {isOAuth ? (
+        {isOllama ? (
+          <div className="space-y-1.5">
+            <label className="text-sm font-bold">Ollama</label>
+            <p className="text-xs text-text-muted">{t('config.ollamaInfo')}</p>
+          </div>
+        ) : isOAuth ? (
           <div className="space-y-1.5">
             <label className="text-sm font-bold">OpenAI {t('apiKeyGuide.authMethod.oauth')}</label>
             {oauthDone ? (

@@ -8,23 +8,31 @@
     "google/gemini-3.1-pro-preview": "최신 고성능 (추천)",
     "google/gemini-3-pro-preview": "고성능",
     "google/gemini-3-flash-preview": "최신 빠른",
+    "google/gemini-3.1-flash-lite-preview": "초고속 저렴",
     "google/gemini-2.5-pro": "안정 고성능",
     "google/gemini-2.5-flash": "안정 균형",
-    "openai/gpt-5.2": "최신 (추천)",
-    "openai/gpt-5.2-codex": "코딩 특화",
-    "openai/gpt-5": "범용",
-    "openai/gpt-5-mini": "경량",
-    "openai/o4-mini": "추론 최신",
-    "openai-codex/gpt-5.3-codex": "최신 코딩 (추천)",
-    "openai-codex/gpt-5.2-codex": "안정 코딩",
-    "openai-codex/gpt-5.1-codex": "레거시",
-    "minimax/MiniMax-M2.5": "코딩/에이전트 SOTA (추천)",
+    "openai/gpt-5.4": "최신 최고 성능 (추천)",
+    "openai/gpt-5.4-mini": "최신 빠르고 저렴",
+    "openai/gpt-5.4-nano": "초경량",
+    "openai/gpt-5.2": "안정",
+    "openai/o4-mini": "추론",
+    "openai-codex/gpt-5.4": "최신 코딩 (추천)",
+    "openai-codex/gpt-5.3-codex": "안정 코딩",
+    "openai-codex/gpt-5.2-codex": "레거시",
+    "minimax/MiniMax-M2.7": "최신 (추천)",
+    "minimax/MiniMax-M2.7-highspeed": "최신 고속",
+    "minimax/MiniMax-M2.5": "코딩/에이전트 SOTA",
     "minimax/MiniMax-M2.5-highspeed": "고속",
-    "minimax/MiniMax-M2.1": "코딩 특화",
     "zai/glm-5": "최신 최고 성능 (추천)",
+    "zai/glm-5-turbo": "빠른 최고 성능",
     "zai/glm-4.7": "고성능",
     "zai/glm-4.7-flashx": "빠른",
-    "zai/glm-4.7-flash": "무료"
+    "zai/glm-4.7-flash": "무료",
+    "deepseek/deepseek-chat": "최신 (추천)",
+    "deepseek/deepseek-reasoner": "추론",
+    "ollama/llama3.3": "범용 (추천)",
+    "ollama/qwen3": "다국어",
+    "ollama/gemma3": "경량"
   },
   "apiKeyPlaceholder": {
     "glm": "API 키 입력"
@@ -34,6 +42,8 @@
     "openai": "Platform에서 API 키 발급",
     "anthropic": "콘솔에서 API 키 발급",
     "minimax": "Platform에서 API 키 발급",
-    "glm": "Z.AI에서 API 키 발급"
+    "glm": "Z.AI에서 API 키 발급",
+    "deepseek": "DeepSeek에서 API 키 발급",
+    "ollama": "Ollama 다운로드"
   }
 }

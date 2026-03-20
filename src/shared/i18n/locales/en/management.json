@@ -64,7 +64,8 @@
     "oauthLogin": "Sign in with OpenAI",
     "oauthLoggingIn": "Signing in...",
     "oauthSuccess": "Login Successful",
-    "oauthApiKey": "API Key"
+    "oauthApiKey": "API Key",
+    "ollamaInfo": "Ollama must be installed and running on your machine"
   },
   "updateBanner": {
     "available": "New version v{{version}} available",

@@ -1,4 +1,4 @@
-export type Provider = 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm'
+export type Provider = 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama'
 export type AuthMethod = 'api-key' | 'oauth'
 
 export interface ModelOption {
@@ -82,6 +82,12 @@ export const providerConfigs: ProviderConfig[] = [
         price: '$0.5/$3'
       },
       {
+        id: 'google/gemini-3.1-flash-lite-preview',
+        name: 'Gemini 3.1 Flash Lite',
+        desc: 'Ultra Fast & Affordable',
+        price: '$0.1/$0.4'
+      },
+      {
         id: 'google/gemini-2.5-pro',
         name: 'Gemini 2.5 Pro',
         desc: 'Stable High Performance',
@@ -101,33 +107,43 @@ export const providerConfigs: ProviderConfig[] = [
     placeholder: 'sk-...',
     pattern: /^sk-(?!ant-)/,
     models: [
-      { id: 'openai/gpt-5.2', name: 'GPT-5.2', desc: 'Latest (Recommended)', price: '$1.75/$14' },
       {
-        id: 'openai/gpt-5.2-codex',
-        name: 'GPT-5.2 Codex',
-        desc: 'Coding Specialized',
-        price: '$1.75/$14'
+        id: 'openai/gpt-5.4',
+        name: 'GPT-5.4',
+        desc: 'Latest Top Performance (Recommended)',
+        price: '$2.50/$15'
       },
-      { id: 'openai/gpt-5', name: 'GPT-5', desc: 'General Purpose', price: '$1.25/$10' },
-      { id: 'openai/gpt-5-mini', name: 'GPT-5 Mini', desc: 'Lightweight', price: '$0.25/$2' },
-      { id: 'openai/o4-mini', name: 'o4-mini', desc: 'Latest Reasoning', price: '$1.10/$4.40' }
+      {
+        id: 'openai/gpt-5.4-mini',
+        name: 'GPT-5.4 Mini',
+        desc: 'Latest Fast & Affordable',
+        price: '$0.75/$4.50'
+      },
+      {
+        id: 'openai/gpt-5.4-nano',
+        name: 'GPT-5.4 Nano',
+        desc: 'Ultra Lightweight',
+        price: '$0.20/$1.25'
+      },
+      { id: 'openai/gpt-5.2', name: 'GPT-5.2', desc: 'Stable', price: '$1.75/$14' },
+      { id: 'openai/o4-mini', name: 'o4-mini', desc: 'Reasoning', price: '$1.10/$4.40' }
     ],
     oauthModels: [
       {
+        id: 'openai-codex/gpt-5.4',
+        name: 'GPT-5.4',
+        desc: 'Latest Coding (Recommended)',
+        price: 'Subscription'
+      },
+      {
         id: 'openai-codex/gpt-5.3-codex',
         name: 'GPT-5.3 Codex',
-        desc: 'Latest Coding (Recommended)',
+        desc: 'Stable Coding',
         price: 'Subscription'
       },
       {
         id: 'openai-codex/gpt-5.2-codex',
         name: 'GPT-5.2 Codex',
-        desc: 'Stable Coding',
-        price: 'Subscription'
-      },
-      {
-        id: 'openai-codex/gpt-5.1-codex',
-        name: 'GPT-5.1 Codex',
         desc: 'Legacy',
         price: 'Subscription'
       }
@@ -141,9 +157,21 @@ export const providerConfigs: ProviderConfig[] = [
     pattern: /^sk-/,
     models: [
       {
+        id: 'minimax/MiniMax-M2.7',
+        name: 'MiniMax M2.7',
+        desc: 'Latest (Recommended)',
+        price: '$0.30/$1.2'
+      },
+      {
+        id: 'minimax/MiniMax-M2.7-highspeed',
+        name: 'M2.7 Highspeed',
+        desc: 'Latest High Speed',
+        price: '$0.30/$1.2'
+      },
+      {
         id: 'minimax/MiniMax-M2.5',
         name: 'MiniMax M2.5',
-        desc: 'Coding/Agent SOTA (Recommended)',
+        desc: 'Coding/Agent SOTA',
         price: '$0.15/$1.2'
       },
       {
@@ -151,12 +179,6 @@ export const providerConfigs: ProviderConfig[] = [
         name: 'M2.5 Highspeed',
         desc: 'High Speed',
         price: '$0.3/$2.4'
-      },
-      {
-        id: 'minimax/MiniMax-M2.1',
-        name: 'MiniMax M2.1',
-        desc: 'Coding Specialized',
-        price: '$0.27/$0.95'
       }
     ]
   },
@@ -172,9 +194,51 @@ export const providerConfigs: ProviderConfig[] = [
         desc: 'Latest Top Performance (Recommended)',
         price: '$1/$3.2'
       },
+      {
+        id: 'zai/glm-5-turbo',
+        name: 'GLM-5 Turbo',
+        desc: 'Fast Top Performance',
+        price: '$0.5/$2'
+      },
       { id: 'zai/glm-4.7', name: 'GLM-4.7', desc: 'High Performance', price: '$0.6/$2.2' },
       { id: 'zai/glm-4.7-flashx', name: 'GLM-4.7 FlashX', desc: 'Fast', price: '$0.07/$0.4' },
       { id: 'zai/glm-4.7-flash', name: 'GLM-4.7 Flash', desc: 'Free', price: 'Free' }
+    ]
+  },
+  {
+    id: 'deepseek',
+    label: 'DeepSeek',
+    placeholder: 'sk-...',
+    pattern: /^sk-/,
+    models: [
+      {
+        id: 'deepseek/deepseek-chat',
+        name: 'DeepSeek V3.2',
+        desc: 'Latest (Recommended)',
+        price: '$0.28/$0.40'
+      },
+      {
+        id: 'deepseek/deepseek-reasoner',
+        name: 'DeepSeek Reasoner',
+        desc: 'Reasoning',
+        price: '$0.55/$2.19'
+      }
+    ]
+  },
+  {
+    id: 'ollama',
+    label: 'Ollama',
+    placeholder: '',
+    pattern: /^$/,
+    models: [
+      {
+        id: 'ollama/llama3.3',
+        name: 'Llama 3.3',
+        desc: 'General Purpose (Recommended)',
+        price: 'Free'
+      },
+      { id: 'ollama/qwen3', name: 'Qwen 3', desc: 'Multilingual', price: 'Free' },
+      { id: 'ollama/gemma3', name: 'Gemma 3', desc: 'Lightweight', price: 'Free' }
     ]
   }
 ]

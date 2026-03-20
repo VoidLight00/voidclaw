@@ -82,7 +82,9 @@
       "openai": "Get API Key from Platform",
       "anthropic": "Get API Key from Console",
       "minimax": "Get API Key from Platform",
-      "glm": "Get API Key from Z.AI"
+      "glm": "Get API Key from Z.AI",
+      "deepseek": "Get API Key from DeepSeek",
+      "ollama": "Download Ollama"
     },
     "keyReady": "Key is ready!",
     "authMethod": {
@@ -127,8 +129,11 @@
       "google": "Gemini API Key",
       "openai": "OpenAI API Key",
       "minimax": "MiniMax API Key",
-      "glm": "Z.AI API Key"
+      "glm": "Z.AI API Key",
+      "deepseek": "DeepSeek API Key",
+      "ollama": "Ollama"
     },
+    "ollamaInfo": "Ollama must be installed and running on your machine",
     "required": "Required",
     "telegramToken": "Telegram Bot Token",
     "telegramHint": "Correct format: 123456:ABCDEF...",

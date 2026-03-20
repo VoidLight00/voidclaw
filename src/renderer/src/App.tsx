@@ -8,6 +8,7 @@ import EnvCheckStep from './steps/EnvCheckStep'
 import WslSetupStep from './steps/WslSetupStep'
 import InstallStep from './steps/InstallStep'
 import ApiKeyGuideStep from './steps/ApiKeyGuideStep'
+import type { Provider } from './constants/providers'
 import TelegramGuideStep from './steps/TelegramGuideStep'
 import ConfigStep from './steps/ConfigStep'
 import DoneStep from './steps/DoneStep'
@@ -63,9 +64,7 @@ function App(): React.JSX.Element {
     needNode: false,
     needOpenclaw: false
   })
-  const [provider, setProvider] = useState<'anthropic' | 'google' | 'openai' | 'minimax' | 'glm'>(
-    'anthropic'
-  )
+  const [provider, setProvider] = useState<Provider>('anthropic')
   const [modelId, setModelId] = useState<string | undefined>()
   const [authMethod, setAuthMethod] = useState<'api-key' | 'oauth'>('api-key')
   const [botUsername, setBotUsername] = useState<string | undefined>()

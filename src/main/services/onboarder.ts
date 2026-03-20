@@ -9,7 +9,7 @@ import { runInWsl, readWslFile, writeWslFile } from './wsl-utils'
 import { t } from '../../shared/i18n/main'
 
 interface OnboardConfig {
-  provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm'
+  provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama'
   apiKey?: string
   authMethod?: 'api-key' | 'oauth'
   telegramBotToken?: string
@@ -59,10 +59,12 @@ const OAUTH_PROFILE_ID = 'openai-codex:default'
 const DEFAULT_MODELS: Record<string, string> = {
   anthropic: 'anthropic/claude-sonnet-4-6',
   google: 'google/gemini-3-flash',
-  openai: 'openai/gpt-5.2',
-  'openai-codex': 'openai-codex/gpt-5.3-codex',
-  minimax: 'minimax/MiniMax-M2.5',
-  glm: 'zai/glm-5'
+  openai: 'openai/gpt-5.4',
+  'openai-codex': 'openai-codex/gpt-5.4',
+  minimax: 'minimax/MiniMax-M2.7',
+  glm: 'zai/glm-5',
+  deepseek: 'deepseek/deepseek-chat',
+  ollama: 'ollama/llama3.3'
 }
 
 const MODEL_SPECS: Partial<
@@ -232,13 +234,17 @@ export const runOnboard = async (
   const effectiveAuthFlags =
     config.authMethod === 'oauth'
       ? ['--auth-choice', 'skip']
-      : {
-          anthropic: ['--auth-choice', 'apiKey', '--anthropic-api-key', config.apiKey!],
-          google: ['--auth-choice', 'gemini-api-key', '--gemini-api-key', config.apiKey!],
-          openai: ['--auth-choice', 'openai-api-key', '--openai-api-key', config.apiKey!],
-          minimax: ['--auth-choice', 'minimax-api', '--minimax-api-key', config.apiKey!],
-          glm: ['--auth-choice', 'zai-api-key', '--zai-api-key', config.apiKey!]
-        }[config.provider]
+      : config.provider === 'ollama'
+        ? ['--auth-choice', 'ollama']
+        : config.provider === 'deepseek'
+          ? ['--auth-choice', 'skip']
+          : {
+              anthropic: ['--auth-choice', 'apiKey', '--anthropic-api-key', config.apiKey!],
+              google: ['--auth-choice', 'gemini-api-key', '--gemini-api-key', config.apiKey!],
+              openai: ['--auth-choice', 'openai-api-key', '--openai-api-key', config.apiKey!],
+              minimax: ['--auth-choice', 'minimax-api', '--minimax-api-key', config.apiKey!],
+              glm: ['--auth-choice', 'zai-api-key', '--zai-api-key', config.apiKey!]
+            }[config.provider]
 
   const openclawArgs = [
     'onboard',
@@ -313,6 +319,20 @@ export const runOnboard = async (
         [OAUTH_PROFILE_ID]: { provider: 'openai-codex', mode: 'oauth' }
       }
       cfg.auth.order = { ...cfg.auth.order, 'openai-codex': [OAUTH_PROFILE_ID] }
+    }
+    // DeepSeek: register custom provider (not built-in)
+    if (config.provider === 'deepseek' && config.apiKey) {
+      cfg.models = cfg.models ?? {}
+      cfg.models.providers = cfg.models.providers ?? {}
+      cfg.models.providers.deepseek = {
+        baseUrl: 'https://api.deepseek.com/v1',
+        api: 'openai-completions',
+        apiKey: config.apiKey,
+        models: [
+          { id: 'deepseek-chat', contextWindow: 128000, maxTokens: 8192 },
+          { id: 'deepseek-reasoner', contextWindow: 128000, maxTokens: 64000 }
+        ]
+      }
     }
     const spec = MODEL_SPECS[config.provider]
     if (spec && cfg.models?.providers) {
@@ -562,13 +582,17 @@ export const switchProvider = async (
   const effectiveAuthFlags =
     config.authMethod === 'oauth'
       ? ['--auth-choice', 'skip']
-      : {
-          anthropic: ['--auth-choice', 'apiKey', '--anthropic-api-key', config.apiKey!],
-          google: ['--auth-choice', 'gemini-api-key', '--gemini-api-key', config.apiKey!],
-          openai: ['--auth-choice', 'openai-api-key', '--openai-api-key', config.apiKey!],
-          minimax: ['--auth-choice', 'minimax-api', '--minimax-api-key', config.apiKey!],
-          glm: ['--auth-choice', 'zai-api-key', '--zai-api-key', config.apiKey!]
-        }[config.provider]
+      : config.provider === 'ollama'
+        ? ['--auth-choice', 'ollama']
+        : config.provider === 'deepseek'
+          ? ['--auth-choice', 'skip']
+          : {
+              anthropic: ['--auth-choice', 'apiKey', '--anthropic-api-key', config.apiKey!],
+              google: ['--auth-choice', 'gemini-api-key', '--gemini-api-key', config.apiKey!],
+              openai: ['--auth-choice', 'openai-api-key', '--openai-api-key', config.apiKey!],
+              minimax: ['--auth-choice', 'minimax-api', '--minimax-api-key', config.apiKey!],
+              glm: ['--auth-choice', 'zai-api-key', '--zai-api-key', config.apiKey!]
+            }[config.provider]
 
   const openclawArgs = [
     'onboard',
@@ -642,6 +666,20 @@ export const switchProvider = async (
         [OAUTH_PROFILE_ID]: { provider: 'openai-codex', mode: 'oauth' }
       }
       ocConfig.auth.order = { ...ocConfig.auth.order, 'openai-codex': [OAUTH_PROFILE_ID] }
+    }
+    // DeepSeek: register custom provider (not built-in)
+    if (config.provider === 'deepseek' && config.apiKey) {
+      ocConfig.models = ocConfig.models ?? {}
+      ocConfig.models.providers = ocConfig.models.providers ?? {}
+      ocConfig.models.providers.deepseek = {
+        baseUrl: 'https://api.deepseek.com/v1',
+        api: 'openai-completions',
+        apiKey: config.apiKey,
+        models: [
+          { id: 'deepseek-chat', contextWindow: 128000, maxTokens: 8192 },
+          { id: 'deepseek-reasoner', contextWindow: 128000, maxTokens: 64000 }
+        ]
+      }
     }
     const spec = MODEL_SPECS[effectiveProvider as OnboardConfig['provider']]
     if (spec && ocConfig.models?.providers) {

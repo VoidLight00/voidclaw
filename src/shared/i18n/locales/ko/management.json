@@ -64,7 +64,8 @@
     "oauthLogin": "OpenAI로 로그인",
     "oauthLoggingIn": "로그인 중...",
     "oauthSuccess": "로그인 완료",
-    "oauthApiKey": "API 키"
+    "oauthApiKey": "API 키",
+    "ollamaInfo": "Ollama가 설치되어 있고 실행 중이어야 합니다"
   },
   "updateBanner": {
     "available": "새 버전 v{{version}} 사용 가능",

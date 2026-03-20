@@ -82,7 +82,9 @@
       "openai": "PlatformでAPIキーを取得",
       "anthropic": "コンソールでAPIキーを取得",
       "minimax": "PlatformでAPIキーを取得",
-      "glm": "Z.AIでAPIキーを取得"
+      "glm": "Z.AIでAPIキーを取得",
+      "deepseek": "DeepSeekでAPIキーを取得",
+      "ollama": "Ollamaをダウンロード"
     },
     "keyReady": "キーの準備完了!",
     "authMethod": {
@@ -127,8 +129,11 @@
       "google": "Gemini APIキー",
       "openai": "OpenAI APIキー",
       "minimax": "MiniMax APIキー",
-      "glm": "Z.AI APIキー"
+      "glm": "Z.AI APIキー",
+      "deepseek": "DeepSeek APIキー",
+      "ollama": "Ollama"
     },
+    "ollamaInfo": "Ollamaがインストールされ、実行中である必要があります",
     "required": "必須",
     "telegramToken": "Telegram Bot Token",
     "telegramHint": "正しい形式: 123456:ABCDEF...",

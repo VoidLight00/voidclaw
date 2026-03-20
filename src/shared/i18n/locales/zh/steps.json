@@ -82,7 +82,9 @@
       "openai": "在 Platform 获取 API 密钥",
       "anthropic": "在控制台获取 API 密钥",
       "minimax": "在 Platform 获取 API 密钥",
-      "glm": "在 Z.AI 获取 API 密钥"
+      "glm": "在 Z.AI 获取 API 密钥",
+      "deepseek": "在 DeepSeek 获取 API 密钥",
+      "ollama": "下载 Ollama"
     },
     "keyReady": "密钥已准备好！",
     "authMethod": {
@@ -127,8 +129,11 @@
       "google": "Gemini API 密钥",
       "openai": "OpenAI API 密钥",
       "minimax": "MiniMax API 密钥",
-      "glm": "Z.AI API 密钥"
+      "glm": "Z.AI API 密钥",
+      "deepseek": "DeepSeek API 密钥",
+      "ollama": "Ollama"
     },
+    "ollamaInfo": "Ollama 必须已安装并正在运行",
     "required": "必填",
     "telegramToken": "Telegram Bot Token",
     "telegramHint": "正确格式：123456:ABCDEF...",

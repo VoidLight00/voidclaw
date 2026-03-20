@@ -64,7 +64,8 @@
     "oauthLogin": "使用 OpenAI 登录",
     "oauthLoggingIn": "登录中...",
     "oauthSuccess": "登录成功",
-    "oauthApiKey": "API 密钥"
+    "oauthApiKey": "API 密钥",
+    "ollamaInfo": "Ollama 必须已安装并正在运行"
   },
   "updateBanner": {
     "available": "新版本 v{{version}} 可用",

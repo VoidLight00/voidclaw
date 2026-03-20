@@ -64,7 +64,8 @@
     "oauthLogin": "OpenAIでログイン",
     "oauthLoggingIn": "ログイン中...",
     "oauthSuccess": "ログイン完了",
-    "oauthApiKey": "APIキー"
+    "oauthApiKey": "APIキー",
+    "ollamaInfo": "Ollamaがインストールされ、実行中である必要があります"
   },
   "updateBanner": {
     "available": "新しいバージョン v{{version}} が利用可能です",

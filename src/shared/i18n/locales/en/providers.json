@@ -8,23 +8,31 @@
     "google/gemini-3.1-pro-preview": "Latest High Performance (Recommended)",
     "google/gemini-3-pro-preview": "High Performance",
     "google/gemini-3-flash-preview": "Latest Fast",
+    "google/gemini-3.1-flash-lite-preview": "Ultra Fast & Affordable",
     "google/gemini-2.5-pro": "Stable High Performance",
     "google/gemini-2.5-flash": "Stable Balanced",
-    "openai/gpt-5.2": "Latest (Recommended)",
-    "openai/gpt-5.2-codex": "Coding Specialized",
-    "openai/gpt-5": "General Purpose",
-    "openai/gpt-5-mini": "Lightweight",
-    "openai/o4-mini": "Latest Reasoning",
-    "openai-codex/gpt-5.3-codex": "Latest Coding (Recommended)",
-    "openai-codex/gpt-5.2-codex": "Stable Coding",
-    "openai-codex/gpt-5.1-codex": "Legacy",
-    "minimax/MiniMax-M2.5": "Coding/Agent SOTA (Recommended)",
+    "openai/gpt-5.4": "Latest Top Performance (Recommended)",
+    "openai/gpt-5.4-mini": "Latest Fast & Affordable",
+    "openai/gpt-5.4-nano": "Ultra Lightweight",
+    "openai/gpt-5.2": "Stable",
+    "openai/o4-mini": "Reasoning",
+    "openai-codex/gpt-5.4": "Latest Coding (Recommended)",
+    "openai-codex/gpt-5.3-codex": "Stable Coding",
+    "openai-codex/gpt-5.2-codex": "Legacy",
+    "minimax/MiniMax-M2.7": "Latest (Recommended)",
+    "minimax/MiniMax-M2.7-highspeed": "Latest High Speed",
+    "minimax/MiniMax-M2.5": "Coding/Agent SOTA",
     "minimax/MiniMax-M2.5-highspeed": "High Speed",
-    "minimax/MiniMax-M2.1": "Coding Specialized",
     "zai/glm-5": "Latest Top Performance (Recommended)",
+    "zai/glm-5-turbo": "Fast Top Performance",
     "zai/glm-4.7": "High Performance",
     "zai/glm-4.7-flashx": "Fast",
-    "zai/glm-4.7-flash": "Free"
+    "zai/glm-4.7-flash": "Free",
+    "deepseek/deepseek-chat": "Latest (Recommended)",
+    "deepseek/deepseek-reasoner": "Reasoning",
+    "ollama/llama3.3": "General Purpose (Recommended)",
+    "ollama/qwen3": "Multilingual",
+    "ollama/gemma3": "Lightweight"
   },
   "apiKeyPlaceholder": {
     "glm": "Enter API Key"
@@ -34,6 +42,8 @@
     "openai": "Get API Key from Platform",
     "anthropic": "Get API Key from Console",
     "minimax": "Get API Key from Platform",
-    "glm": "Get API Key from Z.AI"
+    "glm": "Get API Key from Z.AI",
+    "deepseek": "Get API Key from DeepSeek",
+    "ollama": "Download Ollama"
   }
 }

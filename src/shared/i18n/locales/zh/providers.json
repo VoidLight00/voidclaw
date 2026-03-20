@@ -8,23 +8,31 @@
     "google/gemini-3.1-pro-preview": "最新高性能（推荐）",
     "google/gemini-3-pro-preview": "高性能",
     "google/gemini-3-flash-preview": "最新快速",
+    "google/gemini-3.1-flash-lite-preview": "超快速且经济",
     "google/gemini-2.5-pro": "稳定高性能",
     "google/gemini-2.5-flash": "稳定均衡",
-    "openai/gpt-5.2": "最新（推荐）",
-    "openai/gpt-5.2-codex": "编程特化",
-    "openai/gpt-5": "通用",
-    "openai/gpt-5-mini": "轻量",
-    "openai/o4-mini": "推理最新",
-    "openai-codex/gpt-5.3-codex": "最新编程（推荐）",
-    "openai-codex/gpt-5.2-codex": "稳定编程",
-    "openai-codex/gpt-5.1-codex": "旧版",
-    "minimax/MiniMax-M2.5": "编程/智能体 SOTA（推荐）",
+    "openai/gpt-5.4": "最新最强性能（推荐）",
+    "openai/gpt-5.4-mini": "最新快速且经济",
+    "openai/gpt-5.4-nano": "超轻量",
+    "openai/gpt-5.2": "稳定",
+    "openai/o4-mini": "推理",
+    "openai-codex/gpt-5.4": "最新编程（推荐）",
+    "openai-codex/gpt-5.3-codex": "稳定编程",
+    "openai-codex/gpt-5.2-codex": "旧版",
+    "minimax/MiniMax-M2.7": "最新（推荐）",
+    "minimax/MiniMax-M2.7-highspeed": "最新高速",
+    "minimax/MiniMax-M2.5": "编程/智能体 SOTA",
     "minimax/MiniMax-M2.5-highspeed": "高速",
-    "minimax/MiniMax-M2.1": "编程特化",
     "zai/glm-5": "最新最强性能（推荐）",
+    "zai/glm-5-turbo": "快速最强性能",
     "zai/glm-4.7": "高性能",
     "zai/glm-4.7-flashx": "快速",
-    "zai/glm-4.7-flash": "免费"
+    "zai/glm-4.7-flash": "免费",
+    "deepseek/deepseek-chat": "最新（推荐）",
+    "deepseek/deepseek-reasoner": "推理",
+    "ollama/llama3.3": "通用（推荐）",
+    "ollama/qwen3": "多语言",
+    "ollama/gemma3": "轻量"
   },
   "apiKeyPlaceholder": {
     "glm": "输入 API 密钥"
@@ -34,6 +42,8 @@
     "openai": "在 Platform 获取 API 密钥",
     "anthropic": "在控制台获取 API 密钥",
     "minimax": "在 Platform 获取 API 密钥",
-    "glm": "在 Z.AI 获取 API 密钥"
+    "glm": "在 Z.AI 获取 API 密钥",
+    "deepseek": "在 DeepSeek 获取 API 密钥",
+    "ollama": "下载 Ollama"
   }
 }
