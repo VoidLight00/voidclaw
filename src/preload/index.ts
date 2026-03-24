@@ -37,7 +37,7 @@ const electronAPI = {
   },
   onboard: {
     run: (config: {
-      provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm'
+      provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama'
       apiKey?: string
       authMethod?: 'api-key' | 'oauth'
       telegramBotToken?: string
@@ -130,7 +130,7 @@ const electronAPI = {
       error?: string
     }> => ipcRenderer.invoke('config:read'),
     switchProvider: (config: {
-      provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm'
+      provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama'
       apiKey?: string
       authMethod?: 'api-key' | 'oauth'
       modelId?: string
