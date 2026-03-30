@@ -50,8 +50,8 @@
 
 | OS      | 파일   | 링크                                                                                          |
 | ------- | ------ | --------------------------------------------------------------------------------------------- |
-| macOS   | `.dmg` | [다운로드](https://github.com/VoidLight00/voidclaw/releases/latest/download/easy-claw.dmg)       |
-| Windows | `.exe` | [다운로드](https://github.com/VoidLight00/voidclaw/releases/latest/download/easy-claw-setup.exe) |
+| macOS   | `.dmg` | [다운로드](https://github.com/VoidLight00/voidclaw/releases/latest/download/voidclaw.dmg)       |
+| Windows | `.exe` | [다운로드](https://github.com/VoidLight00/voidclaw/releases/latest/download/voidclaw-setup.exe) |
 
 [voidclaw.vercel.app](https://voidclaw.vercel.app)에서도 OS에 맞는 파일이 자동으로 선택됩니다.
 

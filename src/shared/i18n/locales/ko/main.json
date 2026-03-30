@@ -41,7 +41,7 @@
     "switchDone": "프로바이더 전환 완료!"
   },
   "tray": {
-    "open": "EasyClaw 열기",
+    "open": "VoidClaw 열기",
     "gwRunning": "Gateway 실행 중",
     "gwStopped": "Gateway 중지됨",
     "gwStart": "Gateway 시작",
@@ -49,8 +49,8 @@
     "quit": "종료",
     "notifyRunning": "Gateway가 실행 중입니다",
     "notifyStopped": "Gateway가 중지되었습니다",
-    "tooltipRunning": "EasyClaw - Gateway 실행 중",
-    "tooltipStopped": "EasyClaw - Gateway 중지됨"
+    "tooltipRunning": "VoidClaw - Gateway 실행 중",
+    "tooltipStopped": "VoidClaw - Gateway 중지됨"
   },
   "gateway": {
     "processExit": "[gateway] 프로세스 종료 (code: {{code}})",

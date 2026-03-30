@@ -50,8 +50,8 @@ VoidClawは、[OpenClaw](https://github.com/openclaw/openclaw) AIエージェン
 
 | OS      | ファイル | リンク                                                                                            |
 | ------- | -------- | ------------------------------------------------------------------------------------------------- |
-| macOS   | `.dmg`   | [ダウンロード](https://github.com/VoidLight00/voidclaw/releases/latest/download/easy-claw.dmg)       |
-| Windows | `.exe`   | [ダウンロード](https://github.com/VoidLight00/voidclaw/releases/latest/download/easy-claw-setup.exe) |
+| macOS   | `.dmg`   | [ダウンロード](https://github.com/VoidLight00/voidclaw/releases/latest/download/voidclaw.dmg)       |
+| Windows | `.exe`   | [ダウンロード](https://github.com/VoidLight00/voidclaw/releases/latest/download/voidclaw-setup.exe) |
 
 [voidclaw.vercel.app](https://voidclaw.vercel.app)からもOSに合わせたファイルを自動選択できます。
 

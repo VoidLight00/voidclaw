@@ -46,8 +46,8 @@ VoidClaw is a desktop installer that sets up [OpenClaw](https://github.com/openc
 
 | OS      | File   | Link                                                                                          |
 | ------- | ------ | --------------------------------------------------------------------------------------------- |
-| macOS   | `.dmg` | [Download](https://github.com/VoidLight00/voidclaw/releases/latest/download/easy-claw.dmg)       |
-| Windows | `.exe` | [Download](https://github.com/VoidLight00/voidclaw/releases/latest/download/easy-claw-setup.exe) |
+| macOS   | `.dmg` | [Download](https://github.com/VoidLight00/voidclaw/releases/latest/download/voidclaw.dmg)       |
+| Windows | `.exe` | [Download](https://github.com/VoidLight00/voidclaw/releases/latest/download/voidclaw-setup.exe) |
 
 You can also download from [voidclaw.vercel.app](https://voidclaw.vercel.app) — it auto-detects your OS.
 

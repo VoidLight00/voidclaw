@@ -41,7 +41,7 @@
     "switchDone": "Provider switch complete!"
   },
   "tray": {
-    "open": "Open EasyClaw",
+    "open": "Open VoidClaw",
     "gwRunning": "Gateway Running",
     "gwStopped": "Gateway Stopped",
     "gwStart": "Start Gateway",
@@ -49,8 +49,8 @@
     "quit": "Quit",
     "notifyRunning": "Gateway is running",
     "notifyStopped": "Gateway has stopped",
-    "tooltipRunning": "EasyClaw - Gateway Running",
-    "tooltipStopped": "EasyClaw - Gateway Stopped"
+    "tooltipRunning": "VoidClaw - Gateway Running",
+    "tooltipStopped": "VoidClaw - Gateway Stopped"
   },
   "gateway": {
     "processExit": "[gateway] Process exited (code: {{code}})",

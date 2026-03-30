@@ -28,7 +28,7 @@ jobs:
       - name: Upload to release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "${{ github.event.release.tag_name }}" dist/easy-claw.dmg --clobber
+        run: gh release upload "${{ github.event.release.tag_name }}" dist/voidclaw.dmg --clobber
 
   build-win:
     runs-on: windows-latest
@@ -44,4 +44,4 @@ jobs:
       - name: Upload to release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "${{ github.event.release.tag_name }}" dist/easy-claw-setup.exe --clobber
+        run: gh release upload "${{ github.event.release.tag_name }}" dist/voidclaw-setup.exe --clobber
