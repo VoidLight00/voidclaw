@@ -123,20 +123,19 @@ function App(): React.JSX.Element {
           )}
           {currentStep === 'aiSetup' && (
             <AiSetupStep
-              provider={provider}
-              onSelectProvider={(p) => {
-                setProvider(p)
-                setModelId(undefined)
-                setAuthMethod('api-key')
+              onNext={(oauthProvider) => {
+                const providerMap: Record<string, Provider> = {
+                  anthropic: 'anthropic',
+                  openai: 'openai',
+                  gemini: 'google',
+                  qwen: 'qwen'
+                }
+                setProvider(providerMap[oauthProvider] ?? 'anthropic')
+                setAuthMethod('oauth')
                 setApiKey('')
+                setModelId(undefined)
+                goTo('telegramSetup')
               }}
-              authMethod={authMethod}
-              onSelectAuthMethod={setAuthMethod}
-              modelId={modelId}
-              onSelectModel={setModelId}
-              apiKey={apiKey}
-              onApiKeyChange={setApiKey}
-              onNext={() => goTo('telegramSetup')}
             />
           )}
           {currentStep === 'telegramSetup' && (

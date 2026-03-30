@@ -148,8 +148,20 @@
   },
   "aiSetup": {
     "title": "AI 설정",
-    "desc": "AI 제공사를 선택하고 API 키를 입력하세요",
-    "nextBtn": "다음 단계로"
+    "desc": "로그인만 하면 API 키 없이 바로 사용할 수 있어요",
+    "nextBtn": "다음 단계로",
+    "loginBtn": "로그인 \u2192",
+    "loggingIn": "로그인 중...",
+    "loginSuccess": "로그인 완료!",
+    "loginDone": "완료",
+    "loginFailed": "로그인 실패. 다시 시도해 주세요.",
+    "retry": "다시 시도",
+    "providerDesc": {
+      "anthropic": "Claude Sonnet \u00b7 Opus \u2014 claude.ai 세션 토큰으로 인증",
+      "openai": "GPT-5 \u00b7 Codex \u2014 ChatGPT 계정으로 로그인",
+      "gemini": "Gemini 2.5 Pro \u2014 Google 계정으로 로그인",
+      "qwen": "Qwen Max \u2014 Alibaba Cloud 계정으로 로그인"
+    }
   },
   "telegramSetup": {
     "title": "텔레그램 연결",

@@ -34,7 +34,7 @@ interface ElectronAPI {
   }
   onboard: {
     run: (config: {
-      provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama'
+      provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama' | 'qwen'
       apiKey?: string
       authMethod?: 'api-key' | 'oauth'
       telegramBotToken?: string
@@ -43,6 +43,10 @@ interface ElectronAPI {
   }
   oauth: {
     loginCodex: () => Promise<{ success: boolean; error?: string }>
+  }
+  oauthAuth: {
+    run: (provider: string) => Promise<{ success: boolean; output: string }>
+    check: (provider: string) => Promise<boolean>
   }
   reboot: () => void
   gateway: {
@@ -87,7 +91,7 @@ interface ElectronAPI {
       error?: string
     }>
     switchProvider: (config: {
-      provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama'
+      provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama' | 'qwen'
       apiKey?: string
       authMethod?: 'api-key' | 'oauth'
       modelId?: string

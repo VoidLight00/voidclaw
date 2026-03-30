@@ -148,8 +148,20 @@
   },
   "aiSetup": {
     "title": "AI Setup",
-    "desc": "Select your AI provider and enter your API key",
-    "nextBtn": "Next Step"
+    "desc": "Just log in \u2014 no API key needed",
+    "nextBtn": "Next Step",
+    "loginBtn": "Log in \u2192",
+    "loggingIn": "Logging in...",
+    "loginSuccess": "Login successful!",
+    "loginDone": "Done",
+    "loginFailed": "Login failed. Please try again.",
+    "retry": "Retry",
+    "providerDesc": {
+      "anthropic": "Claude Sonnet \u00b7 Opus \u2014 Authenticate with claude.ai session token",
+      "openai": "GPT-5 \u00b7 Codex \u2014 Sign in with ChatGPT account",
+      "gemini": "Gemini 2.5 Pro \u2014 Sign in with Google account",
+      "qwen": "Qwen Max \u2014 Sign in with Alibaba Cloud account"
+    }
   },
   "telegramSetup": {
     "title": "Connect Telegram",

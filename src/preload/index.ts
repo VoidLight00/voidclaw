@@ -37,7 +37,7 @@ const electronAPI = {
   },
   onboard: {
     run: (config: {
-      provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama'
+      provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama' | 'qwen'
       apiKey?: string
       authMethod?: 'api-key' | 'oauth'
       telegramBotToken?: string
@@ -48,6 +48,14 @@ const electronAPI = {
   oauth: {
     loginCodex: (): Promise<{ success: boolean; error?: string }> =>
       ipcRenderer.invoke('oauth:openai-codex')
+  },
+  oauthAuth: {
+    run: (
+      provider: string
+    ): Promise<{ success: boolean; output: string }> =>
+      ipcRenderer.invoke('oauth-auth:run', provider),
+    check: (provider: string): Promise<boolean> =>
+      ipcRenderer.invoke('oauth-auth:check', provider)
   },
   reboot: (): void => ipcRenderer.send('system:reboot'),
   gateway: {
@@ -130,7 +138,7 @@ const electronAPI = {
       error?: string
     }> => ipcRenderer.invoke('config:read'),
     switchProvider: (config: {
-      provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama'
+      provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama' | 'qwen'
       apiKey?: string
       authMethod?: 'api-key' | 'oauth'
       modelId?: string

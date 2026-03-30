@@ -9,7 +9,7 @@ import { runInWsl, readWslFile, writeWslFile } from './wsl-utils'
 import { t } from '../../shared/i18n/main'
 
 interface OnboardConfig {
-  provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama'
+  provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama' | 'qwen'
   apiKey?: string
   authMethod?: 'api-key' | 'oauth'
   telegramBotToken?: string

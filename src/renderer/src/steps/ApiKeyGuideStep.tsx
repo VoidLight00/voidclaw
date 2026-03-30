@@ -30,6 +30,10 @@ const providerMeta: Record<Provider, { name: string; consoleUrl: string }> = {
   ollama: {
     name: 'Ollama',
     consoleUrl: 'https://ollama.com/download'
+  },
+  qwen: {
+    name: 'Qwen',
+    consoleUrl: 'https://bailian.console.aliyun.com/'
   }
 }
 

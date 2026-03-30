@@ -1,4 +1,4 @@
-export type Provider = 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama'
+export type Provider = 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama' | 'qwen'
 export type AuthMethod = 'api-key' | 'oauth'
 
 export interface ModelOption {

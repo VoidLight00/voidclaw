@@ -13,7 +13,8 @@ const providerPatterns: Record<Provider, RegExp> = {
   minimax: /^sk-/,
   glm: /^.{8,}$/,
   deepseek: /^sk-/,
-  ollama: /^$/
+  ollama: /^$/,
+  qwen: /^sk-/
 }
 
 const providerPlaceholders: Record<Provider, string> = {
@@ -23,7 +24,8 @@ const providerPlaceholders: Record<Provider, string> = {
   minimax: 'sk-...',
   glm: 'API Key',
   deepseek: 'sk-...',
-  ollama: ''
+  ollama: '',
+  qwen: 'sk-...'
 }
 
 const BOT_TOKEN_PATTERN = /^\d+:[A-Za-z0-9_-]+$/

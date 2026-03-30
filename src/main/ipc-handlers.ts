@@ -27,6 +27,7 @@ import { checkForUpdates, downloadUpdate, installUpdate } from './services/updat
 import { uninstallOpenClaw } from './services/uninstaller'
 import { exportBackup, importBackup } from './services/backup'
 import { loginOpenAICodex } from './services/oauth'
+import { runOAuthFlow, checkAuthStatus, type OAuthProvider } from './services/oauth-auth'
 
 interface WizardPersistedState {
   step: string
@@ -171,7 +172,7 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
     async (
       _e,
       config: {
-        provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama'
+        provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama' | 'qwen'
         apiKey?: string
         authMethod?: 'api-key' | 'oauth'
         telegramBotToken?: string
@@ -203,6 +204,15 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
     }
   })
 
+  // OpenClaw OAuth auth flow
+  ipcMain.handle('oauth-auth:run', async (_e, provider: OAuthProvider) => {
+    return await runOAuthFlow(provider)
+  })
+
+  ipcMain.handle('oauth-auth:check', async (_e, provider: OAuthProvider) => {
+    return await checkAuthStatus(provider)
+  })
+
   // Read config / switch provider
   ipcMain.handle('config:read', async () => {
     try {
@@ -218,7 +228,7 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
     async (
       _e,
       config: {
-        provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama'
+        provider: 'anthropic' | 'google' | 'openai' | 'minimax' | 'glm' | 'deepseek' | 'ollama' | 'qwen'
         apiKey?: string
         authMethod?: 'api-key' | 'oauth'
         modelId?: string
