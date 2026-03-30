@@ -285,7 +285,7 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
 
   ipcMain.handle('newsletter:subscribe', async (_e, email: string) => {
     try {
-      const r = await fetch('https://easyclaw.kr/api/newsletter', {
+      const r = await fetch('https://voidclaw.vercel.app/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, source: 'app' })
@@ -350,6 +350,24 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
   // Backup / restore
   ipcMain.handle('backup:export', () => exportBackup(win()))
   ipcMain.handle('backup:import', () => importBackup(win()))
+
+  // Workspace files (SOUL.md, USER.md, IDENTITY.md)
+  ipcMain.handle(
+    'workspace:write-files',
+    async (
+      _e,
+      config: { userName: string; useCase: string; agentName: string; agentEmoji: string }
+    ) => {
+      const { writeWorkspaceFiles } = await import('./services/workspace-writer')
+      return writeWorkspaceFiles(config)
+    }
+  )
+
+  // Telegram bot token validation
+  ipcMain.handle('telegram:validate-token', async (_e, token: string) => {
+    const { validateTelegramToken } = await import('./services/telegram-validator')
+    return validateTelegramToken(token)
+  })
 
   // i18n settings
   ipcMain.handle('i18n:get-locale', () => i18nMain.language || getSavedLocale())

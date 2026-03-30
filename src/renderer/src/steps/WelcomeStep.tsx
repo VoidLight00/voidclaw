@@ -19,7 +19,7 @@ export default function WelcomeStep({ onNext }: { onNext: () => void }): React.J
 
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-black tracking-tight">
-          Easy
+          Void
           <span className="bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
             Claw
           </span>

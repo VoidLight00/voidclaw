@@ -1,7 +1,7 @@
 {
   "indicator": {
-    "default": ["Start", "Env", "Install", "API Key", "Telegram", "Config", "Done"],
-    "windows": ["Start", "Env", "WSL", "Install", "API Key", "Telegram", "Config", "Done"]
+    "default": ["Welcome", "Setup", "AI", "Telegram", "Agent"],
+    "windows": ["Welcome", "Setup", "WSL", "AI", "Telegram", "Agent"]
   },
   "welcome": {
     "title": "Your Own AI Agent, One Click Away",
@@ -44,7 +44,7 @@
     "wslInstalling": "Installing WSL...",
     "wslInstall": "Install WSL",
     "rebootRequired": "Reboot Required",
-    "rebootDesc": "A reboot is required to complete the WSL installation. Please restart EasyClaw after rebooting.",
+    "rebootDesc": "A reboot is required to complete the WSL installation. Please restart VoidClaw after rebooting.",
     "rebootNow": "Reboot Now",
     "ubuntuInstallDesc": "Installing the Ubuntu distribution.",
     "ubuntuInstalling": "Installing Ubuntu...",
@@ -107,11 +107,11 @@
       },
       {
         "title": "Enter Bot Display Name",
-        "desc": "Enter a display name for your bot. Example: EASYCLAW"
+        "desc": "Enter a display name for your bot. Example: VOIDCLAW"
       },
       {
         "title": "Choose Bot Username",
-        "desc": "Enter a unique ID ending with _bot. Example: my_easyclaw_bot"
+        "desc": "Enter a unique ID ending with _bot. Example: my_voidclaw_bot"
       },
       {
         "title": "Copy Bot Token",
@@ -145,6 +145,41 @@
     "oauthSuccess": "Login Successful",
     "oauthError": "Login failed. Please try again.",
     "oauthCancelled": "Login was cancelled."
+  },
+  "aiSetup": {
+    "title": "AI Setup",
+    "desc": "Select your AI provider and enter your API key",
+    "nextBtn": "Next Step"
+  },
+  "telegramSetup": {
+    "title": "Connect Telegram",
+    "desc": "Let's create a Telegram bot to chat with your AI agent",
+    "validating": "Validating token...",
+    "invalidToken": "Invalid token",
+    "nextBtn": "Next Step"
+  },
+  "agentBirth": {
+    "title": "Agent Birth",
+    "desc": "Let's create your personal AI agent",
+    "nameLabel": "What's your name? (Nickname OK)",
+    "namePlaceholder": "Name or nickname",
+    "useCaseLabel": "What will you mainly use it for?",
+    "useCase": {
+      "study": "Study/Research",
+      "work": "Work Automation",
+      "invest": "Investment/Trading",
+      "creative": "Creative/Content",
+      "dev": "Development/Coding",
+      "other": "Other"
+    },
+    "customUseCasePlaceholder": "Enter your own",
+    "agentNameLabel": "Let's name your agent!",
+    "customAgentPlaceholder": "Or enter custom name",
+    "autoLaunch": "Launch at Startup",
+    "savingBtn": "Creating agent...",
+    "saveBtn": "Birth the Agent!",
+    "birthTitle": "Your Agent is Born!",
+    "birthDesc": "is ready to go"
   },
   "troubleshoot": {
     "title": "Troubleshoot",

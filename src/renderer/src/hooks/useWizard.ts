@@ -2,23 +2,21 @@ import { useState, useCallback, useRef } from 'react'
 
 export type StepName =
   | 'welcome'
-  | 'envCheck'
+  | 'envSetup'
   | 'wslSetup'
-  | 'install'
-  | 'apiKeyGuide'
-  | 'telegramGuide'
-  | 'config'
+  | 'aiSetup'
+  | 'telegramSetup'
+  | 'agentBirth'
   | 'done'
   | 'troubleshoot'
 
 const STEPS: StepName[] = [
   'welcome',
-  'envCheck',
+  'envSetup',
   'wslSetup',
-  'install',
-  'apiKeyGuide',
-  'telegramGuide',
-  'config',
+  'aiSetup',
+  'telegramSetup',
+  'agentBirth',
   'done'
 ]
 

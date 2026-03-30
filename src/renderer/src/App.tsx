@@ -4,13 +4,12 @@ import StepIndicator from './components/StepIndicator'
 import UpdateBanner from './components/UpdateBanner'
 import { useWizard } from './hooks/useWizard'
 import WelcomeStep from './steps/WelcomeStep'
-import EnvCheckStep from './steps/EnvCheckStep'
+import EnvSetupStep from './steps/EnvSetupStep'
 import WslSetupStep from './steps/WslSetupStep'
-import InstallStep from './steps/InstallStep'
-import ApiKeyGuideStep from './steps/ApiKeyGuideStep'
+import AiSetupStep from './steps/AiSetupStep'
+import TelegramSetupStep from './steps/TelegramSetupStep'
+import AgentBirthStep from './steps/AgentBirthStep'
 import type { Provider } from './constants/providers'
-import TelegramGuideStep from './steps/TelegramGuideStep'
-import ConfigStep from './steps/ConfigStep'
 import DoneStep from './steps/DoneStep'
 import TroubleshootStep from './steps/TroubleshootStep'
 
@@ -21,11 +20,6 @@ type WslState =
   | 'no_distro'
   | 'not_initialized'
   | 'ready'
-
-interface InstallNeeds {
-  needNode: boolean
-  needOpenclaw: boolean
-}
 
 const BUBBLES = Array.from({ length: 8 }, (_, i) => ({
   id: i,
@@ -60,60 +54,35 @@ const Bubbles = (): React.JSX.Element => {
 function App(): React.JSX.Element {
   const { t } = useTranslation('common')
   const { currentStep, next, prev, canGoBack, goTo } = useWizard()
-  const [installNeeds, setInstallNeeds] = useState<InstallNeeds>({
-    needNode: false,
-    needOpenclaw: false
-  })
   const [provider, setProvider] = useState<Provider>('anthropic')
   const [modelId, setModelId] = useState<string | undefined>()
   const [authMethod, setAuthMethod] = useState<'api-key' | 'oauth'>('api-key')
+  const [apiKey, setApiKey] = useState('')
+  const [botToken, setBotToken] = useState('')
   const [botUsername, setBotUsername] = useState<string | undefined>()
   const [isWindows, setIsWindows] = useState(false)
   const [wslState, setWslState] = useState<WslState>('ready')
   const [version, setVersion] = useState('')
 
-  // Load version + OS check + reboot restoration on app start
+  // Load version + reboot restoration on app start
   useEffect(() => {
     window.electronAPI.version().then(setVersion)
 
-    // Run loadState() after env.check() completes (prevent race condition)
     window.electronAPI.env.check().then(async (env) => {
       setIsWindows(env.os === 'windows')
-      if (env.wslState) setWslState(env.wslState)
+      if (env.wslState) setWslState(env.wslState as WslState)
 
-      // Restore state after reboot — run after wslState is correctly set
+      // Restore state after reboot
       const state = await window.electronAPI.wizard.loadState()
       if (state) {
-        goTo(state.step as 'wslSetup' | 'envCheck')
+        goTo(state.step as 'wslSetup' | 'envSetup')
       }
     })
   }, [goTo])
 
-  const handleEnvCheckDone = (env: {
-    os: string
-    nodeVersionOk: boolean
-    openclawInstalled: boolean
-    wslState?: WslState
-  }): void => {
-    setInstallNeeds({
-      needNode: !env.nodeVersionOk,
-      needOpenclaw: !env.openclawInstalled
-    })
-
-    // Windows + WSL not ready → navigate to wslSetup
-    if (env.os === 'windows' && env.wslState && env.wslState !== 'ready') {
-      setWslState(env.wslState)
-      goTo('wslSetup')
-      return
-    }
-
-    goTo('install')
-  }
-
   const handleWslReady = useCallback((): void => {
-    // WSL ready → clear state file and re-run envCheck
     window.electronAPI.wizard.clearState()
-    goTo('envCheck')
+    goTo('envSetup')
   }, [goTo])
 
   const handleDone = useCallback(
@@ -125,6 +94,10 @@ function App(): React.JSX.Element {
     [goTo]
   )
 
+  // Steps that show the step indicator
+  const showIndicator =
+    currentStep !== 'welcome' && currentStep !== 'done' && currentStep !== 'troubleshoot'
+
   return (
     <>
       <div className="aurora-bg" />
@@ -132,41 +105,53 @@ function App(): React.JSX.Element {
       <Bubbles />
 
       <div className="flex flex-col h-full relative z-10">
-        {currentStep !== 'welcome' && currentStep !== 'troubleshoot' && (
-          <StepIndicator currentStep={currentStep} isWindows={isWindows} />
-        )}
+        {showIndicator && <StepIndicator currentStep={currentStep} isWindows={isWindows} />}
 
         <div className="flex-1 flex flex-col min-h-0 pb-10 step-enter" key={currentStep}>
           {currentStep === 'welcome' && <WelcomeStep onNext={next} />}
-          {currentStep === 'envCheck' && (
-            <EnvCheckStep onNext={() => goTo('apiKeyGuide')} onNeedInstall={handleEnvCheckDone} />
+          {currentStep === 'envSetup' && (
+            <EnvSetupStep
+              onDone={() => goTo('aiSetup')}
+              onWslNeedsReboot={() => goTo('wslSetup')}
+              wslState={wslState}
+              setWslState={setWslState}
+              setIsWindows={setIsWindows}
+            />
           )}
           {currentStep === 'wslSetup' && (
             <WslSetupStep wslState={wslState} onReady={handleWslReady} />
           )}
-          {currentStep === 'install' && (
-            <InstallStep needs={installNeeds} onDone={() => goTo('apiKeyGuide')} />
-          )}
-          {currentStep === 'apiKeyGuide' && (
-            <ApiKeyGuideStep
+          {currentStep === 'aiSetup' && (
+            <AiSetupStep
               provider={provider}
               onSelectProvider={(p) => {
                 setProvider(p)
                 setModelId(undefined)
                 setAuthMethod('api-key')
+                setApiKey('')
               }}
               authMethod={authMethod}
               onSelectAuthMethod={setAuthMethod}
               modelId={modelId}
               onSelectModel={setModelId}
-              onNext={next}
+              apiKey={apiKey}
+              onApiKeyChange={setApiKey}
+              onNext={() => goTo('telegramSetup')}
             />
           )}
-          {currentStep === 'telegramGuide' && <TelegramGuideStep onNext={next} />}
-          {currentStep === 'config' && (
-            <ConfigStep
+          {currentStep === 'telegramSetup' && (
+            <TelegramSetupStep
+              botToken={botToken}
+              onBotTokenChange={setBotToken}
+              onNext={() => goTo('agentBirth')}
+            />
+          )}
+          {currentStep === 'agentBirth' && (
+            <AgentBirthStep
               provider={provider}
+              apiKey={apiKey}
               authMethod={authMethod}
+              botToken={botToken}
               modelId={modelId}
               onDone={handleDone}
             />

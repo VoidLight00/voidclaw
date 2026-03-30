@@ -1,7 +1,7 @@
 {
   "indicator": {
-    "default": ["開始", "環境", "インストール", "APIキー", "Telegram", "設定", "完了"],
-    "windows": ["開始", "環境", "WSL", "インストール", "APIキー", "Telegram", "設定", "完了"]
+    "default": ["ようこそ", "環境設定", "AI設定", "Telegram", "エージェント"],
+    "windows": ["ようこそ", "環境設定", "WSL", "AI設定", "Telegram", "エージェント"]
   },
   "welcome": {
     "title": "自分だけのAIエージェントを、ワンクリックで",
@@ -44,7 +44,7 @@
     "wslInstalling": "WSLをインストール中...",
     "wslInstall": "WSLインストール",
     "rebootRequired": "再起動が必要です",
-    "rebootDesc": "WSLのインストールを完了するには、コンピューターを再起動する必要があります。再起動後、EasyClawを再度起動してください。",
+    "rebootDesc": "WSLのインストールを完了するには、コンピューターを再起動する必要があります。再起動後、VoidClawを再度起動してください。",
     "rebootNow": "今すぐ再起動",
     "ubuntuInstallDesc": "Ubuntuディストリビューションをインストールします。",
     "ubuntuInstalling": "Ubuntuをインストール中...",
@@ -107,11 +107,11 @@
       },
       {
         "title": "ボットの表示名を入力",
-        "desc": "ボットの表示名を入力してください。例: EASYCLAW"
+        "desc": "ボットの表示名を入力してください。例: VOIDCLAW"
       },
       {
         "title": "ボットのユーザー名を決定",
-        "desc": "_botで終わる一意のIDを入力してください。例: my_easyclaw_bot"
+        "desc": "_botで終わる一意のIDを入力してください。例: my_voidclaw_bot"
       },
       {
         "title": "ボットトークンをコピー",
@@ -145,6 +145,41 @@
     "oauthSuccess": "ログイン完了",
     "oauthError": "ログインに失敗しました。もう一度お試しください。",
     "oauthCancelled": "ログインがキャンセルされました。"
+  },
+  "aiSetup": {
+    "title": "AI設定",
+    "desc": "AIプロバイダーを選択してAPIキーを入力してください",
+    "nextBtn": "次のステップへ"
+  },
+  "telegramSetup": {
+    "title": "Telegram接続",
+    "desc": "AIエージェントと会話するためのTelegramボットを作りましょう",
+    "validating": "トークンを確認中...",
+    "invalidToken": "無効なトークンです",
+    "nextBtn": "次のステップへ"
+  },
+  "agentBirth": {
+    "title": "エージェント誕生",
+    "desc": "あなただけのAIエージェントを作りましょう",
+    "nameLabel": "お名前は？（ニックネームOK）",
+    "namePlaceholder": "名前またはニックネーム",
+    "useCaseLabel": "主にどんな用途で使いますか？",
+    "useCase": {
+      "study": "勉強/情報収集",
+      "work": "業務自動化",
+      "invest": "投資/トレーディング",
+      "creative": "創作/コンテンツ",
+      "dev": "開発/コーディング",
+      "other": "その他"
+    },
+    "customUseCasePlaceholder": "直接入力してください",
+    "agentNameLabel": "エージェントに名前をつけましょう！",
+    "customAgentPlaceholder": "または直接入力",
+    "autoLaunch": "起動時に自動実行",
+    "savingBtn": "エージェント作成中...",
+    "saveBtn": "エージェント誕生！",
+    "birthTitle": "エージェントが誕生しました！",
+    "birthDesc": "の準備ができました"
   },
   "troubleshoot": {
     "title": "トラブルシューティング",

@@ -160,6 +160,21 @@ const electronAPI = {
       ipcRenderer.invoke('backup:export'),
     import: (): Promise<{ success: boolean; error?: string }> => ipcRenderer.invoke('backup:import')
   },
+  workspace: {
+    writeFiles: (config: {
+      userName: string
+      useCase: string
+      agentName: string
+      agentEmoji: string
+    }): Promise<{ success: boolean; error?: string }> =>
+      ipcRenderer.invoke('workspace:write-files', config)
+  },
+  telegram: {
+    validateToken: (
+      token: string
+    ): Promise<{ valid: boolean; username?: string; error?: string }> =>
+      ipcRenderer.invoke('telegram:validate-token', token)
+  },
   i18n: {
     getLocale: (): Promise<string> => ipcRenderer.invoke('i18n:get-locale'),
     setLanguage: (lng: string): Promise<{ success: boolean }> =>

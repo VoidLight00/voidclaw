@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="resources/icon.png" width="120" alt="EasyClaw Logo">
+  <img src="resources/icon.png" width="120" alt="VoidClaw Logo">
 </p>
 
-<h1 align="center">EasyClaw</h1>
+<h1 align="center">VoidClaw</h1>
 
 <p align="center">
   <strong>OpenClaw AI 에이전트를 원클릭으로 설치하세요</strong>
@@ -13,14 +13,14 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ybgwon96/easyclaw/releases/latest"><img src="https://img.shields.io/github/v/release/ybgwon96/easyclaw?color=f97316&style=flat-square" alt="Release"></a>
-  <a href="https://github.com/ybgwon96/easyclaw/releases"><img src="https://img.shields.io/github/downloads/ybgwon96/easyclaw/total?color=34d399&style=flat-square" alt="Downloads"></a>
+  <a href="https://github.com/VoidLight00/voidclaw/releases/latest"><img src="https://img.shields.io/github/v/release/VoidLight00/voidclaw?color=f97316&style=flat-square" alt="Release"></a>
+  <a href="https://github.com/VoidLight00/voidclaw/releases"><img src="https://img.shields.io/github/downloads/VoidLight00/voidclaw/total?color=34d399&style=flat-square" alt="Downloads"></a>
   <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows-blue?style=flat-square" alt="Platform">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-8b5cf6?style=flat-square" alt="License"></a>
 </p>
 
 <p align="center">
-  <a href="https://easyclaw.kr">홈페이지</a> · <a href="https://github.com/ybgwon96/easyclaw/releases/latest">다운로드</a> · <a href="https://open.kakao.com/o/gbBkPehi">커뮤니티</a> · <a href="https://github.com/openclaw/openclaw">OpenClaw</a>
+  <a href="https://voidclaw.vercel.app">홈페이지</a> · <a href="https://github.com/VoidLight00/voidclaw/releases/latest">다운로드</a> · <a href="https://open.kakao.com/o/gbBkPehi">커뮤니티</a> · <a href="https://github.com/openclaw/openclaw">OpenClaw</a>
 </p>
 
 ---
@@ -50,10 +50,10 @@
 
 | OS      | 파일   | 링크                                                                                          |
 | ------- | ------ | --------------------------------------------------------------------------------------------- |
-| macOS   | `.dmg` | [다운로드](https://github.com/ybgwon96/easyclaw/releases/latest/download/easy-claw.dmg)       |
-| Windows | `.exe` | [다운로드](https://github.com/ybgwon96/easyclaw/releases/latest/download/easy-claw-setup.exe) |
+| macOS   | `.dmg` | [다운로드](https://github.com/VoidLight00/voidclaw/releases/latest/download/easy-claw.dmg)       |
+| Windows | `.exe` | [다운로드](https://github.com/VoidLight00/voidclaw/releases/latest/download/easy-claw-setup.exe) |
 
-[easyclaw.kr](https://easyclaw.kr)에서도 OS에 맞는 파일이 자동으로 선택됩니다.
+[voidclaw.vercel.app](https://voidclaw.vercel.app)에서도 OS에 맞는 파일이 자동으로 선택됩니다.
 
 ## Windows 보안 경고 안내
 
@@ -110,7 +110,7 @@ src/
 ├── preload/          # contextBridge (IPC API 노출)
 └── renderer/         # React UI (7단계 위자드)
 api/                  # Vercel 서버리스 함수
-docs/                 # 랜딩 페이지 (easyclaw.kr)
+docs/                 # 랜딩 페이지 (voidclaw.vercel.app)
 ```
 
 ## 기여하기

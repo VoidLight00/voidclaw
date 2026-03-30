@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="resources/icon.png" width="120" alt="EasyClaw Logo">
+  <img src="resources/icon.png" width="120" alt="VoidClaw Logo">
 </p>
 
-<h1 align="center">EasyClaw</h1>
+<h1 align="center">VoidClaw</h1>
 
 <p align="center">
   <strong>OpenClaw AIエージェントをワンクリックでインストール</strong>
@@ -13,14 +13,14 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ybgwon96/easyclaw/releases/latest"><img src="https://img.shields.io/github/v/release/ybgwon96/easyclaw?color=f97316&style=flat-square" alt="Release"></a>
-  <a href="https://github.com/ybgwon96/easyclaw/releases"><img src="https://img.shields.io/github/downloads/ybgwon96/easyclaw/total?color=34d399&style=flat-square" alt="Downloads"></a>
+  <a href="https://github.com/VoidLight00/voidclaw/releases/latest"><img src="https://img.shields.io/github/v/release/VoidLight00/voidclaw?color=f97316&style=flat-square" alt="Release"></a>
+  <a href="https://github.com/VoidLight00/voidclaw/releases"><img src="https://img.shields.io/github/downloads/VoidLight00/voidclaw/total?color=34d399&style=flat-square" alt="Downloads"></a>
   <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows-blue?style=flat-square" alt="Platform">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-8b5cf6?style=flat-square" alt="License"></a>
 </p>
 
 <p align="center">
-  <a href="https://easyclaw.kr">ウェブサイト</a> · <a href="https://github.com/ybgwon96/easyclaw/releases/latest">ダウンロード</a> · <a href="https://github.com/openclaw/openclaw">OpenClaw</a>
+  <a href="https://voidclaw.vercel.app">ウェブサイト</a> · <a href="https://github.com/VoidLight00/voidclaw/releases/latest">ダウンロード</a> · <a href="https://github.com/openclaw/openclaw">OpenClaw</a>
 </p>
 
 ---
@@ -33,9 +33,9 @@
   <img src="docs/screenshots/done.png" width="270" alt="完了">
 </p>
 
-## EasyClawとは？
+## VoidClawとは？
 
-EasyClawは、[OpenClaw](https://github.com/openclaw/openclaw) AIエージェントを**ターミナル操作なしで**セットアップできるデスクトップインストーラーです。
+VoidClawは、[OpenClaw](https://github.com/openclaw/openclaw) AIエージェントを**ターミナル操作なしで**セットアップできるデスクトップインストーラーです。
 
 **ダウンロード → 実行 → APIキー入力** — たった3ステップで完了。
 
@@ -50,10 +50,10 @@ EasyClawは、[OpenClaw](https://github.com/openclaw/openclaw) AIエージェン
 
 | OS      | ファイル | リンク                                                                                            |
 | ------- | -------- | ------------------------------------------------------------------------------------------------- |
-| macOS   | `.dmg`   | [ダウンロード](https://github.com/ybgwon96/easyclaw/releases/latest/download/easy-claw.dmg)       |
-| Windows | `.exe`   | [ダウンロード](https://github.com/ybgwon96/easyclaw/releases/latest/download/easy-claw-setup.exe) |
+| macOS   | `.dmg`   | [ダウンロード](https://github.com/VoidLight00/voidclaw/releases/latest/download/easy-claw.dmg)       |
+| Windows | `.exe`   | [ダウンロード](https://github.com/VoidLight00/voidclaw/releases/latest/download/easy-claw-setup.exe) |
 
-[easyclaw.kr](https://easyclaw.kr)からもOSに合わせたファイルを自動選択できます。
+[voidclaw.vercel.app](https://voidclaw.vercel.app)からもOSに合わせたファイルを自動選択できます。
 
 ## Windowsセキュリティに関するお知らせ
 

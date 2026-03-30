@@ -108,6 +108,19 @@ interface ElectronAPI {
     export: () => Promise<{ success: boolean; error?: string }>
     import: () => Promise<{ success: boolean; error?: string }>
   }
+  workspace: {
+    writeFiles: (config: {
+      userName: string
+      useCase: string
+      agentName: string
+      agentEmoji: string
+    }) => Promise<{ success: boolean; error?: string }>
+  }
+  telegram: {
+    validateToken: (
+      token: string
+    ) => Promise<{ valid: boolean; username?: string; error?: string }>
+  }
   i18n: {
     getLocale: () => Promise<string>
     setLanguage: (lng: string) => Promise<{ success: boolean; error?: string }>

@@ -1,7 +1,7 @@
 {
   "indicator": {
-    "default": ["开始", "环境", "安装", "API密钥", "Telegram", "配置", "完成"],
-    "windows": ["开始", "环境", "WSL", "安装", "API密钥", "Telegram", "配置", "完成"]
+    "default": ["欢迎", "环境设置", "AI设置", "Telegram", "智能体"],
+    "windows": ["欢迎", "环境设置", "WSL", "AI设置", "Telegram", "智能体"]
   },
   "welcome": {
     "title": "专属 AI 智能体，一键搞定",
@@ -44,7 +44,7 @@
     "wslInstalling": "正在安装 WSL...",
     "wslInstall": "安装 WSL",
     "rebootRequired": "需要重启",
-    "rebootDesc": "要完成 WSL 安装，需要重启计算机。重启后请重新运行 EasyClaw。",
+    "rebootDesc": "要完成 WSL 安装，需要重启计算机。重启后请重新运行 VoidClaw。",
     "rebootNow": "立即重启",
     "ubuntuInstallDesc": "安装 Ubuntu 发行版。",
     "ubuntuInstalling": "正在安装 Ubuntu...",
@@ -107,11 +107,11 @@
       },
       {
         "title": "输入机器人显示名称",
-        "desc": "输入机器人的显示名称。例如：EASYCLAW"
+        "desc": "输入机器人的显示名称。例如：VOIDCLAW"
       },
       {
         "title": "设置机器人用户名",
-        "desc": "输入以 _bot 结尾的唯一 ID。例如：my_easyclaw_bot"
+        "desc": "输入以 _bot 结尾的唯一 ID。例如：my_voidclaw_bot"
       },
       {
         "title": "复制机器人令牌",
@@ -145,6 +145,41 @@
     "oauthSuccess": "登录成功",
     "oauthError": "登录失败，请重试。",
     "oauthCancelled": "登录已取消。"
+  },
+  "aiSetup": {
+    "title": "AI 设置",
+    "desc": "选择 AI 提供商并输入 API 密钥",
+    "nextBtn": "下一步"
+  },
+  "telegramSetup": {
+    "title": "连接 Telegram",
+    "desc": "让我们创建一个用于与 AI 智能体对话的 Telegram 机器人",
+    "validating": "验证令牌中...",
+    "invalidToken": "无效的令牌",
+    "nextBtn": "下一步"
+  },
+  "agentBirth": {
+    "title": "智能体诞生",
+    "desc": "让我们创建属于你的 AI 智能体",
+    "nameLabel": "你叫什么名字？（昵称也行）",
+    "namePlaceholder": "姓名或昵称",
+    "useCaseLabel": "你打算主要用来做什么？",
+    "useCase": {
+      "study": "学习/信息收集",
+      "work": "工作自动化",
+      "invest": "投资/交易",
+      "creative": "创作/内容",
+      "dev": "开发/编程",
+      "other": "其他"
+    },
+    "customUseCasePlaceholder": "请直接输入",
+    "agentNameLabel": "给你的智能体起个名字吧！",
+    "customAgentPlaceholder": "或者自定义名字",
+    "autoLaunch": "开机自动启动",
+    "savingBtn": "创建智能体中...",
+    "saveBtn": "智能体诞生！",
+    "birthTitle": "你的智能体诞生了！",
+    "birthDesc": "已准备就绪"
   },
   "troubleshoot": {
     "title": "问题排查",

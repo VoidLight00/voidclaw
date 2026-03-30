@@ -1,7 +1,7 @@
 {
   "indicator": {
-    "default": ["시작", "환경", "설치", "API키", "텔레그램", "설정", "완료"],
-    "windows": ["시작", "환경", "WSL", "설치", "API키", "텔레그램", "설정", "완료"]
+    "default": ["환영", "환경 설정", "AI 설정", "텔레그램", "에이전트"],
+    "windows": ["환영", "환경 설정", "WSL", "AI 설정", "텔레그램", "에이전트"]
   },
   "welcome": {
     "title": "나만의 AI 에이전트, 클릭 한 번으로",
@@ -44,7 +44,7 @@
     "wslInstalling": "WSL 설치 중...",
     "wslInstall": "WSL 설치",
     "rebootRequired": "재부팅이 필요합니다",
-    "rebootDesc": "WSL 설치를 완료하려면 컴퓨터를 재부팅해야 합니다. 재부팅 후 EasyClaw를 다시 실행해 주세요.",
+    "rebootDesc": "WSL 설치를 완료하려면 컴퓨터를 재부팅해야 합니다. 재부팅 후 VoidClaw를 다시 실행해 주세요.",
     "rebootNow": "지금 재부팅",
     "ubuntuInstallDesc": "Ubuntu 배포판을 설치합니다.",
     "ubuntuInstalling": "Ubuntu 설치 중...",
@@ -107,11 +107,11 @@
       },
       {
         "title": "봇 표시 이름 입력",
-        "desc": "봇의 표시 이름을 입력하세요. 예: EASYCLAW"
+        "desc": "봇의 표시 이름을 입력하세요. 예: VOIDCLAW"
       },
       {
         "title": "봇 유저네임 정하기",
-        "desc": "_bot으로 끝나는 고유 ID를 입력하세요. 예: my_easyclaw_bot"
+        "desc": "_bot으로 끝나는 고유 ID를 입력하세요. 예: my_voidclaw_bot"
       },
       {
         "title": "봇 토큰 복사",
@@ -145,6 +145,41 @@
     "oauthSuccess": "로그인 완료",
     "oauthError": "로그인에 실패했습니다. 다시 시도해 주세요.",
     "oauthCancelled": "로그인이 취소되었습니다."
+  },
+  "aiSetup": {
+    "title": "AI 설정",
+    "desc": "AI 제공사를 선택하고 API 키를 입력하세요",
+    "nextBtn": "다음 단계로"
+  },
+  "telegramSetup": {
+    "title": "텔레그램 연결",
+    "desc": "AI 에이전트와 대화할 텔레그램 봇을 만들어 봅시다",
+    "validating": "토큰 확인 중...",
+    "invalidToken": "유효하지 않은 토큰입니다",
+    "nextBtn": "다음 단계로"
+  },
+  "agentBirth": {
+    "title": "에이전트 탄생",
+    "desc": "나만의 AI 에이전트를 만들어 봅시다",
+    "nameLabel": "이름이 뭐예요? (닉네임 OK)",
+    "namePlaceholder": "이름 또는 닉네임",
+    "useCaseLabel": "주로 어떤 용도로 쓸 예정인가요?",
+    "useCase": {
+      "study": "공부/정보 수집",
+      "work": "업무 자동화",
+      "invest": "투자/트레이딩",
+      "creative": "창작/콘텐츠",
+      "dev": "개발/코딩",
+      "other": "기타"
+    },
+    "customUseCasePlaceholder": "직접 입력해 주세요",
+    "agentNameLabel": "에이전트 이름을 지어줄게요!",
+    "customAgentPlaceholder": "또는 직접 입력",
+    "autoLaunch": "시작 시 자동 실행",
+    "savingBtn": "에이전트 생성 중...",
+    "saveBtn": "에이전트 탄생!",
+    "birthTitle": "에이전트가 탄생했습니다!",
+    "birthDesc": "이(가) 준비되었습니다"
   },
   "troubleshoot": {
     "title": "문제 해결",

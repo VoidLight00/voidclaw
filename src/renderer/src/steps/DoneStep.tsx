@@ -347,7 +347,7 @@ export default function DoneStep({
       {/* ─── Star + KakaoTalk chat banner ─── */}
       <div className="w-full max-w-md grid grid-cols-2 gap-2">
         <button
-          onClick={() => window.open('https://github.com/ybgwon96/easyclaw', '_blank')}
+          onClick={() => window.open('https://github.com/VoidLight00/voidclaw', '_blank')}
           className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl cursor-pointer bg-white/5 border border-glass-border hover:border-primary/40 hover:bg-white/8 transition-all duration-200"
         >
           <span className="text-lg">⭐</span>
