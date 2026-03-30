@@ -38,7 +38,7 @@ const PROVIDERS: ProviderOption[] = [
   }
 ]
 
-type AuthStatus = 'idle' | 'loading' | 'success' | 'error'
+type AuthStatus = 'idle' | 'terminal_opened' | 'verifying' | 'success' | 'error'
 
 interface Props {
   onNext: (oauthProvider: OAuthProvider) => void
@@ -52,14 +52,14 @@ export default function AiSetupStep({ onNext }: Props): React.JSX.Element {
 
   const handleLogin = async (provider: OAuthProvider): Promise<void> => {
     setSelected(provider)
-    setStatus('loading')
-    setMessage(t('aiSetup.loggingIn'))
+    setStatus('verifying')
+    setMessage('')
 
     try {
       const result = await window.electronAPI.oauthAuth.run(provider)
       if (result.success) {
-        setStatus('success')
-        setMessage(t('aiSetup.loginSuccess'))
+        setStatus('terminal_opened')
+        setMessage(t('aiSetup.terminalOpened'))
       } else {
         setStatus('error')
         setMessage(t('aiSetup.loginFailed'))
@@ -67,6 +67,26 @@ export default function AiSetupStep({ onNext }: Props): React.JSX.Element {
     } catch {
       setStatus('error')
       setMessage(t('aiSetup.loginFailed'))
+    }
+  }
+
+  const handleVerify = async (): Promise<void> => {
+    if (!selected) return
+    setStatus('verifying')
+    setMessage('')
+
+    try {
+      const verified = await window.electronAPI.oauthAuth.check(selected)
+      if (verified) {
+        setStatus('success')
+        setMessage(t('aiSetup.loginSuccess'))
+      } else {
+        setStatus('terminal_opened')
+        setMessage(t('aiSetup.notVerified'))
+      }
+    } catch {
+      setStatus('terminal_opened')
+      setMessage(t('aiSetup.notVerified'))
     }
   }
 
@@ -81,90 +101,114 @@ export default function AiSetupStep({ onNext }: Props): React.JSX.Element {
         {PROVIDERS.map((p) => {
           const isSelected = selected === p.id
           const isSuccess = isSelected && status === 'success'
-          const isLoading = isSelected && status === 'loading'
+          const isTerminalOpened = isSelected && status === 'terminal_opened'
+          const isVerifying = isSelected && status === 'verifying'
           const isError = isSelected && status === 'error'
 
           return (
-            <button
-              key={p.id}
-              onClick={() => handleLogin(p.id)}
-              disabled={status === 'loading'}
-              className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-all duration-200 text-left cursor-pointer disabled:cursor-wait ${
-                isSuccess
-                  ? 'border-success/50 bg-success/10'
-                  : isError
-                    ? 'border-error/30 bg-error/5'
-                    : 'border-glass-border bg-white/5 hover:bg-white/10'
-              }`}
-            >
-              <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-                style={{ backgroundColor: `${p.color}20` }}
+            <div key={p.id}>
+              <button
+                onClick={() => handleLogin(p.id)}
+                disabled={status === 'verifying'}
+                className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-all duration-200 text-left cursor-pointer disabled:cursor-wait ${
+                  isSuccess
+                    ? 'border-success/50 bg-success/10'
+                    : isTerminalOpened
+                      ? 'border-primary/50 bg-primary/10'
+                      : isError
+                        ? 'border-error/30 bg-error/5'
+                        : 'border-glass-border bg-white/5 hover:bg-white/10'
+                }`}
               >
                 <div
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: p.color }}
-                />
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <div className="font-bold text-sm text-text">{p.name}</div>
-                <div className="text-[11px] text-text-muted truncate">
-                  {t(p.descKey)}
+                  className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: `${p.color}20` }}
+                >
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: p.color }}
+                  />
                 </div>
-              </div>
 
-              {isLoading && (
-                <div className="shrink-0 flex items-center gap-1.5">
-                  <svg className="animate-spin h-3.5 w-3.5 text-primary" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.25" />
-                    <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-                  </svg>
-                  <span className="text-[11px] text-primary animate-pulse">
-                    {t('aiSetup.loggingIn')}
+                <div className="flex-1 min-w-0">
+                  <div className="font-bold text-sm text-text">{p.name}</div>
+                  <div className="text-[11px] text-text-muted truncate">
+                    {t(p.descKey)}
+                  </div>
+                </div>
+
+                {isVerifying && (
+                  <div className="shrink-0 flex items-center gap-1.5">
+                    <svg className="animate-spin h-3.5 w-3.5 text-primary" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.25" />
+                      <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                    </svg>
+                    <span className="text-[11px] text-primary animate-pulse">
+                      {t('aiSetup.verifying')}
+                    </span>
+                  </div>
+                )}
+
+                {isSuccess && (
+                  <div className="shrink-0 flex items-center gap-1.5">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-success"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span className="text-[11px] text-success font-semibold">
+                      {t('aiSetup.loginDone')}
+                    </span>
+                  </div>
+                )}
+
+                {!isSelected && !isVerifying && (
+                  <span className="shrink-0 text-[11px] text-text-muted/50 font-medium">
+                    {t('aiSetup.loginBtn')}
                   </span>
-                </div>
-              )}
+                )}
 
-              {isSuccess && (
-                <div className="shrink-0 flex items-center gap-1.5">
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="text-success"
+                {isError && (
+                  <span className="shrink-0 text-[11px] text-error font-medium">
+                    {t('aiSetup.retry')}
+                  </span>
+                )}
+              </button>
+
+              {isTerminalOpened && (
+                <div className="mt-2 ml-14 flex items-center gap-3">
+                  <button
+                    onClick={handleVerify}
+                    className="px-3 py-1.5 rounded-lg bg-primary/20 border border-primary/40 text-primary text-xs font-semibold hover:bg-primary/30 transition-colors cursor-pointer"
                   >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span className="text-[11px] text-success font-semibold">
-                    {t('aiSetup.loginDone')}
+                    {t('aiSetup.confirmLogin')}
+                  </button>
+                  <span className="text-[11px] text-text-muted">
+                    {t('aiSetup.terminalHint')}
                   </span>
                 </div>
               )}
-
-              {!isSelected && !isLoading && (
-                <span className="shrink-0 text-[11px] text-text-muted/50 font-medium">
-                  {t('aiSetup.loginBtn')}
-                </span>
-              )}
-
-              {isError && (
-                <span className="shrink-0 text-[11px] text-error font-medium">
-                  {t('aiSetup.retry')}
-                </span>
-              )}
-            </button>
+            </div>
           )
         })}
       </div>
 
-      {message && status === 'error' && (
-        <p className="shrink-0 text-error text-xs font-medium mt-2">{message}</p>
+      {message && (status === 'error' || status === 'terminal_opened') && (
+        <p
+          className={`shrink-0 text-xs font-medium mt-2 ${
+            status === 'error' ? 'text-error' : 'text-text-muted'
+          }`}
+        >
+          {message}
+        </p>
       )}
 
       <div className="shrink-0 flex justify-end py-3">

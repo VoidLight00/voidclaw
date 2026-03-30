@@ -149,7 +149,24 @@
   "aiSetup": {
     "title": "AI 设置",
     "desc": "选择 AI 提供商并输入 API 密钥",
-    "nextBtn": "下一步"
+    "nextBtn": "下一步",
+    "loginBtn": "登录 →",
+    "loggingIn": "登录中...",
+    "loginSuccess": "登录成功！",
+    "loginDone": "完成",
+    "loginFailed": "登录失败，请重试。",
+    "retry": "重试",
+    "terminalOpened": "终端窗口已打开",
+    "verifying": "验证中...",
+    "confirmLogin": "我已完成登录",
+    "terminalHint": "在终端完成登录后点击",
+    "notVerified": "尚未验证登录。请在终端中完成后再试。",
+    "providerDesc": {
+      "anthropic": "Claude Sonnet · Opus — 使用claude.ai会话令牌认证",
+      "openai": "GPT-5 · Codex — 使用ChatGPT账户登录",
+      "gemini": "Gemini 2.5 Pro — 使用Google账户登录",
+      "qwen": "Qwen Max — 使用阿里云账户登录"
+    }
   },
   "telegramSetup": {
     "title": "连接 Telegram",

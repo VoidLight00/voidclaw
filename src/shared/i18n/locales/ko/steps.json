@@ -156,6 +156,11 @@
     "loginDone": "완료",
     "loginFailed": "로그인 실패. 다시 시도해 주세요.",
     "retry": "다시 시도",
+    "terminalOpened": "터미널 창이 열렸습니다",
+    "verifying": "확인 중...",
+    "confirmLogin": "로그인 완료했어요",
+    "terminalHint": "터미널에서 로그인 후 클릭하세요",
+    "notVerified": "아직 로그인이 확인되지 않았어요. 터미널에서 완료 후 다시 눌러주세요.",
     "providerDesc": {
       "anthropic": "Claude Sonnet \u00b7 Opus \u2014 claude.ai 세션 토큰으로 인증",
       "openai": "GPT-5 \u00b7 Codex \u2014 ChatGPT 계정으로 로그인",

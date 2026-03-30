@@ -1,4 +1,4 @@
-import { spawn } from 'child_process'
+import { spawn, exec } from 'child_process'
 import { platform } from 'os'
 import { getPathEnv, findBin } from './path-utils'
 import { runInWsl } from './wsl-utils'
@@ -12,48 +12,71 @@ const PROVIDER_COMMANDS: Record<OAuthProvider, string[]> = {
   qwen: ['models', 'auth', 'login', '--provider', 'qwen-portal']
 }
 
-export async function runOAuthFlow(
-  provider: OAuthProvider
-): Promise<{ success: boolean; output: string }> {
-  const isWindows = platform() === 'win32'
+function buildCommandString(provider: OAuthProvider): string {
   const args = PROVIDER_COMMANDS[provider]
+  return `openclaw ${args.join(' ')}`
+}
 
-  if (isWindows) {
-    return runOAuthFlowWsl(args)
-  }
+function openTerminalWithCommand(command: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const os = platform()
+    let termCmd: string
 
-  return new Promise((resolve) => {
-    const ocBin = findBin('openclaw')
-    const proc = spawn(ocBin, args, {
-      stdio: ['inherit', 'pipe', 'pipe'],
-      env: { ...getPathEnv(), FORCE_COLOR: '0' }
-    })
+    if (os === 'darwin') {
+      const escaped = command.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+      termCmd = `osascript -e 'tell application "Terminal"' -e 'do script "${escaped}"' -e 'activate' -e 'end tell'`
+    } else if (os === 'win32') {
+      termCmd = `start cmd.exe /K "${command}"`
+    } else {
+      termCmd = `x-terminal-emulator -e '${command}' || gnome-terminal -- bash -c '${command}; exec bash' || xterm -e '${command}'`
+    }
 
-    let output = ''
-    proc.stdout?.on('data', (d) => {
-      output += d.toString()
-    })
-    proc.stderr?.on('data', (d) => {
-      output += d.toString()
-    })
-
-    proc.on('close', (code) => {
-      resolve({ success: code === 0, output })
-    })
-
-    proc.on('error', (err) => {
-      resolve({ success: false, output: err.message })
+    exec(termCmd, (err) => {
+      if (err) reject(err)
+      else resolve()
     })
   })
 }
 
+export async function runOAuthFlow(
+  provider: OAuthProvider
+): Promise<{ success: boolean; output: string }> {
+  const isWindows = platform() === 'win32'
+
+  if (isWindows) {
+    return runOAuthFlowWsl(provider)
+  }
+
+  try {
+    const command = buildCommandString(provider)
+    await openTerminalWithCommand(command)
+    return {
+      success: true,
+      output: 'terminal_opened'
+    }
+  } catch (err) {
+    return {
+      success: false,
+      output: err instanceof Error ? err.message : String(err)
+    }
+  }
+}
+
 async function runOAuthFlowWsl(
-  args: string[]
+  provider: OAuthProvider
 ): Promise<{ success: boolean; output: string }> {
   try {
+    const args = PROVIDER_COMMANDS[provider]
     const script = `openclaw ${args.map((a) => `'${a.replace(/'/g, "'\\''")}'`).join(' ')}`
-    const output = await runInWsl(script)
-    return { success: true, output }
+    // Open Windows Terminal with WSL command for TTY support
+    const termCmd = `start wt.exe wsl -d Ubuntu -u root bash -lc "${script.replace(/"/g, '\\"')}; exec bash"`
+    await new Promise<void>((resolve, reject) => {
+      exec(termCmd, (err) => {
+        if (err) reject(err)
+        else resolve()
+      })
+    })
+    return { success: true, output: 'terminal_opened' }
   } catch (err) {
     return { success: false, output: err instanceof Error ? err.message : String(err) }
   }
@@ -74,7 +97,7 @@ export async function checkAuthStatus(provider: OAuthProvider): Promise<boolean>
     })
 
     let out = ''
-    proc.stdout?.on('data', (d) => {
+    proc.stdout?.on('data', (d: Buffer) => {
       out += d.toString()
     })
 

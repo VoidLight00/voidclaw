@@ -156,6 +156,11 @@
     "loginDone": "Done",
     "loginFailed": "Login failed. Please try again.",
     "retry": "Retry",
+    "terminalOpened": "Terminal window opened",
+    "verifying": "Verifying...",
+    "confirmLogin": "I've finished logging in",
+    "terminalHint": "Click after completing login in the terminal",
+    "notVerified": "Login not verified yet. Please complete login in the terminal and try again.",
     "providerDesc": {
       "anthropic": "Claude Sonnet \u00b7 Opus \u2014 Authenticate with claude.ai session token",
       "openai": "GPT-5 \u00b7 Codex \u2014 Sign in with ChatGPT account",
