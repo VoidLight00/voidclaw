@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  <a href="https://voidclaw.vercel.app">홈페이지</a> · <a href="https://github.com/VoidLight00/voidclaw/releases/latest">다운로드</a> · <a href="https://open.kakao.com/o/gbBkPehi">커뮤니티</a> · <a href="https://github.com/openclaw/openclaw">OpenClaw</a>
+  <a href="https://github.com/VoidLight00/voidclaw/releases/latest">다운로드</a> · <a href="https://github.com/openclaw/openclaw">OpenClaw</a>
 </p>
 
 ---
@@ -37,12 +37,31 @@
 
 [OpenClaw](https://github.com/openclaw/openclaw) AI 에이전트를 **복잡한 터미널 작업 없이** 설치할 수 있는 데스크톱 인스톨러입니다.
 
-**다운로드 → 실행 → API 키 입력**, 3단계면 끝.
+**다운로드 → 실행 → 로그인**, 3단계면 끝.
+
+---
+
+## ✨ 이지클로에서 업그레이드된 점
+
+VoidClaw는 이지클로(EasyClaw)를 기반으로 전면 재설계된 버전입니다.
+
+| 항목 | 이지클로 | **VoidClaw** |
+| ---- | :------: | :----------: |
+| 설치 위자드 | 7단계 | **5단계로 간소화** |
+| AI 로그인 | API 키 직접 입력 | **🔑 OAuth 원클릭 로그인** |
+| 에이전트 개인화 | ❌ | **✅ SOUL.md / USER.md / IDENTITY.md 자동 생성** |
+| 텔레그램 봇 검증 | ❌ | **✅ 토큰 실시간 검증** |
+| 에이전트 이름/성격 설정 | ❌ | **✅ 설치 중 바로 설정** |
+
+> API 키를 직접 발급받고 입력하는 번거로움 없이, 버튼 하나로 로그인하세요.
+
+---
 
 ## 주요 기능
 
 - **원클릭 설치** — WSL, Node.js, OpenClaw 등 필요한 환경을 자동 감지 및 설치
-- **AI 제공사 선택** — Anthropic, Google Gemini, OpenAI, MiniMax, GLM 지원
+- **OAuth 로그인** — API 키 없이 Anthropic, Google Gemini, OpenAI, Qwen 원클릭 인증
+- **에이전트 개인화** — 이름·성격·사용자 정보를 설치 과정에서 바로 설정
 - **텔레그램 연동** — 텔레그램 봇을 통해 어디서든 AI 에이전트 사용
 - **크로스 플랫폼** — macOS (Intel + Apple Silicon) / Windows 지원
 
@@ -52,8 +71,6 @@
 | ------- | ------ | --------------------------------------------------------------------------------------------- |
 | macOS   | `.dmg` | [다운로드](https://github.com/VoidLight00/voidclaw/releases/latest/download/voidclaw.dmg)       |
 | Windows | `.exe` | [다운로드](https://github.com/VoidLight00/voidclaw/releases/latest/download/voidclaw-setup.exe) |
-
-[voidclaw.vercel.app](https://voidclaw.vercel.app)에서도 OS에 맞는 파일이 자동으로 선택됩니다.
 
 ## Windows 보안 경고 안내
 
@@ -108,9 +125,9 @@ src/
 │   ├── services/     # 환경 체크, 설치, 온보딩, 게이트웨이
 │   └── ipc-handlers  # IPC 채널 라우터
 ├── preload/          # contextBridge (IPC API 노출)
-└── renderer/         # React UI (7단계 위자드)
+└── renderer/         # React UI (5단계 위자드)
 api/                  # Vercel 서버리스 함수
-docs/                 # 랜딩 페이지 (voidclaw.vercel.app)
+docs/                 # 랜딩 페이지
 ```
 
 ## 기여하기

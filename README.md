@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  <a href="https://voidclaw.vercel.app">Website</a> · <a href="https://github.com/VoidLight00/voidclaw/releases/latest">Download</a> · <a href="https://github.com/openclaw/openclaw">OpenClaw</a>
+  <a href="https://github.com/VoidLight00/voidclaw/releases/latest">Download</a> · <a href="https://github.com/openclaw/openclaw">OpenClaw</a>
 </p>
 
 ---
@@ -33,12 +33,31 @@
 
 VoidClaw is a desktop installer that sets up [OpenClaw](https://github.com/openclaw/openclaw) AI agent **without any terminal commands**.
 
-**Download → Run → Enter API key** — that's it. Three steps.
+**Download → Run → Sign in** — that's it. Three steps.
+
+---
+
+## ✨ Upgraded from EasyClaw
+
+VoidClaw is a complete redesign based on EasyClaw.
+
+| Feature | EasyClaw | **VoidClaw** |
+| ------- | :------: | :----------: |
+| Setup wizard | 7 steps | **5 steps (streamlined)** |
+| AI login | Manual API key entry | **🔑 OAuth one-click sign-in** |
+| Agent personalization | ❌ | **✅ Auto-generates SOUL.md / USER.md / IDENTITY.md** |
+| Telegram bot verification | ❌ | **✅ Real-time token validation** |
+| Agent name & personality | ❌ | **✅ Configure during setup** |
+
+> No more copying API keys — just click sign in and you're ready.
+
+---
 
 ## Features
 
 - **One-Click Install** — Automatically detects and installs WSL, Node.js, and OpenClaw
-- **Multiple AI Providers** — Supports Anthropic, Google Gemini, OpenAI, MiniMax, and GLM
+- **OAuth Sign-In** — One-click authentication for Anthropic, Google Gemini, OpenAI, and Qwen — no API key needed
+- **Agent Personalization** — Set your agent's name, personality, and user info right during setup
 - **Telegram Integration** — Use your AI agent anywhere through a Telegram bot
 - **Cross-Platform** — macOS (Intel + Apple Silicon) and Windows
 
@@ -48,8 +67,6 @@ VoidClaw is a desktop installer that sets up [OpenClaw](https://github.com/openc
 | ------- | ------ | --------------------------------------------------------------------------------------------- |
 | macOS   | `.dmg` | [Download](https://github.com/VoidLight00/voidclaw/releases/latest/download/voidclaw.dmg)       |
 | Windows | `.exe` | [Download](https://github.com/VoidLight00/voidclaw/releases/latest/download/voidclaw-setup.exe) |
-
-You can also download from [voidclaw.vercel.app](https://voidclaw.vercel.app) — it auto-detects your OS.
 
 ## Windows Security Notice
 
