@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="resources/icon.png" width="120" alt="VoidClaw Logo">
+  <img src="resources/icon-v2.png" width="120" alt="VoidClaw Logo">
 </p>
 
 <h1 align="center">VoidClaw</h1>
