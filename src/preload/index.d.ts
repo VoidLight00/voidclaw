@@ -48,6 +48,11 @@ interface ElectronAPI {
     run: (provider: string) => Promise<{ success: boolean; output: string }>
     check: (provider: string) => Promise<boolean>
   }
+  cli: {
+    check: (provider: string) => Promise<{ installed: boolean; bin: string }>
+    install: (provider: string) => Promise<{ success: boolean; error?: string }>
+    onInstallProgress: (cb: (msg: string) => void) => () => void
+  }
   reboot: () => void
   gateway: {
     start: () => Promise<{ success: boolean; error?: string }>

@@ -28,6 +28,7 @@ import { uninstallOpenClaw } from './services/uninstaller'
 import { exportBackup, importBackup } from './services/backup'
 import { loginOpenAICodex } from './services/oauth'
 import { runOAuthFlow, checkAuthStatus, type OAuthProvider } from './services/oauth-auth'
+import { checkCli, installCli, type CliProvider } from './services/cli-installer'
 
 interface WizardPersistedState {
   step: string
@@ -202,6 +203,21 @@ export const registerIpcHandlers = (getWin: () => BrowserWindow | null): void =>
       const msg = e instanceof Error ? e.message : String(e)
       return { success: false, error: msg }
     }
+  })
+
+  // CLI check and install
+  ipcMain.handle('cli:check', async (_e, provider: CliProvider) => {
+    return await checkCli(provider)
+  })
+
+  ipcMain.handle('cli:install', async (_e, provider: CliProvider) => {
+    return await installCli(provider, (msg) => {
+      try {
+        win().webContents.send('cli:install-progress', msg)
+      } catch {
+        /* window destroyed */
+      }
+    })
   })
 
   // OpenClaw OAuth auth flow

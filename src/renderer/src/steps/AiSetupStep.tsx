@@ -1,14 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import Button from '../components/Button'
 
 type OAuthProvider = 'anthropic' | 'openai' | 'gemini' | 'qwen'
+type CliStatus = 'checking' | 'not_installed' | 'installing' | 'installed'
 
 interface ProviderOption {
   id: OAuthProvider
   name: string
   descKey: string
   color: string
+  cliName?: string
 }
 
 const PROVIDERS: ProviderOption[] = [
@@ -16,7 +18,8 @@ const PROVIDERS: ProviderOption[] = [
     id: 'anthropic',
     name: 'Anthropic Claude',
     descKey: 'aiSetup.providerDesc.anthropic',
-    color: '#D97706'
+    color: '#D97706',
+    cliName: 'Claude Code'
   },
   {
     id: 'openai',
@@ -28,7 +31,8 @@ const PROVIDERS: ProviderOption[] = [
     id: 'gemini',
     name: 'Google Gemini',
     descKey: 'aiSetup.providerDesc.gemini',
-    color: '#3B82F6'
+    color: '#3B82F6',
+    cliName: 'Gemini CLI'
   },
   {
     id: 'qwen',
@@ -37,6 +41,9 @@ const PROVIDERS: ProviderOption[] = [
     color: '#8B5CF6'
   }
 ]
+
+// Providers that require a CLI to be installed before OAuth
+const CLI_PROVIDERS: OAuthProvider[] = ['anthropic', 'gemini']
 
 type AuthStatus = 'idle' | 'terminal_opened' | 'verifying' | 'success' | 'error'
 
@@ -49,6 +56,45 @@ export default function AiSetupStep({ onNext }: Props): React.JSX.Element {
   const [selected, setSelected] = useState<OAuthProvider | null>(null)
   const [status, setStatus] = useState<AuthStatus>('idle')
   const [message, setMessage] = useState('')
+  const [cliStatus, setCliStatus] = useState<Record<OAuthProvider, CliStatus>>({
+    anthropic: 'checking',
+    openai: 'installed',
+    gemini: 'checking',
+    qwen: 'installed'
+  })
+  const [installError, setInstallError] = useState<Partial<Record<OAuthProvider, string>>>({})
+
+  useEffect(() => {
+    const checkAll = async (): Promise<void> => {
+      await Promise.all(
+        CLI_PROVIDERS.map(async (provider) => {
+          const result = await window.electronAPI.cli.check(provider)
+          setCliStatus((prev) => ({
+            ...prev,
+            [provider]: result.installed ? 'installed' : 'not_installed'
+          }))
+        })
+      )
+    }
+    checkAll()
+  }, [])
+
+  const handleInstall = async (provider: OAuthProvider): Promise<void> => {
+    setCliStatus((prev) => ({ ...prev, [provider]: 'installing' }))
+    setInstallError((prev) => ({ ...prev, [provider]: undefined }))
+
+    const result = await window.electronAPI.cli.install(provider)
+
+    if (result.success) {
+      setCliStatus((prev) => ({ ...prev, [provider]: 'installed' }))
+    } else {
+      setCliStatus((prev) => ({ ...prev, [provider]: 'not_installed' }))
+      setInstallError((prev) => ({
+        ...prev,
+        [provider]: result.error || 'Installation failed'
+      }))
+    }
+  }
 
   const handleLogin = async (provider: OAuthProvider): Promise<void> => {
     setSelected(provider)
@@ -104,20 +150,21 @@ export default function AiSetupStep({ onNext }: Props): React.JSX.Element {
           const isTerminalOpened = isSelected && status === 'terminal_opened'
           const isVerifying = isSelected && status === 'verifying'
           const isError = isSelected && status === 'error'
+          const needsCli = CLI_PROVIDERS.includes(p.id)
+          const cli = cliStatus[p.id]
+          const cliReady = !needsCli || cli === 'installed'
 
           return (
             <div key={p.id}>
-              <button
-                onClick={() => handleLogin(p.id)}
-                disabled={status === 'verifying'}
-                className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-all duration-200 text-left cursor-pointer disabled:cursor-wait ${
+              <div
+                className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-all duration-200 text-left ${
                   isSuccess
                     ? 'border-success/50 bg-success/10'
                     : isTerminalOpened
                       ? 'border-primary/50 bg-primary/10'
                       : isError
                         ? 'border-error/30 bg-error/5'
-                        : 'border-glass-border bg-white/5 hover:bg-white/10'
+                        : 'border-glass-border bg-white/5'
                 }`}
               >
                 <div
@@ -137,7 +184,44 @@ export default function AiSetupStep({ onNext }: Props): React.JSX.Element {
                   </div>
                 </div>
 
-                {isVerifying && (
+                {/* CLI checking spinner */}
+                {needsCli && cli === 'checking' && (
+                  <div className="shrink-0 flex items-center gap-1.5">
+                    <svg className="animate-spin h-3.5 w-3.5 text-text-muted" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.25" />
+                      <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                    </svg>
+                  </div>
+                )}
+
+                {/* Install CLI button */}
+                {needsCli && cli === 'not_installed' && (
+                  <button
+                    onClick={() => handleInstall(p.id)}
+                    className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600/20 border border-emerald-500/40 text-emerald-400 text-xs font-semibold hover:bg-emerald-600/30 transition-colors cursor-pointer"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Install {p.cliName}
+                  </button>
+                )}
+
+                {/* Installing spinner */}
+                {needsCli && cli === 'installing' && (
+                  <div className="shrink-0 flex items-center gap-1.5">
+                    <svg className="animate-spin h-3.5 w-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.25" />
+                      <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                    </svg>
+                    <span className="text-[11px] text-emerald-400">Installing...</span>
+                  </div>
+                )}
+
+                {/* Auth verifying spinner */}
+                {cliReady && isVerifying && (
                   <div className="shrink-0 flex items-center gap-1.5">
                     <svg className="animate-spin h-3.5 w-3.5 text-primary" viewBox="0 0 24 24" fill="none">
                       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.25" />
@@ -149,6 +233,7 @@ export default function AiSetupStep({ onNext }: Props): React.JSX.Element {
                   </div>
                 )}
 
+                {/* Success indicator */}
                 {isSuccess && (
                   <div className="shrink-0 flex items-center gap-1.5">
                     <svg
@@ -170,19 +255,26 @@ export default function AiSetupStep({ onNext }: Props): React.JSX.Element {
                   </div>
                 )}
 
-                {!isSelected && !isVerifying && (
-                  <span className="shrink-0 text-[11px] text-text-muted/50 font-medium">
-                    {t('aiSetup.loginBtn')}
-                  </span>
+                {/* Login button (shown when CLI is ready and not in auth flow) */}
+                {cliReady && !isVerifying && !isSuccess && (
+                  <button
+                    onClick={() => handleLogin(p.id)}
+                    disabled={status === 'verifying'}
+                    className={`shrink-0 text-[11px] font-medium cursor-pointer hover:text-text transition-colors disabled:cursor-wait ${
+                      isError ? 'text-error' : 'text-text-muted/50'
+                    }`}
+                  >
+                    {isError ? t('aiSetup.retry') : t('aiSetup.loginBtn')}
+                  </button>
                 )}
+              </div>
 
-                {isError && (
-                  <span className="shrink-0 text-[11px] text-error font-medium">
-                    {t('aiSetup.retry')}
-                  </span>
-                )}
-              </button>
+              {/* Install error message */}
+              {needsCli && cli === 'not_installed' && installError[p.id] && (
+                <p className="mt-1 ml-14 text-[11px] text-error">{installError[p.id]}</p>
+              )}
 
+              {/* Confirm login section */}
               {isTerminalOpened && (
                 <div className="mt-2 ml-14 flex items-center gap-3">
                   <button

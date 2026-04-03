@@ -57,6 +57,17 @@ const electronAPI = {
     check: (provider: string): Promise<boolean> =>
       ipcRenderer.invoke('oauth-auth:check', provider)
   },
+  cli: {
+    check: (provider: string): Promise<{ installed: boolean; bin: string }> =>
+      ipcRenderer.invoke('cli:check', provider),
+    install: (provider: string): Promise<{ success: boolean; error?: string }> =>
+      ipcRenderer.invoke('cli:install', provider),
+    onInstallProgress: (cb: (msg: string) => void): (() => void) => {
+      const handler = (_: unknown, msg: string): void => cb(msg)
+      ipcRenderer.on('cli:install-progress', handler)
+      return () => ipcRenderer.removeListener('cli:install-progress', handler)
+    }
+  },
   reboot: (): void => ipcRenderer.send('system:reboot'),
   gateway: {
     start: (): Promise<{ success: boolean; error?: string }> => ipcRenderer.invoke('gateway:start'),
