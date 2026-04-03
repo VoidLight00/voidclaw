@@ -29,6 +29,24 @@ jobs:
         run: npm run build:mac-local
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
+          CSC_LINK: ""
+      - name: Ad-hoc codesign entire app bundle
+        run: |
+          APP="dist/mac-universal/VoidClaw.app"
+          # Strip existing signatures first
+          find "$APP" -type f \( -name "*.dylib" -o -name "*.so" -o -name "*.node" \) -exec codesign --force --sign - {} \;
+          # Sign frameworks
+          find "$APP/Contents/Frameworks" -depth -name "*.framework" -exec codesign --force --sign - {} \;
+          # Sign helpers
+          find "$APP/Contents/Frameworks" -name "*.app" -exec codesign --force --sign - {} \;
+          # Sign main app
+          codesign --force --sign - "$APP"
+          # Verify
+          codesign --verify --deep --strict "$APP"
+      - name: Rebuild DMG with signed app
+        run: |
+          rm -f dist/voidclaw.dmg
+          hdiutil create -volname "VoidClaw" -srcfolder dist/mac-universal/VoidClaw.app -ov -format UDZO dist/voidclaw.dmg
       - name: Upload to release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
