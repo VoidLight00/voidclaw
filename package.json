@@ -1,6 +1,6 @@
 {
   "name": "voidclaw",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "One-click installer for OpenClaw AI agent — VoidClaw Edition",
   "license": "MIT",
   "main": "./out/main/index.js",
