@@ -8,13 +8,13 @@
 
 [OpenClaw](https://github.com/openclaw/openclaw)というオープンソースのAIエージェントをご存知でしょうか？Telegramを通じてAIとやり取りできる便利なツールですが、セットアップにはNode.jsのインストール、npmコマンドの実行、設定ファイルの編集など、いくつかのステップが必要です。
 
-コミュニティで「セットアップが面倒で諦めた」という声を何度か見かけたので、**EasyClaw**というデスクトップインストーラーを作りました。
+コミュニティで「セットアップが面倒で諦めた」という声を何度か見かけたので、**VoidClaw**というデスクトップインストーラーを作りました。
 
-## EasyClawとは
+## VoidClawとは
 
 **ダウンロード → 実行 → APIキーを入力** — この3ステップだけでOpenClawの環境構築が完了します。
 
-EasyClawが自動で行うこと：
+VoidClawが自動で行うこと：
 
 - 環境の自動検出（Node.jsバージョン、WindowsのWSL状態など）
 - 必要な依存関係のインストール
@@ -57,10 +57,10 @@ ElectronアプリからWSLのインストールを自動化するのは予想以
 
 ## ダウンロード
 
-- **macOS**: [easy-claw.dmg](https://github.com/ybgwon96/easyclaw/releases/latest/download/easy-claw.dmg)
-- **Windows**: [easy-claw-setup.exe](https://github.com/ybgwon96/easyclaw/releases/latest/download/easy-claw-setup.exe)
-- **GitHub**: [github.com/ybgwon96/easyclaw](https://github.com/ybgwon96/easyclaw)
-- **ウェブサイト**: [easyclaw.kr](https://easyclaw.kr)
+- **macOS**: [voidclaw.dmg](https://github.com/VoidLight00/voidclaw/releases/latest/download/voidclaw.dmg)
+- **Windows**: [voidclaw-setup.exe](https://github.com/VoidLight00/voidclaw/releases/latest/download/voidclaw-setup.exe)
+- **GitHub**: [github.com/VoidLight00/voidclaw](https://github.com/VoidLight00/voidclaw)
+- **ウェブサイト**: [voidclaw.vercel.app](https://voidclaw.vercel.app)
 
 MITライセンスのオープンソースです。Issue やPRもお待ちしています！
 

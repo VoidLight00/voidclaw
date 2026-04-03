@@ -2,20 +2,20 @@
 
 ## Basic Info
 
-- **Name**: EasyClaw
+- **Name**: VoidClaw
 - **Tagline**: Install OpenClaw AI agent with one click
-- **Website**: https://easyclaw.kr
-- **GitHub**: https://github.com/ybgwon96/easyclaw
+- **Website**: https://voidclaw.vercel.app
+- **GitHub**: https://github.com/VoidLight00/voidclaw
 
 ## Description (Short)
 
-EasyClaw is a free, open-source desktop app that installs OpenClaw AI agent in three steps: download, run, and enter your API key. No terminal commands needed. Supports macOS and Windows.
+VoidClaw is a free, open-source desktop app that installs OpenClaw AI agent in three steps: download, run, and enter your API key. No terminal commands needed. Supports macOS and Windows.
 
 ## Description (Full)
 
 Setting up an AI agent shouldn't require a CS degree. OpenClaw is a powerful open-source AI agent that runs on Telegram, but its installation involves Node.js, npm, config files, and gateway processes.
 
-EasyClaw eliminates all that complexity. It's a desktop installer that:
+VoidClaw eliminates all that complexity. It's a desktop installer that:
 
 ✅ **Auto-detects your environment** — checks Node.js, WSL (Windows), and existing installations
 ✅ **Installs everything automatically** — one click handles Node.js, WSL, and OpenClaw setup
@@ -39,7 +39,7 @@ Available in English, Korean, Japanese, and Chinese.
 
 Hi Product Hunt! 👋
 
-I'm the maker of EasyClaw. I built this because I kept seeing people in the OpenClaw community struggle with the installation process — especially on Windows, where you need WSL set up properly.
+I'm the maker of VoidClaw. I built this because I kept seeing people in the OpenClaw community struggle with the installation process — especially on Windows, where you need WSL set up properly.
 
 The hardest technical challenge was automating WSL installation on Windows. WSL has 6 different states, and the installation requires a system reboot. We save the wizard state so users can pick up right where they left off after rebooting.
 

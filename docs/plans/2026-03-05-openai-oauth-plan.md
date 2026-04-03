@@ -4,7 +4,7 @@
 
 **Goal:** Add OAuth login option for OpenAI ChatGPT Plus/Pro subscribers so they can use OpenClaw without a separate API key.
 
-**Architecture:** Hybrid approach — EasyClaw opens Electron BrowserWindow for OAuth login, delegates token management to OpenClaw CLI (`openclaw models auth login --provider openai-codex`). UI adds auth method toggle in OpenAI provider tab.
+**Architecture:** Hybrid approach — VoidClaw opens Electron BrowserWindow for OAuth login, delegates token management to OpenClaw CLI (`openclaw models auth login --provider openai-codex`). UI adds auth method toggle in OpenAI provider tab.
 
 **Tech Stack:** Electron (BrowserWindow, ipcMain), React, OpenClaw CLI, OAuth 2.0 PKCE
 

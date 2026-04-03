@@ -2,13 +2,13 @@
 
 ## Summary
 
-Add OAuth login option for OpenAI ChatGPT Plus/Pro subscribers in EasyClaw, allowing them to use OpenClaw without a separate API key.
+Add OAuth login option for OpenAI ChatGPT Plus/Pro subscribers in VoidClaw, allowing them to use OpenClaw without a separate API key.
 
 ## Background
 
 - OpenAI Codex supports OAuth 2.0 PKCE flow for ChatGPT subscribers
 - OpenClaw already supports `--auth-choice openai-codex` CLI flag
-- EasyClaw currently only supports API key input for OpenAI
+- VoidClaw currently only supports API key input for OpenAI
 
 ## Design
 
@@ -46,7 +46,7 @@ OpenAI `oauthModels`:
 
 ### OAuth Flow (Hybrid: OpenClaw CLI + Electron BrowserWindow)
 
-EasyClaw delegates token management to OpenClaw CLI:
+VoidClaw delegates token management to OpenClaw CLI:
 
 1. Main process spawns `openclaw models auth login --provider openai-codex`
 2. Parse auth URL from stdout

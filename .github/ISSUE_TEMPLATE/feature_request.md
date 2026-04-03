@@ -1,6 +1,6 @@
 ---
 name: Feature Request
-about: Suggest an idea for EasyClaw
+about: Suggest an idea for VoidClaw
 title: '[Feature] '
 labels: enhancement
 assignees: ''

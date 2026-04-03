@@ -26,11 +26,8 @@
 ---
 
 <p align="center">
-  <img src="docs/screenshots/welcome.png" width="270" alt="시작 화면">
   &nbsp;&nbsp;
-  <img src="docs/screenshots/env-check.png" width="270" alt="환경 검사">
   &nbsp;&nbsp;
-  <img src="docs/screenshots/done.png" width="270" alt="설치 완료">
 </p>
 
 ## 소개

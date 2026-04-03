@@ -6,13 +6,13 @@
 
 If you've ever tried setting up [OpenClaw](https://github.com/openclaw/openclaw) — the open-source AI agent that runs on Telegram — you know the drill: install Node.js, run a bunch of npm commands, configure API keys in JSON files, set up a gateway process, figure out why it won't start...
 
-I kept seeing people in the community give up halfway through the setup. So I built **EasyClaw** — a desktop app that handles the entire installation in three clicks.
+I kept seeing people in the community give up halfway through the setup. So I built **VoidClaw** — a desktop app that handles the entire installation in three clicks.
 
 ## What it does
 
 **Download → Run → Enter your API key.** That's the whole process.
 
-EasyClaw automatically:
+VoidClaw automatically:
 
 - Detects your environment (Node.js version, WSL on Windows, etc.)
 - Installs missing dependencies
@@ -59,15 +59,15 @@ We built a custom `useWizard` hook with history tracking for back navigation and
 
 ## Screenshots
 
-![Welcome](https://raw.githubusercontent.com/ybgwon96/easyclaw/main/docs/screenshots/welcome.png)
-![Environment Check](https://raw.githubusercontent.com/ybgwon96/easyclaw/main/docs/screenshots/env-check.png)
-![Done](https://raw.githubusercontent.com/ybgwon96/easyclaw/main/docs/screenshots/done.png)
+![Welcome](https://raw.githubusercontent.com/VoidLight00/voidclaw/main/docs/screenshots/welcome.png)
+![Environment Check](https://raw.githubusercontent.com/VoidLight00/voidclaw/main/docs/screenshots/env-check.png)
+![Done](https://raw.githubusercontent.com/VoidLight00/voidclaw/main/docs/screenshots/done.png)
 
 ## Try it out
 
-- **Download**: [macOS (.dmg)](https://github.com/ybgwon96/easyclaw/releases/latest/download/easy-claw.dmg) | [Windows (.exe)](https://github.com/ybgwon96/easyclaw/releases/latest/download/easy-claw-setup.exe)
-- **GitHub**: [github.com/ybgwon96/easyclaw](https://github.com/ybgwon96/easyclaw)
-- **Website**: [easyclaw.kr](https://easyclaw.kr)
+- **Download**: [macOS (.dmg)](https://github.com/VoidLight00/voidclaw/releases/latest/download/voidclaw.dmg) | [Windows (.exe)](https://github.com/VoidLight00/voidclaw/releases/latest/download/voidclaw-setup.exe)
+- **GitHub**: [github.com/VoidLight00/voidclaw](https://github.com/VoidLight00/voidclaw)
+- **Website**: [voidclaw.vercel.app](https://voidclaw.vercel.app)
 
 It's MIT licensed and fully open source. Contributions welcome!
 

@@ -26,11 +26,8 @@
 ---
 
 <p align="center">
-  <img src="docs/screenshots/welcome.png" width="270" alt="ようこそ">
   &nbsp;&nbsp;
-  <img src="docs/screenshots/env-check.png" width="270" alt="環境チェック">
   &nbsp;&nbsp;
-  <img src="docs/screenshots/done.png" width="270" alt="完了">
 </p>
 
 ## VoidClawとは？

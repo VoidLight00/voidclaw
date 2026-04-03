@@ -26,11 +26,8 @@
 ---
 
 <p align="center">
-  <img src="docs/screenshots/welcome.png" width="270" alt="欢迎">
   &nbsp;&nbsp;
-  <img src="docs/screenshots/env-check.png" width="270" alt="环境检查">
   &nbsp;&nbsp;
-  <img src="docs/screenshots/done.png" width="270" alt="完成">
 </p>
 
 ## 什么是 VoidClaw？

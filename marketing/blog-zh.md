@@ -8,13 +8,13 @@
 
 [OpenClaw](https://github.com/openclaw/openclaw) 是一个开源 AI 代理，可以通过 Telegram 与 AI 对话。但安装过程需要手动安装 Node.js、运行 npm 命令、编辑配置文件等操作，对于不熟悉终端的用户来说门槛不低。
 
-社区里经常有人反馈"安装太麻烦了"，所以我做了 **EasyClaw** —— 一个桌面安装器，三步完成所有配置。
+社区里经常有人反馈"安装太麻烦了"，所以我做了 **VoidClaw** —— 一个桌面安装器，三步完成所有配置。
 
-## EasyClaw 是什么
+## VoidClaw 是什么
 
 **下载 → 运行 → 输入 API 密钥**，整个过程就是这么简单。
 
-EasyClaw 自动完成以下工作：
+VoidClaw 自动完成以下工作：
 
 - 检测运行环境（Node.js 版本、Windows 上的 WSL 状态等）
 - 安装缺少的依赖
@@ -61,10 +61,10 @@ macOS 上安装比较简单，但 Windows 上 OpenClaw 需要在 WSL（Windows S
 
 ## 下载
 
-- **macOS**: [easy-claw.dmg](https://github.com/ybgwon96/easyclaw/releases/latest/download/easy-claw.dmg)
-- **Windows**: [easy-claw-setup.exe](https://github.com/ybgwon96/easyclaw/releases/latest/download/easy-claw-setup.exe)
-- **GitHub**: [github.com/ybgwon96/easyclaw](https://github.com/ybgwon96/easyclaw)
-- **官网**: [easyclaw.kr](https://easyclaw.kr)
+- **macOS**: [voidclaw.dmg](https://github.com/VoidLight00/voidclaw/releases/latest/download/voidclaw.dmg)
+- **Windows**: [voidclaw-setup.exe](https://github.com/VoidLight00/voidclaw/releases/latest/download/voidclaw-setup.exe)
+- **GitHub**: [github.com/VoidLight00/voidclaw](https://github.com/VoidLight00/voidclaw)
+- **官网**: [voidclaw.vercel.app](https://voidclaw.vercel.app)
 
 MIT 开源协议，欢迎提 Issue 和 PR！
 
