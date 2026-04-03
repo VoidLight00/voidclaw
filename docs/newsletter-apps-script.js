@@ -1,5 +1,5 @@
 /**
- * Google Apps Script - EasyClaw 뉴스레터 구독자 수집
+ * Google Apps Script - VoidClaw 뉴스레터 구독자 수집
  *
  * 사용 방법:
  * 1. Google Sheets에서 시트를 하나 만들고, 첫 행에 [email, source, subscribedAt] 헤더를 추가

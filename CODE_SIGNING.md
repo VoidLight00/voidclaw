@@ -1,6 +1,6 @@
 # Code Signing Policy
 
-EasyClaw uses free code signing provided by [SignPath Foundation](https://signpath.org).
+VoidClaw uses free code signing provided by [SignPath Foundation](https://signpath.org).
 
 ## Signed Artifacts
 
@@ -27,7 +27,7 @@ All builds are reproducible from the public source code. No binary artifacts are
 
 ## Privacy
 
-EasyClaw does not collect, transmit, or store any personal data. The application runs entirely on the user's local machine. No telemetry, analytics, or tracking of any kind is included.
+VoidClaw does not collect, transmit, or store any personal data. The application runs entirely on the user's local machine. No telemetry, analytics, or tracking of any kind is included.
 
 ## License
 

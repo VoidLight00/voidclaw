@@ -1,6 +1,6 @@
 var PRODUCTS = {
   claw: {
-    name: 'EasyClaw',
+    name: 'VoidClaw',
     slug: 'claw',
     brandSuffix: 'Claw',
     accent: '#f97316',
@@ -8,15 +8,15 @@ var PRODUCTS = {
     accentLight: '#fdba74',
     accentGlow: 'rgba(249, 115, 22, 0.35)',
     accentDark: '#ea580c',
-    github: 'ybgwon96/easyclaw',
-    dmg: 'easy-claw.dmg',
-    exe: 'easy-claw-setup.exe',
+    github: 'VoidLight00/voidclaw',
+    dmg: 'voidclaw.dmg',
+    exe: 'voidclaw-setup.exe',
     iconTemplate: 'icon-claw',
     path: '/',
     openChat: 'https://open.kakao.com/o/gbBkPehi',
     demoGif: 'demo.gif',
     productHunt:
-      'https://www.producthunt.com/products/easyclaw-3?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-easyclaw-4',
+      'https://www.producthunt.com/products/voidclaw?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-voidclaw',
     productHuntImg:
       'https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1088478&theme=light&t=1772460170834',
     i18nPrefix: '',
@@ -34,7 +34,7 @@ var PRODUCTS = {
         price: '$1 / $5',
         color: '#d97706',
         recommended: true,
-        url: 'https://console.anthropic.com/settings/keys?utm_source=easyclaw&utm_medium=referral'
+        url: 'https://console.anthropic.com/settings/keys?utm_source=voidclaw&utm_medium=referral'
       },
       {
         id: 'google',
@@ -42,7 +42,7 @@ var PRODUCTS = {
         model: 'Gemini 3.1 Pro',
         price: '$2 / $12',
         color: '#4285f4',
-        url: 'https://aistudio.google.com/apikey?utm_source=easyclaw&utm_medium=referral'
+        url: 'https://aistudio.google.com/apikey?utm_source=voidclaw&utm_medium=referral'
       },
       {
         id: 'openai',
@@ -50,7 +50,7 @@ var PRODUCTS = {
         model: 'GPT-5.4',
         price: '$2.5 / $15',
         color: '#10a37f',
-        url: 'https://platform.openai.com/api-keys?utm_source=easyclaw&utm_medium=referral'
+        url: 'https://platform.openai.com/api-keys?utm_source=voidclaw&utm_medium=referral'
       },
       {
         id: 'deepseek',
@@ -58,7 +58,7 @@ var PRODUCTS = {
         model: 'DeepSeek V3.2',
         price: '$0.28 / $0.40',
         color: '#4f8df5',
-        url: 'https://platform.deepseek.com/api_keys?utm_source=easyclaw&utm_medium=referral'
+        url: 'https://platform.deepseek.com/api_keys?utm_source=voidclaw&utm_medium=referral'
       },
       {
         id: 'minimax',
@@ -66,7 +66,7 @@ var PRODUCTS = {
         model: 'M2.7',
         price: '$0.3 / $2.4',
         color: '#a855f7',
-        url: 'https://platform.minimaxi.com/user-center/basic-information/interface-key?utm_source=easyclaw&utm_medium=referral'
+        url: 'https://platform.minimaxi.com/user-center/basic-information/interface-key?utm_source=voidclaw&utm_medium=referral'
       },
       {
         id: 'glm',
@@ -74,7 +74,7 @@ var PRODUCTS = {
         model: 'GLM-5',
         price: '$1 / $1',
         color: '#ef4444',
-        url: 'https://open.bigmodel.cn/usercenter/apikeys?utm_source=easyclaw&utm_medium=referral'
+        url: 'https://open.bigmodel.cn/usercenter/apikeys?utm_source=voidclaw&utm_medium=referral'
       },
       {
         id: 'ollama',
@@ -82,7 +82,7 @@ var PRODUCTS = {
         model: 'Llama 3.3',
         price: 'Free',
         color: '#f0f0f0',
-        url: 'https://ollama.com/download?utm_source=easyclaw&utm_medium=referral'
+        url: 'https://ollama.com/download?utm_source=voidclaw&utm_medium=referral'
       }
     ]
   },

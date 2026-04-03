@@ -25,10 +25,6 @@
 
 ---
 
-<p align="center">
-  <img src="docs/demo.gif" width="600" alt="VoidClaw Demo">
-</p>
-
 ## What is VoidClaw?
 
 VoidClaw is a desktop installer that sets up [OpenClaw](https://github.com/openclaw/openclaw) AI agent **without any terminal commands**.

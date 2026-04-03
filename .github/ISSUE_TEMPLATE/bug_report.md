@@ -31,7 +31,7 @@ If applicable, add screenshots.
 ## Environment
 
 - **OS**: [e.g., macOS 15.2, Windows 11]
-- **EasyClaw version**: [e.g., v1.3.26]
+- **VoidClaw version**: [e.g., v2.0.0]
 - **Installation step**: [e.g., Environment Check, API Key Setup]
 
 ## Additional Context
