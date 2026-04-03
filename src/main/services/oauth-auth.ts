@@ -1,7 +1,6 @@
 import { spawn, exec, execSync } from 'child_process'
 import { platform } from 'os'
 import { getPathEnv, findBin } from './path-utils'
-import { runInWsl } from './wsl-utils'
 
 export type OAuthProvider = 'anthropic' | 'openai' | 'gemini' | 'qwen'
 
@@ -23,11 +22,14 @@ function ensureCliInstallCommand(provider: OAuthProvider): string | null {
   const dep = PROVIDER_CLI_PACKAGES[provider]
   if (!dep) return null
 
+  const isWindows = platform() === 'win32'
+
   try {
-    execSync(`which ${dep.bin} 2>/dev/null || where ${dep.bin} 2>nul`, {
-      stdio: 'ignore',
-      env: getPathEnv()
-    })
+    if (isWindows) {
+      execSync(`where ${dep.bin}`, { stdio: 'ignore' })
+    } else {
+      execSync(`which ${dep.bin}`, { stdio: 'ignore', env: getPathEnv() })
+    }
     return null // already installed
   } catch {
     return `npm install -g ${dep.pkg}`
@@ -38,7 +40,10 @@ function buildCommandString(provider: OAuthProvider): string {
   const installCmd = ensureCliInstallCommand(provider)
   const args = PROVIDER_COMMANDS[provider]
   const authCmd = `openclaw ${args.join(' ')}`
-  return installCmd ? `${installCmd} && ${authCmd}` : authCmd
+  if (!installCmd) return authCmd
+
+  // Use && for chaining on all platforms (works in cmd.exe too)
+  return `${installCmd} && ${authCmd}`
 }
 
 function openTerminalWithCommand(command: string): Promise<void> {
@@ -50,6 +55,7 @@ function openTerminalWithCommand(command: string): Promise<void> {
       const escaped = command.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
       termCmd = `osascript -e 'tell application "Terminal"' -e 'do script "${escaped}"' -e 'activate' -e 'end tell'`
     } else if (os === 'win32') {
+      // Use cmd.exe natively — OpenClaw is installed on Windows, not WSL
       termCmd = `start cmd.exe /K "${command}"`
     } else {
       termCmd = `x-terminal-emulator -e '${command}' || gnome-terminal -- bash -c '${command}; exec bash' || xterm -e '${command}'`
@@ -65,12 +71,6 @@ function openTerminalWithCommand(command: string): Promise<void> {
 export async function runOAuthFlow(
   provider: OAuthProvider
 ): Promise<{ success: boolean; output: string }> {
-  const isWindows = platform() === 'win32'
-
-  if (isWindows) {
-    return runOAuthFlowWsl(provider)
-  }
-
   try {
     const command = buildCommandString(provider)
     await openTerminalWithCommand(command)
@@ -86,41 +86,26 @@ export async function runOAuthFlow(
   }
 }
 
-async function runOAuthFlowWsl(
-  provider: OAuthProvider
-): Promise<{ success: boolean; output: string }> {
-  try {
-    const dep = PROVIDER_CLI_PACKAGES[provider]
-    const installPart = dep ? `which ${dep.bin} >/dev/null 2>&1 || npm install -g ${dep.pkg} && ` : ''
-    const args = PROVIDER_COMMANDS[provider]
-    const script = `${installPart}openclaw ${args.map((a) => `'${a.replace(/'/g, "'\\''")}'`).join(' ')}`
-    // Open Windows Terminal with WSL command for TTY support
-    const termCmd = `start wt.exe wsl -d Ubuntu -u root bash -lc "${script.replace(/"/g, '\\"')}; exec bash"`
-    await new Promise<void>((resolve, reject) => {
-      exec(termCmd, (err) => {
-        if (err) reject(err)
-        else resolve()
-      })
-    })
-    return { success: true, output: 'terminal_opened' }
-  } catch (err) {
-    return { success: false, output: err instanceof Error ? err.message : String(err) }
-  }
-}
-
 export async function checkAuthStatus(provider: OAuthProvider): Promise<boolean> {
   const isWindows = platform() === 'win32'
 
-  if (isWindows) {
-    return checkAuthStatusWsl(provider)
-  }
-
   return new Promise((resolve) => {
-    const ocBin = findBin('openclaw')
-    const proc = spawn(ocBin, ['models', 'status', '--json'], {
-      stdio: ['ignore', 'pipe', 'ignore'],
-      env: { ...getPathEnv(), FORCE_COLOR: '0' }
-    })
+    let proc: ReturnType<typeof spawn>
+
+    if (isWindows) {
+      // Run openclaw natively on Windows
+      proc = spawn('openclaw', ['models', 'status', '--json'], {
+        stdio: ['ignore', 'pipe', 'ignore'],
+        shell: true,
+        env: { ...process.env, FORCE_COLOR: '0' }
+      })
+    } else {
+      const ocBin = findBin('openclaw')
+      proc = spawn(ocBin, ['models', 'status', '--json'], {
+        stdio: ['ignore', 'pipe', 'ignore'],
+        env: { ...getPathEnv(), FORCE_COLOR: '0' }
+      })
+    }
 
     let out = ''
     proc.stdout?.on('data', (d: Buffer) => {
@@ -135,15 +120,6 @@ export async function checkAuthStatus(provider: OAuthProvider): Promise<boolean>
       resolve(false)
     })
   })
-}
-
-async function checkAuthStatusWsl(provider: OAuthProvider): Promise<boolean> {
-  try {
-    const out = await runInWsl('openclaw models status --json')
-    return parseAuthStatus(out, provider)
-  } catch {
-    return false
-  }
 }
 
 const PROVIDER_PREFIXES: Record<OAuthProvider, string[]> = {
