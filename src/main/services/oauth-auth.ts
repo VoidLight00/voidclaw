@@ -120,20 +120,21 @@ async function checkAuthStatusWsl(provider: OAuthProvider): Promise<boolean> {
   }
 }
 
-const PROVIDER_PREFIXES: Record<OAuthProvider, string> = {
-  anthropic: 'anthropic/',
-  openai: 'openai/',
-  gemini: 'google/',
-  qwen: 'qwen/'
+const PROVIDER_PREFIXES: Record<OAuthProvider, string[]> = {
+  anthropic: ['anthropic/'],
+  openai: ['openai/', 'openai-codex/'],
+  gemini: ['google/', 'google-gemini/'],
+  qwen: ['qwen/']
 }
 
 function parseAuthStatus(jsonStr: string, provider: OAuthProvider): boolean {
   try {
     const data = JSON.parse(jsonStr)
-    const prefix = PROVIDER_PREFIXES[provider]
+    const prefixes = PROVIDER_PREFIXES[provider]
     return Array.isArray(data)
       ? data.some(
-          (m: { id: string; auth: string }) => m.id?.startsWith(prefix) && m.auth === 'yes'
+          (m: { id: string; auth: string }) =>
+            prefixes.some((p) => m.id?.startsWith(p)) && m.auth === 'yes'
         )
       : false
   } catch {
