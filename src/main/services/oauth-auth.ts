@@ -1,4 +1,4 @@
-import { spawn, exec } from 'child_process'
+import { spawn, exec, execSync } from 'child_process'
 import { platform } from 'os'
 import { getPathEnv, findBin } from './path-utils'
 import { runInWsl } from './wsl-utils'
@@ -12,9 +12,33 @@ const PROVIDER_COMMANDS: Record<OAuthProvider, string[]> = {
   qwen: ['models', 'auth', 'login', '--provider', 'qwen-portal']
 }
 
+/** npm packages required by each provider's CLI (installed globally if missing) */
+const PROVIDER_CLI_PACKAGES: Partial<Record<OAuthProvider, { bin: string; pkg: string }>> = {
+  gemini: { bin: 'gemini', pkg: '@google/gemini-cli' },
+  anthropic: { bin: 'claude', pkg: '@anthropic-ai/claude-code' }
+}
+
+/** Ensure the provider's CLI is installed globally; returns install command string for terminal */
+function ensureCliInstallCommand(provider: OAuthProvider): string | null {
+  const dep = PROVIDER_CLI_PACKAGES[provider]
+  if (!dep) return null
+
+  try {
+    execSync(`which ${dep.bin} 2>/dev/null || where ${dep.bin} 2>nul`, {
+      stdio: 'ignore',
+      env: getPathEnv()
+    })
+    return null // already installed
+  } catch {
+    return `npm install -g ${dep.pkg}`
+  }
+}
+
 function buildCommandString(provider: OAuthProvider): string {
+  const installCmd = ensureCliInstallCommand(provider)
   const args = PROVIDER_COMMANDS[provider]
-  return `openclaw ${args.join(' ')}`
+  const authCmd = `openclaw ${args.join(' ')}`
+  return installCmd ? `${installCmd} && ${authCmd}` : authCmd
 }
 
 function openTerminalWithCommand(command: string): Promise<void> {
@@ -66,8 +90,10 @@ async function runOAuthFlowWsl(
   provider: OAuthProvider
 ): Promise<{ success: boolean; output: string }> {
   try {
+    const dep = PROVIDER_CLI_PACKAGES[provider]
+    const installPart = dep ? `which ${dep.bin} >/dev/null 2>&1 || npm install -g ${dep.pkg} && ` : ''
     const args = PROVIDER_COMMANDS[provider]
-    const script = `openclaw ${args.map((a) => `'${a.replace(/'/g, "'\\''")}'`).join(' ')}`
+    const script = `${installPart}openclaw ${args.map((a) => `'${a.replace(/'/g, "'\\''")}'`).join(' ')}`
     // Open Windows Terminal with WSL command for TTY support
     const termCmd = `start wt.exe wsl -d Ubuntu -u root bash -lc "${script.replace(/"/g, '\\"')}; exec bash"`
     await new Promise<void>((resolve, reject) => {
