@@ -23,15 +23,26 @@ export async function checkCli(
   const isWindows = platform() === 'win32'
 
   if (isWindows) {
+    // Check WSL first, fall back to Windows native (where.exe)
     return new Promise((resolve) => {
-      const child = spawn('wsl', ['-d', 'Ubuntu', '-u', 'root', 'which', dep.bin], {
+      const wslChild = spawn('wsl', ['-d', 'Ubuntu', '-u', 'root', 'which', dep.bin], {
         stdio: ['ignore', 'pipe', 'ignore']
       })
-      child.on('close', (code) => {
-        resolve({ installed: code === 0, bin: dep.bin })
+      wslChild.on('close', (wslCode) => {
+        if (wslCode === 0) {
+          resolve({ installed: true, bin: dep.bin })
+        } else {
+          // WSL check failed — try Windows native
+          exec(`where ${dep.bin}`, (err) => {
+            resolve({ installed: !err, bin: dep.bin })
+          })
+        }
       })
-      child.on('error', () => {
-        resolve({ installed: false, bin: dep.bin })
+      wslChild.on('error', () => {
+        // WSL not available — try Windows native
+        exec(`where ${dep.bin}`, (err) => {
+          resolve({ installed: !err, bin: dep.bin })
+        })
       })
     })
   }
@@ -56,7 +67,10 @@ export async function installCli(
     let proc: ReturnType<typeof spawn>
 
     if (isWindows) {
-      proc = spawn('wsl', ['-d', 'Ubuntu', '-u', 'root', 'bash', '-lc', `npm install -g ${dep.pkg}`], {
+      // Try WSL first; if unavailable, install natively via powershell
+      proc = spawn('powershell', ['-NoProfile', '-Command',
+        `try { wsl -d Ubuntu -u root bash -lc 'npm install -g ${dep.pkg}' } catch { npm install -g ${dep.pkg} }`
+      ], {
         stdio: ['ignore', 'pipe', 'pipe']
       })
     } else {
