@@ -3,9 +3,17 @@ name: Build & Release
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v2.0.0)'
+        required: true
 
 permissions:
   contents: write
+
+env:
+  RELEASE_TAG: ${{ github.event.release.tag_name || github.event.inputs.tag }}
 
 jobs:
   build-mac:
@@ -24,7 +32,7 @@ jobs:
       - name: Upload to release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "${{ github.event.release.tag_name }}" dist/voidclaw.dmg --clobber
+        run: gh release upload "${{ env.RELEASE_TAG }}" dist/voidclaw.dmg --clobber
 
   build-win:
     runs-on: windows-latest
@@ -40,4 +48,4 @@ jobs:
       - name: Upload to release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "${{ github.event.release.tag_name }}" dist/voidclaw-setup.exe --clobber
+        run: gh release upload "${{ env.RELEASE_TAG }}" dist/voidclaw-setup.exe --clobber
