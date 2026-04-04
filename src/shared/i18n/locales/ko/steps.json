@@ -1,7 +1,14 @@
 {
   "indicator": {
-    "default": ["환영", "환경 설정", "AI 설정", "텔레그램", "에이전트"],
-    "windows": ["환영", "환경 설정", "WSL", "AI 설정", "텔레그램", "에이전트"]
+    "default": [
+      "환영",
+      "환경 설정"
+    ],
+    "windows": [
+      "환영",
+      "환경 설정",
+      "WSL"
+    ]
   },
   "welcome": {
     "title": "나만의 AI 에이전트, 클릭 한 번으로",
@@ -150,7 +157,7 @@
     "title": "AI 설정",
     "desc": "로그인만 하면 API 키 없이 바로 사용할 수 있어요",
     "nextBtn": "다음 단계로",
-    "loginBtn": "로그인 \u2192",
+    "loginBtn": "로그인 →",
     "loggingIn": "로그인 중...",
     "loginSuccess": "로그인 완료!",
     "loginDone": "완료",
@@ -162,10 +169,10 @@
     "terminalHint": "터미널에서 로그인 후 클릭하세요",
     "notVerified": "아직 로그인이 확인되지 않았어요. 터미널에서 완료 후 다시 눌러주세요.",
     "providerDesc": {
-      "anthropic": "Claude Sonnet \u00b7 Opus \u2014 claude.ai 세션 토큰으로 인증",
-      "openai": "GPT-5 \u00b7 Codex \u2014 ChatGPT 계정으로 로그인",
-      "gemini": "Gemini 2.5 Pro \u2014 Google 계정으로 로그인",
-      "qwen": "Qwen Max \u2014 Alibaba Cloud 계정으로 로그인"
+      "anthropic": "Claude Sonnet · Opus — claude.ai 세션 토큰으로 인증",
+      "openai": "GPT-5 · Codex — ChatGPT 계정으로 로그인",
+      "gemini": "Gemini 2.5 Pro — Google 계정으로 로그인",
+      "qwen": "Qwen Max — Alibaba Cloud 계정으로 로그인"
     }
   },
   "telegramSetup": {

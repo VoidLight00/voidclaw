@@ -111,7 +111,7 @@ function App(): React.JSX.Element {
           {currentStep === 'welcome' && <WelcomeStep onNext={next} />}
           {currentStep === 'envSetup' && (
             <EnvSetupStep
-              onDone={() => goTo('aiSetup')}
+              onDone={() => goTo('done')}
               onWslNeedsReboot={() => goTo('wslSetup')}
               wslState={wslState}
               setWslState={setWslState}

@@ -14,9 +14,6 @@ const STEPS: StepName[] = [
   'welcome',
   'envSetup',
   'wslSetup',
-  'aiSetup',
-  'telegramSetup',
-  'agentBirth',
   'done'
 ]
 

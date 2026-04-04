@@ -1,7 +1,14 @@
 {
   "indicator": {
-    "default": ["欢迎", "环境设置", "AI设置", "Telegram", "智能体"],
-    "windows": ["欢迎", "环境设置", "WSL", "AI设置", "Telegram", "智能体"]
+    "default": [
+      "欢迎",
+      "环境设置"
+    ],
+    "windows": [
+      "欢迎",
+      "环境设置",
+      "WSL"
+    ]
   },
   "welcome": {
     "title": "专属 AI 智能体，一键搞定",

@@ -1,7 +1,14 @@
 {
   "indicator": {
-    "default": ["Welcome", "Setup", "AI", "Telegram", "Agent"],
-    "windows": ["Welcome", "Setup", "WSL", "AI", "Telegram", "Agent"]
+    "default": [
+      "Welcome",
+      "Setup"
+    ],
+    "windows": [
+      "Welcome",
+      "Setup",
+      "WSL"
+    ]
   },
   "welcome": {
     "title": "Your Own AI Agent, One Click Away",
@@ -148,9 +155,9 @@
   },
   "aiSetup": {
     "title": "AI Setup",
-    "desc": "Just log in \u2014 no API key needed",
+    "desc": "Just log in — no API key needed",
     "nextBtn": "Next Step",
-    "loginBtn": "Log in \u2192",
+    "loginBtn": "Log in →",
     "loggingIn": "Logging in...",
     "loginSuccess": "Login successful!",
     "loginDone": "Done",
@@ -162,10 +169,10 @@
     "terminalHint": "Click after completing login in the terminal",
     "notVerified": "Login not verified yet. Please complete login in the terminal and try again.",
     "providerDesc": {
-      "anthropic": "Claude Sonnet \u00b7 Opus \u2014 Authenticate with claude.ai session token",
-      "openai": "GPT-5 \u00b7 Codex \u2014 Sign in with ChatGPT account",
-      "gemini": "Gemini 2.5 Pro \u2014 Sign in with Google account",
-      "qwen": "Qwen Max \u2014 Sign in with Alibaba Cloud account"
+      "anthropic": "Claude Sonnet · Opus — Authenticate with claude.ai session token",
+      "openai": "GPT-5 · Codex — Sign in with ChatGPT account",
+      "gemini": "Gemini 2.5 Pro — Sign in with Google account",
+      "qwen": "Qwen Max — Sign in with Alibaba Cloud account"
     }
   },
   "telegramSetup": {

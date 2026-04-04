@@ -1,14 +1,11 @@
 import { useTranslation } from 'react-i18next'
 
-const defaultSteps = ['welcome', 'envSetup', 'aiSetup', 'telegramSetup', 'agentBirth']
+const defaultSteps = ['welcome', 'envSetup']
 
 const windowsSteps = [
   'welcome',
   'envSetup',
-  'wslSetup',
-  'aiSetup',
-  'telegramSetup',
-  'agentBirth'
+  'wslSetup'
 ]
 
 export default function StepIndicator({
